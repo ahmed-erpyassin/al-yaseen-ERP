@@ -1,0 +1,24 @@
+input[type="email"] {
+    direction: rtl;
+    text-align: right;
+}
+
+.form .mb-3.position-relative label {
+    position: absolute;
+    bottom: 22px;
+    z-index: 2;
+    right: 25px;
+    left: auto;
+    background: #FFF;
+}
+.form .group input {
+    padding-right: 35px;
+    padding-left: 0;
+}
+.form .group i {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    left: 0;
+
+}

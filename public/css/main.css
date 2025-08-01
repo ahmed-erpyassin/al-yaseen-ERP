@@ -1,0 +1,64 @@
+body {
+
+    font-family: "Inter", sans-serif !important;
+
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 .25rem rgba(1, 214, 100, 0.25);
+    border: 1px solid #1d734263
+}
+
+.form-check-input:focus {
+
+    box-shadow: 0 0 0 .25rem rgba(1, 214, 100, 0.25);
+}
+
+.btn-main,
+.btn-main:hover,
+.btn-main:active {
+
+    background-color: #1D7342 !important;
+    border: 1px solid #1D7342 !important;
+    color: #fff !important;
+    font-weight: bold !important;
+
+}
+.text-main {
+    color: #1D7342 !important;
+}
+.bg-main {
+    background-color: #1D7342 !important;
+    color: #FFF;
+}
+
+input[type="checkbox"]:checked {
+    background-color: #01D665;
+    border-color: #01D665;
+}
+
+input[type="email"] {
+    text-align: left;
+}
+
+.form .mb-3.position-relative label {
+    position: absolute;
+    top: -12px;
+    z-index: 2;
+    left: 25px;
+    background: #FFF;
+}
+
+.form .group input {
+    padding-left: 35px;
+}
+
+.form .group i {
+    position: absolute;
+    top: 6px;
+    left: 8px
+}
+
+.iti__dropdown-content {
+    z-index: 3 !important;
+}

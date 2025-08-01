@@ -1,0 +1,159 @@
+<template>
+    <div class="container pe-5 ps-5">
+        <h1><i class="bi bi-image"></i> Undefined Company name</h1>
+        <div class="d-flex align-items-center justify-content-end">
+            <router-link :to="{ name: 'admin.new-customer' }" class="btn btn-lg btn-main me-3">Create</router-link>
+            <button class="btn btn-lg btn-outline-danger" type="button">
+                Delete
+            </button>
+
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <h3 class="mb-5">Customers</h3>
+            </div>
+        </div>
+        <div class="d-flex align-items-center actions mb-3">
+            <div class='search me-2 mb-3'>
+                <i class="bi bi-search me-2"></i>
+                <span class="text-main">Search for account</span>
+            </div>
+            <div class='edit me-4 mb-3'>
+                <i class="bi bi-pencil me-2"></i>
+                <span class="text-main">Edit</span>
+            </div>
+            <div class="dropdown mb-3">
+                <i class="bi bi-gear" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                </i>
+                <ul class="dropdown-menu align-center rounded-0 p-2" style="width: 250px;">
+                    <li>
+                        <div class="form-check"><input class="form-check-input" type="checkbox" checked id="col0"><label
+                                class="form-check-label" for="col0">Customer number</label></div>
+                    </li>
+                    <li>
+                        <div class="form-check"><input class="form-check-input" type="checkbox" checked id="col1"><label
+                                class="form-check-label" for="col1">Customer Name</label></div>
+                    </li>
+                    <li>
+                        <div class="form-check"><input class="form-check-input" type="checkbox" checked id="col2"><label
+                                class="form-check-label" for="col2">Balance</label></div>
+                    </li>
+                    <li>
+                        <div class="form-check"><input class="form-check-input" type="checkbox" checked id="col3"><label
+                                class="form-check-label" for="col3">Currency</label></div>
+                    </li>
+                    <li>
+                        <div class="form-check"><input class="form-check-input" type="checkbox" checked id="col4"><label
+                                class="form-check-label" for="col4">Branch</label></div>
+                    </li>
+                    <li>
+                        <div class="form-check"><input class="form-check-input" type="checkbox" checked id="col5"><label
+                                class="form-check-label" for="col5">Date of last movement	</label></div>
+                    </li>
+                    <li>
+                        <div class="form-check"><input class="form-check-input" type="checkbox" checked id="col6"><label
+                                class="form-check-label" for="col6">Currency</label></div>
+                    </li>
+                    <li>
+                        <div class="form-check"><input class="form-check-input" type="checkbox" checked id="col7"><label
+                                class="form-check-label" for="col7">Mobile</label></div>
+                    </li>
+                    <li>
+                        <div class="form-check"><input class="form-check-input" type="checkbox" checked id="col8"><label
+                                class="form-check-label" for="col8">Sales Representative</label></div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="d-flex align-items-center justify-content-end">
+            <div class="pages">
+
+                <p class="text-main mb-0">Customers</p>
+                <p class="text-main mb-0">Customer financial movement</p>
+                <p class="text-main mb-0">Store customer movement</p>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered text-center align-middle">
+                <thead>
+                    <tr class="header">
+                        <th>Customer number</th>
+                        <th>Customer Name</th>
+                        <th>Balance</th>
+                        <th>Currency</th>
+                        <th>Branch</th>
+                        <th>Date of last movement</th>
+                        <th>Mobile</th>
+                        <th>Sales Representative</th>
+                    </tr>
+                </thead>
+                <tbody class="table-body form">
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+</template>
+
+<style>
+.header th {
+
+    background-color: #F4FFF0 !important;
+
+}
+
+.btn-action {
+    background-color: #F4FFF0 !important;
+}
+
+.actions i {
+    font-size: 30px;
+}
+
+.actions span {
+    font-size: 24px;
+}
+
+.dropdown .show {
+    color: #1D7342
+}
+
+.form-check-input:checked[type=checkbox] {
+    border-radius: 50%;
+    background-color: #1D7342 !important;
+}
+.pages p {
+    font-size: 25px;
+}
+</style>

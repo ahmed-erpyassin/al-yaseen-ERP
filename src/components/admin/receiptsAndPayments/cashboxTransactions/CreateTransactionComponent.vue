@@ -1,0 +1,261 @@
+<template>
+    <div class="container pe-5 ps-5">
+        <h1><i class="bi bi-image"></i> {{ $t('label.company_undefined') }}</h1>
+        <div class="d-flex align-items-center justify-content-end">
+            <button class="btn btn-lg btn-outline-secondary me-3">{{ $t('buttons.cancel') }}</button>
+            <div class="dropdown">
+                <button class="btn btn-lg btn-success dropdown-toggle me-3" type="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    {{ $t('buttons.save') }}
+                </button>
+                <ul class="dropdown-menu bg-main text-light">
+                    <li><a class="dropdown-item" href="#">{{ $t('actions.save&email') }}</a></li>
+                    <li><a class="dropdown-item" href="#">{{ $t('actions.save&print') }}</a></li>
+                </ul>
+            </div>
+            <button class="btn btn-primary btn-lg">{{ $t('buttons.preview') }}</button>
+        </div>
+        <form class="form">
+            <div class="row">
+                <div class="col-12">
+                    <h3 class="mb-5">{{ $t('label.add_cashbox_transaction') }}</h3>
+                </div>
+                <div class="col-md-2">
+                    <div class="item mb-4">
+                        <div class="mb-3 position-relative">
+                            <label for="buy_account" class="form-label">{{ $t('label.notebook') }}</label>
+
+                            <input type="text" id="buy_account" class="form-control rounded-1" />
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="item mb-4">
+                        <div class="mb-3 position-relative">
+                            <label for="buy_account" class="form-label">{{ $t('label.invoice_no') }}</label>
+
+                            <input type="text" id="buy_account" class="form-control rounded-1" />
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="item mb-4">
+                        <div class="mb-3 position-relative">
+                            <label for="buy_account" class="form-label">{{ $t('label.date') }}</label>
+
+                            <input type="text" id="buy_account" class="form-control rounded-1" />
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="item mb-4">
+                        <div class="mb-3 position-relative">
+                            <label for="buy_account" class="form-label">{{ $t('label.hour') }}</label>
+
+                            <input type="text" id="buy_account" class="form-control rounded-1" />
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row mb-5">
+                <div class="col-md-2">
+                    <div class="item mb-4">
+                        <div class="mb-3 position-relative">
+                            <label for="buy_account" class="form-label">{{ $t('label.customer_no') }}</label>
+
+                            <input type="text" id="buy_account" class="form-control rounded-1" />
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="item mb-4">
+                        <div class="mb-3 position-relative">
+                            <label for="buy_account" class="form-label">{{ $t('label.name') }}</label>
+
+                            <input type="text" id="buy_account" class="form-control rounded-1" />
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="item mb-4">
+                        <div class="mb-3 position-relative">
+                            <label for="buy_account" class="form-label">{{ $t('label.email') }}</label>
+
+                            <input type="text" id="buy_account" class="form-control rounded-1" />
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="item mb-4">
+                        <div class="mb-3 position-relative">
+                            <label for="buy_account" class="form-label">{{ $t('label.licensed_operator') }}</label>
+
+                            <input type="text" id="buy_account" class="form-control rounded-1" />
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="item mb-4">
+                        <div class="mb-3 position-relative">
+                            <label for="buy_account" class="form-label">{{ $t('label.currency') }}</label>
+
+                            <input type="text" id="buy_account" class="form-control rounded-1" />
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="item mb-4">
+                        <div class="mb-3 position-relative">
+                            <label for="buy_account" class="form-label">{{ $t('label.currency_price') }}</label>
+
+                            <input type="text" id="buy_account" class="form-control rounded-1" />
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="mb-3">{{ $t('label.receipt_information') }}</h3>
+            <div class="row mt-5">
+                <div class="col-md-3">
+                    <div class="item mb-4">
+                        <div class="mb-3 position-relative">
+                            <label for="buy_account" class="form-label">{{ $t('label.fund_account') }}</label>
+
+                            <input type="text" id="buy_account" class="form-control rounded-1" />
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="item mb-4">
+                        <div class="mb-3 position-relative">
+                            <label for="buy_account" class="form-label">{{ $t('label.statement') }}</label>
+
+                            <input type="text" id="buy_account" class="form-control rounded-1" />
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bordered text-center align-middle">
+                    <thead class="header">
+                        <tr>
+                            <th>#</th>
+                            <th>{{ $t('label.account_number') }}</th>
+                            <th>{{ $t('label.account_name') }}</th>
+                            <th>{{ $t('label.name') }}</th>
+                            <th>{{ $t('label.recived') }}</th>
+                            <th>{{ $t('label.paid') }}</th>
+                            <th>{{ $t('label.currency') }}</th>
+                            <th>{{ $t('label.currency_price') }}</th>
+                            <th>{{ $t('label.statement') }}</th>
+                            <th>{{ $t('label.amount') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody form">
+                        <tr>
+                            <td><input type="number" class="form-control border-0 rounded-0"></td>
+                            <td><input type="number" class="form-control border-0 rounded-0"></td>
+                            <td><input type="text" class="form-control border-0 rounded-0"></td>
+                            <td><input type="text" class="form-control border-0 rounded-0"></td>
+                            <td><input type="text" class="form-control border-0 rounded-0"></td>
+                            <td><input type="number" class="form-control border-0 rounded-0"></td>
+                            <td><input type="number" class="form-control border-0 rounded-0"></td>
+                            <td><input type="number" class="form-control border-0 rounded-0"></td>
+                            <td><input type="number" class="form-control border-0 rounded-0"></td>
+                            <td><input type="number" class="form-control border-0 rounded-0" readonly></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="d-flex gap-2 justify-content-end">
+                <button class="btn  btn-action">{{ $t('actions.add_row') }}</button>
+                <button class="btn  btn-action">{{ $t('actions.remove_row') }}</button>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col-md-8">
+                    <div class="item mb-4">
+                        <div class="mb-3 position-relative">
+                            <label for="notes" class="form-label">{{ $t('label.notes') }}</label>
+
+                            <textarea name="notes" id="notes" rows="3" class="form-control"></textarea>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="item mb-4">
+                        <div class="mb-3 position-relative">
+                            <label for="attachments" class="form-label">{{ $t('label.attachments') }}</label>
+
+                            <div class="box-attachments d-flex align-items-center justify-content-center">
+                                <div class="text-center">
+
+                                    <i class="bi bi-image"></i>
+                                    <p class="small">{{ $t('label.attachment_note') }}</p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                
+            <div class="col-md-4">
+                <div class="item mb-4">
+                    <div class="mb-3 position-relative">
+                        <label for="buy_account" class="form-label">{{ $t('label.total_received') }}</label>
+
+                        <input type="text" id="buy_account" class="form-control rounded-1" />
+
+                    </div>
+                </div>
+                <div class="item mb-4">
+                    <div class="mb-3 position-relative">
+                        <label for="buy_account" class="form-label">{{ $t('label.total_paid') }}</label>
+
+                        <input type="text" id="buy_account" class="form-control rounded-1" />
+
+                    </div>
+                </div>
+                <div class="item mb-4">
+                    <div class="mb-3 position-relative">
+                        <label for="buy_account" class="form-label">{{ $t('label.net_cashbox_movement') }}</label>
+
+                        <input type="text" id="buy_account" class="form-control rounded-1" />
+
+                    </div>
+                </div>
+
+
+            </div>
+            </div>
+
+        </form>
+    </div>
+</template>
+
+<style>
+.header th {
+
+    background-color: #F4FFF0 !important;
+
+}
+
+.btn-action {
+    background-color: #F4FFF0 !important;
+}
+</style>

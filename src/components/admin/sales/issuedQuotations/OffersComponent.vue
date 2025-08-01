@@ -1,0 +1,139 @@
+<template>
+    <div class="container pe-5 ps-5">
+        <h1><i class="bi bi-image"></i> Undefined Company name</h1>
+        <div class="d-flex align-items-center justify-content-end">
+            <router-link :to="{ name: 'admin.new-price-offer' }" class="btn btn-lg btn-main me-3">Create</router-link>
+            <button class="btn btn-lg btn-outline-danger" type="button">
+                Delete
+            </button>
+
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <h3 class="mb-5">Outgoing offers</h3>
+            </div>
+        </div>
+        <div class="d-flex align-items-center actions mb-3">
+            <div class='search me-2 mb-3'>
+                <i class="bi bi-search me-2"></i>
+                <span class="text-main">Search for account</span>
+            </div>
+            <div class='edit me-4 mb-3'>
+                <i class="bi bi-pencil me-2"></i>
+                <span class="text-main">Edit</span>
+            </div>
+            <div class="dropdown mb-3">
+                <i class="bi bi-gear" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                </i>
+                <ul class="dropdown-menu align-center rounded-0 p-2" style="width: 250px;">
+                    <li>
+                        <div class="form-check"><input class="form-check-input" type="checkbox" checked id="col0"><label
+                                class="form-check-label" for="col0">offer number</label></div>
+                    </li>
+                    <li>
+                        <div class="form-check"><input class="form-check-input" type="checkbox" checked id="col1"><label
+                                class="form-check-label" for="col1">Customer Name</label></div>
+                    </li>
+                    <li>
+                        <div class="form-check"><input class="form-check-input" type="checkbox" checked id="col2"><label
+                                class="form-check-label" for="col2">Licensed Operator</label></div>
+                    </li>
+                    <li>
+                        <div class="form-check"><input class="form-check-input" type="checkbox" checked id="col3"><label
+                                class="form-check-label" for="col3">Amount</label></div>
+                    </li>
+                    <li>
+                        <div class="form-check"><input class="form-check-input" type="checkbox" checked id="col4"><label
+                                class="form-check-label" for="col4">Currency</label></div>
+                    </li>
+                    <li>
+                        <div class="form-check"><input class="form-check-input" type="checkbox" checked id="col5"><label
+                                class="form-check-label" for="col5">Date</label></div>
+                    </li>
+                    <li>
+                        <div class="form-check"><input class="form-check-input" type="checkbox" checked id="col6"><label
+                                class="form-check-label" for="col6">Mobile</label></div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered text-center align-middle">
+                <thead>
+                    <tr class="header">
+                        <th>Offer number</th>
+                        <th>Customer Name</th>
+                        <th>Licensed Operator</th>
+                        <th>Amount</th>
+                        <th>Currency</th>
+                        <th>Date</th>
+                        <th>Mobile</th>
+                    </tr>
+                </thead>
+                <tbody class="table-body form">
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+</template>
+
+<style>
+.header th {
+
+    background-color: #F4FFF0 !important;
+
+}
+
+.btn-action {
+    background-color: #F4FFF0 !important;
+}
+
+.actions i {
+    font-size: 30px;
+}
+
+.actions span {
+    font-size: 24px;
+}
+
+.dropdown .show {
+    color: #1D7342
+}
+
+.form-check-input:checked[type=checkbox] {
+    border-radius: 50%;
+    background-color: #1D7342 !important;
+}
+.pages p {
+    font-size: 25px;
+}
+</style>
