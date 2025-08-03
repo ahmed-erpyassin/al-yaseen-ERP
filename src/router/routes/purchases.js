@@ -6,6 +6,7 @@ import OutgoingOrdersComponent from "@/components/admin/purchases/outgoingOrders
 import PurchaseReturnInvoiceComponent from "@/components/admin/purchases/purchaseReferenceInvoices/PurchaseReturnInvoiceComponent.vue";
 import PurchasesInvoiceComponent from "@/components/admin/purchases/purchaseInvoices/PurchasesInvoiceComponent.vue";
 import SuplliersComponent from "@/components/admin/purchases/suppliers/SuplliersComponent.vue";
+import IncomingShipmentComponent from "@/components/admin/purchases/incomingShipments/incomingShipmentComponent.vue";
 
 export default [
     {
@@ -20,6 +21,10 @@ export default [
         path: "/outgoing-orders",
         component : OutgoingOrdersComponent,
         name: "admin.purchase.outgoing-orders"
+    },{
+        path: "/incoming-shipments",
+        component : IncomingShipmentComponent,
+        name: "admin.purchase.incoming-shipments"
     },{
         path: "/purchases-invoice",
         component : PurchasesInvoiceComponent,

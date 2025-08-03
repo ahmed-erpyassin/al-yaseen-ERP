@@ -9,6 +9,7 @@ import purchases from "./routes/purchases";
 import reciptesAndPayments from "./routes/reciptesAndPayments";
 import projects from "./routes/projects";
 import cheque from "./routes/cheque";
+import accounting from "./routes/accounting";
 // Base Routes (public)
 const baseRoutes = [
   {
@@ -24,7 +25,7 @@ const baseRoutes = [
 ];
 
 // Admin Routes with Layout
-const adminRoutes = [...dashboard,..._new,...sales, ...purchases, ...reciptesAndPayments, ...projects, ...cheque];
+const adminRoutes = [...dashboard,..._new,...sales, ...purchases, ...reciptesAndPayments, ...projects, ...cheque, ...accounting];
 
 const adminRoutesFinal = [
   {

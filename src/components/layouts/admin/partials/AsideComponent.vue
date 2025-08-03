@@ -166,6 +166,10 @@
                                 class="nav-link text-dark d-flex align-items-center justify-content-between">
                                 <span>{{ $t('label.outgoing_orders') }}</span>
                             </router-link>
+                            <router-link :to="{ name: 'admin.purchase.incoming-shipments' }"
+                                class="nav-link text-dark d-flex align-items-center justify-content-between">
+                                <span>{{ $t('label.incoming_shipments') }}</span>
+                            </router-link>
                             <router-link :to="{ name: 'admin.purchase.purchases-invoice' }"
                                 class="nav-link text-dark d-flex align-items-center justify-content-between">
                                 <span>{{ $t('label.purchases_invoice') }}</span>
@@ -297,6 +301,52 @@
                     </div>
                 </transition>
             </li>
+            <li class="nav-item pe-2 ps-2">
+                <button class="nav-link w-100 text-white d-flex align-items-center justify-content-between collapsed"  data-bs-toggle="collapse" data-bs-target="#accounting"
+                aria-expanded="true" aria-controls="accounting">
+                    <span class="fs-5">{{ $t('label.accounting') }}</span>
+                    <i class="bi bi-chevron-down me-2"></i>
+                </button>
+
+                <div class="collapse" id="accounting">
+                    <div >
+                        <div class=" bg-white text-dark">
+                            <router-link :to="{ name: 'admin.accounting.accounts' }"
+                                class="nav-link text-dark d-flex align-items-center justify-content-between">
+                                <span>{{ $t('label.accounts') }}</span>
+                            </router-link>
+                            <router-link :to="{ name: 'admin.accounting.chart_of_accounts' }"
+                                class="nav-link text-dark d-flex align-items-center justify-content-between">
+                                <span>{{ $t('label.chart_of_accounts') }}</span>
+                            </router-link>
+                            <router-link :to="{ name: 'admin.accounting.journal_entries' }"
+                                class="nav-link text-dark d-flex align-items-center justify-content-between">
+                                <span>{{ $t('label.journal_entries') }}</span>
+                            </router-link>
+                            <router-link :to="{ name: 'admin.accounting.budgets' }"
+                                class="nav-link text-dark d-flex align-items-center justify-content-between">
+                                <span>{{ $t('label.budgets') }}</span>
+                            </router-link>
+                            <router-link :to="{ name: 'admin.accounting.balance_sheet' }"
+                                class="nav-link text-dark d-flex align-items-center justify-content-between">
+                                <span>{{ $t('label.balance_sheet') }}</span>
+                            </router-link>
+                            <router-link :to="{ name: 'admin.accounting.departments' }"
+                                class="nav-link text-dark d-flex align-items-center justify-content-between">
+                                <span>{{ $t('label.departments') }}</span>
+                            </router-link>
+                            <router-link :to="{ name: 'admin.accounting.funders' }"
+                                class="nav-link text-dark d-flex align-items-center justify-content-between">
+                                <span>{{ $t('label.funders') }}</span>
+                            </router-link>
+                            <router-link :to="{ name: 'admin.accounting.assets' }"
+                                class="nav-link text-dark d-flex align-items-center justify-content-between">
+                                <span>{{ $t('label.assets') }}</span>
+                            </router-link>
+                        </div>
+                    </div>
+                </div>
+            </li>
 
         </ul>
     </aside>
@@ -350,4 +400,14 @@ aside .logo {
     background-color: #FFF6F6;
 
 }
+
+button:not(.collapsed){
+    background-color: #FFF;
+    color: #333 !important
+}
+
+button:not(.collapsed) i {
+    transform: rotate(180deg);
+}
+
 </style>
