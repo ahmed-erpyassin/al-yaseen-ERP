@@ -2,7 +2,7 @@
     <div class="container">
         <div class="form mt-5">
 
-            <form @submit.prevent="login">
+            <form @submit.prevent="register">
                 <div class="header ">
                     <LogoComponent />
                     <p class="text-center fs-5 fw-bold mt-3 mb-5">{{ $t('label.register') }}</p>
@@ -13,7 +13,7 @@
                             <label for="first_name" class="form-label">{{ $t('label.first_name') }}</label>
                             <div class=" position-relative group">
 
-                                <input type="text" id="first_name" class="form-control rounded-0" />
+                                <input type="text" id="first_name" class="form-control rounded-0" v-model="form.first_name" />
                                 <i class="bi bi-person"></i>
                             </div>
 
@@ -24,7 +24,7 @@
                             <label for="second_name" class="form-label">{{ $t('label.second_name') }}</label>
                             <div class=" position-relative group">
 
-                                <input type="text" id="second_name" class="form-control rounded-0" />
+                                <input type="text" id="second_name" class="form-control rounded-0" v-model="form.last_name"/>
                             </div>
 
                         </div>
@@ -35,7 +35,7 @@
                     <div class=" position-relative group">
 
                         <input type="email" id="email" class="form-control rounded-0" v-model="form.email"
-                            placeholder="yassin2029@gmail.com" />
+                            placeholder="yassin2029@gmail.com" name="email"/>
                         <i class="bi bi-envelope"></i>
                     </div>
 
@@ -44,7 +44,7 @@
                     <label for="phone" class="form-label">{{ $t('label.phone_number') }}</label>
                     <div class=" position-relative group">
 
-                        <input type="tel" id="phone" class="form-control rounded-0 w-100" />
+                        <input type="tel" id="phone" class="form-control rounded-0 w-100" v-model="form.phone"/>
                     </div>
 
                 </div>
@@ -67,7 +67,7 @@
                     <div class=" position-relative group">
 
                         <input type="password_confirmtion" id="password_confirmtion" class="form-control rounded-0"
-                            placeholder="******" />
+                            placeholder="******" v-model="form.password_confirmation"/>
                         <i class="bi bi-lock"></i>
                     </div>
                 </div>
@@ -92,6 +92,7 @@
 </template>
 
 <script>
+import axios from '@/axios';
 import LogoComponent from '../components/LogoComponent.vue';
 import 'intl-tel-input/build/css/intlTelInput.css';
 import intlTelInput from 'intl-tel-input';
@@ -102,9 +103,13 @@ export default {
     data() {
         return {
             form: {
-                email: null,
-                password: null,
-                remember: false,
+            first_name: '',
+            last_name: '',
+            email: '',
+            phone: '',
+            password: '',
+            password_confirmation: '',
+            remember: false, 
             },
             iti: {},
         };
@@ -117,60 +122,86 @@ export default {
             containerClass: 'w-100',
 
         });
-
+        // Update the phone number in the form when the country changes or input changes
+        input.addEventListener("countrychange", () => {
+            this.form.phone = this.iti.getNumber();
+        });
+        input.addEventListener("input", () => {
+            this.form.phone = this.iti.getNumber();
+        });
 
     },
     methods: {
         login: function () {
-            alert("done");
-        },
+                alert("done");
+            },
+        async register() {
+            try {
+                const response = await axios.post('/api/register', this.form);
+                if (response.data.status) {
+                    alert(response.data.message);
+                    this.$router.push('/login');
+                } else {
+                    alert(response.data.message || 'بيانات الدخول غير صحيحة');
+                }
+            } catch (error) {
+                if (error.response?.status === 422) {
+                    const errors = error.response.data.errors;
+                    const firstError = Object.values(errors)[0][0];
+                    alert(`خطأ: ${firstError}`);
+                } else {
+                    console.error(error);
+                    alert("حدث خطأ غير متوقع.");
+                }
+            }
+        }
     },
 };
 </script>
 <style scoped>
-.form {
+    .form {
 
-    max-width: 500px;
-    margin: auto;
+        max-width: 500px;
+        margin: auto;
 
-}
+    }
 
-.form label,
-.form input,
-.form i {
-    color: #767171;
-}
+    .form label,
+    .form input,
+    .form i {
+        color: #767171;
+    }
 
-.forget-password {
-    color: #FF1500E5;
-    text-decoration: none;
-}
+    .forget-password {
+        color: #FF1500E5;
+        text-decoration: none;
+    }
 
-.or {
-    position: relative;
-    width: fit-content;
-    margin: auto;
-    background-color: #FFF;
-    padding: 0 10px;
-    z-index: 2;
-}
+    .or {
+        position: relative;
+        width: fit-content;
+        margin: auto;
+        background-color: #FFF;
+        padding: 0 10px;
+        z-index: 2;
+    }
 
-.or-border {
-    position: absolute;
-    top: 50%;
-    height: 1px;
-    width: 100%;
-    border: 1px solid #ACB7CA !important;
-}
+    .or-border {
+        position: absolute;
+        top: 50%;
+        height: 1px;
+        width: 100%;
+        border: 1px solid #ACB7CA !important;
+    }
 
-.sign-up-action {
-    color: #1D7342;
-}
+    .sign-up-action {
+        color: #1D7342;
+    }
 
-/* .iti {
-    --iti-path-flags-1x: url('path/to/flags.webp');
-    --iti-path-flags-2x: url('path/to/flags@2x.webp');
-    --iti-path-globe-1x: url('path/to/globe.webp');
-    --iti-path-globe-2x: url('path/to/globe@2x.webp');
-} */
+    /* .iti {
+        --iti-path-flags-1x: url('path/to/flags.webp');
+        --iti-path-flags-2x: url('path/to/flags@2x.webp');
+        --iti-path-globe-1x: url('path/to/globe.webp');
+        --iti-path-globe-2x: url('path/to/globe@2x.webp');
+    } */
 </style>

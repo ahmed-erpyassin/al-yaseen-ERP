@@ -60,7 +60,7 @@
 </template>
 
 <script>
-
+import axios from '@/axios';
 import LogoComponent from '../components/LogoComponent.vue';
 export default {
     name: "LoginComponent",
@@ -68,17 +68,37 @@ export default {
     data() {
         return {
             form: {
-                email: null,
-                password: null,
+                email: '',
+                password: '',
                 remember: false,
             },
+            iti: {},
         };
     },
     methods: {
-        login: function () {
-            alert("done");
+        async login() {
+            try {
+                const response = await axios.post('/api/register', this.form);
+                if (response.data.status) {
+                    localStorage.setItem('token', response.data.token);
+                    axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+                    localStorage.setItem('db_name', response.data.db_name);
+                    this.$router.push('/dashboard');
+                } else {
+                    alert(response.data.message || 'بيانات الدخول غير صحيحة');
+                }
+            } catch (error) {
+                if (error.response?.status === 422) {
+                    const errors = error.response.data.errors;
+                    const firstError = Object.values(errors)[0][0];
+                    alert(`خطأ: ${firstError}`);
+                } else {
+                    alert('فشل تسجيل الدخول. تأكد من الاتصال أو البيانات.');
+                    console.error(error);
+                }
+            }
         },
-    },
+    }
 };
 </script>
 <style scoped>
