@@ -211,6 +211,7 @@
 </template>
 
 <script>
+import axios from '@/axios.js';
 import NavbarLogoComponent from '../components/NavbarLogoComponent.vue';
 import 'intl-tel-input/build/css/intlTelInput.css';
 import intlTelInput from 'intl-tel-input';
@@ -252,9 +253,33 @@ export default {
         handleLogo(event) {
             this.form.companyLogo = event.target.files[0];
         },
-        submitForm() {
-            console.log(this.form);
-        }
+        async submitForm() {
+            try {
+                const formData = {
+                name: this.form.companyName,
+                commercial_registration: this.form.commercialNumber,
+                address: this.form.companyAddress,
+                logo: this.form.companyLogo, // إذا بدك ترفع ملف حقيقي بدك FormData
+                email: this.form.email,
+                phone: this.form.phone,
+                vat_rate: this.form.addedTax,
+                income_tax_rate: this.form.defaultTax,
+                fiscal_year: this.form.fiscalYear,
+                base_currency: this.form.currency,
+                from_date: this.form.fromDate,
+                to_date: this.form.toDate,
+                };
+
+                const response = await axios.post('/api/create_company', formData);
+                alert(response.data.message);
+                // تخزين التوكن الجديد لو بدك
+                localStorage.setItem("token", response.data.new_token);
+                this.$router.push("/dashboard"); // وجه المستخدم لمكان مناسب
+            } catch (error) {
+                console.error(error.response?.data);
+                alert("حدث خطأ أثناء إنشاء الشركة.");
+            }
+            },
     }
 }
 </script>
