@@ -24,7 +24,7 @@
                                     <label for="company_name" class="form-label">{{ $t('label.company_name')
                                     }}</label>
 
-                                    <input type="text" id="company_name" class="form-control rounded-1" />
+                                    <input type="text" v-model="form.name" id="company_name" class="form-control rounded-1" />
 
                                 </div>
                             </div>
@@ -32,7 +32,7 @@
                                 <div class="mb-3 position-relative">
                                     <label for="company_field" class="form-label">{{ $t('label.company_field')
                                     }}</label>
-                                    <select name="company_field" id="company_field" class="form-control rounded-1">
+                                    <select name="company_field" v-model="form.company_field" id="company_field" class="form-control rounded-1">
 
                                         <option value=""></option>
                                         <option value="">Contracting and construction</option>
@@ -46,7 +46,7 @@
                                     <label for="company_address" class="form-label">{{
                                         $t('label.company_address')
                                     }}</label>
-                                    <input type="text" id="company_address" class="form-control rounded-1"
+                                    <input type="text" v-model="form.address" id="company_address" class="form-control rounded-1"
                                         :placeholder="$t('label.company_address_placeholder')" />
 
                                 </div>
@@ -56,7 +56,7 @@
                                     <label for="email" class="form-label">{{ $t('label.email')
                                     }}</label>
                                     <div class=" position-relative group">
-                                        <input type="email" id="email" class="form-control rounded-1"
+                                        <input type="email" v-model="form.email" id="email" class="form-control rounded-1"
                                             placeholder="yassin2029@gmail.com" />
                                         <i class="bi bi-envelope"></i>
                                     </div>
@@ -72,7 +72,7 @@
                                     }}</label>
                                     <div class=" position-relative group">
 
-                                        <input type="text" id="commerical_registration_number"
+                                        <input type="text" v-model="form.commercial_registration" id="commerical_registration_number"
                                             class="form-control rounded-1" />
                                     </div>
 
@@ -116,7 +116,7 @@
                                     <label for="phone" class="form-label">{{ $t('label.phone_number') }}</label>
                                     <div class=" position-relative group">
 
-                                        <input type="tel" id="phone" class="form-control rounded-0 w-100" />
+                                        <input type="tel" v-model="form.phone" id="phone" class="form-control rounded-0 w-100" />
                                     </div>
 
                                 </div>
@@ -138,7 +138,7 @@
                                         $t('label.income_tax_rate')
                                         }}</label>
 
-                                    <input type="text" id="income_tax_rate" class="form-control rounded-1"
+                                    <input type="text" v-model="form.income_tax_rate" id="income_tax_rate" class="form-control rounded-1"
                                         placeholder="20%" />
 
                                 </div>
@@ -148,7 +148,7 @@
                                     <label for="fiscal_year" class="form-label">{{ $t('label.fiscal_year')
                                     }}</label>
 
-                                    <input type="text" id="fiscal_year" class="form-control rounded-1"
+                                    <input type="text" v-model="form.fiscal_year" id="fiscal_year" class="form-control rounded-1"
                                         placeholder="2026" />
 
                                 </div>
@@ -157,7 +157,7 @@
                                 <div class="mb-3 position-relative">
                                     <label for="currency" class="form-label">{{ $t('label.currency')
                                     }}</label>
-                                    <select name="currency" id="currency" class="form-control">
+                                    <select name="currency" v-model="form.currency" id="currency" class="form-control">
                                         <option value="">$ USD</option>
                                     </select>
 
@@ -171,7 +171,7 @@
                                         $t('label.added_tax_rate')
                                         }}</label>
 
-                                    <input type="text" id="added_tax_rate" class="form-control rounded-1"
+                                    <input type="text" v-model="form.vat_rate" id="added_tax_rate" class="form-control rounded-1"
                                         placeholder="20%" />
 
                                 </div>
@@ -183,7 +183,7 @@
                                             $t('label.from')
                                         }}</label>
 
-                                        <input type="date" id="from" class="form-control rounded-1" />
+                                        <input type="date" v-model="form.from_date" id="from" class="form-control rounded-1" />
 
                                     </div>
                                 </div>
@@ -193,7 +193,7 @@
                                             $t('label.to')
                                         }}</label>
 
-                                        <input type="date" id="to" class="form-control rounded-1" />
+                                        <input type="date" v-model="form.to_date" id="to" class="form-control rounded-1" />
 
                                     </div>
                                 </div>
@@ -222,20 +222,20 @@ export default {
     data() {
         return {
             form: {
-                companyName: '',
-                commercialNumber: '',
+                name: '',
+                commercial_registration: '',
                 companyField: '',
                 clientType: '',
-                companyLogo: null,
-                companyAddress: '',
+                logo: null,
+                address: '',
                 email: '',
                 phone: '',
-                defaultTax: '20%',
-                addedTax: '20%',
-                fiscalYear: '2026',
-                fromDate: '',
-                toDate: '',
-                currency: 'USD',
+                income_tax_rate: '20%',
+                vat_tax: '20%',
+                fiscal_year: '2026',
+                from_date: '',
+                to_date: '',
+                base_currency: 'USD',
             },
             iti: {},
         }
@@ -256,29 +256,43 @@ export default {
         async submitForm() {
             try {
                 const formData = {
-                name: this.form.companyName,
-                commercial_registration: this.form.commercialNumber,
-                address: this.form.companyAddress,
-                logo: this.form.companyLogo, // إذا بدك ترفع ملف حقيقي بدك FormData
-                email: this.form.email,
-                phone: this.form.phone,
-                vat_rate: this.form.addedTax,
-                income_tax_rate: this.form.defaultTax,
-                fiscal_year: this.form.fiscalYear,
-                base_currency: this.form.currency,
-                from_date: this.form.fromDate,
-                to_date: this.form.toDate,
+                    name: this.form.name,
+                    commercial_registration: this.form.commercial_registration,
+                    address: this.form.address,
+                    // logo: this.form.logo,
+                    email: this.form.email,
+                    phone: this.form.phone,
+                    vat_rate: this.form.vat_tax,
+                    income_tax_rate: this.form.income_tax_rate,
+                    fiscal_year: this.form.fiscal_year,
+                    base_currency: this.form.base_currency,
+                    from_date: this.form.from_date,
+                    to_date: this.form.to_date,
                 };
-
                 const response = await axios.post('/api/create_company', formData);
                 alert(response.data.message);
                 // تخزين التوكن الجديد لو بدك
                 localStorage.setItem("token", response.data.new_token);
                 this.$router.push("/dashboard"); // وجه المستخدم لمكان مناسب
             } catch (error) {
-                console.error(error.response?.data);
-                alert("حدث خطأ أثناء إنشاء الشركة.");
-            }
+                    // تحقق إذا في رسالة خطأ من السيرفر
+                    if (error.response && error.response.data && error.response.data.message) {
+                        alert(`خطأ: ${error.response.data.message}`);
+                    } else if (error.response && error.response.data && error.response.data.errors) {
+                        // لو فيه validation errors مثلاً
+                        const errors = error.response.data.errors;
+                        let errorMessages = '';
+                        for (const key in errors) {
+                            if (Object.prototype.hasOwnProperty.call(errors, key)) {
+                                errorMessages += `${errors[key].join(', ')}\n`;
+                            }
+                        }
+                        alert(`أخطاء في البيانات:\n${errorMessages}`);
+                    } else {
+                        alert("حدث خطأ أثناء إنشاء الشركة.");
+                    }
+                    console.error(error);
+                }
             },
     }
 }

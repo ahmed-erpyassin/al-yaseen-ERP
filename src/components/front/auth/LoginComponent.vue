@@ -78,12 +78,12 @@ export default {
     methods: {
         async login() {
             try {
-                const response = await axios.post('/api/register', this.form);
+                const response = await axios.post('/api/login', this.form);
                 if (response.data.status) {
                     localStorage.setItem('token', response.data.token);
                     axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
                     localStorage.setItem('db_name', response.data.db_name);
-                    this.$router.push('/dashboard');
+                    this.$router.push({ name: 'auth.create-company' });
                 } else {
                     alert(response.data.message || 'بيانات الدخول غير صحيحة');
                 }
