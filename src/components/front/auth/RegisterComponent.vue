@@ -140,7 +140,7 @@ export default {
                 const response = await axios.post('/api/register', this.form);
                 if (response.data.status) {
                     alert(response.data.message);
-                    this.$router.push('/login');
+                    this.$router.push({ name: 'auth.login' });
                 } else {
                     alert(response.data.message || 'بيانات الدخول غير صحيحة');
                 }

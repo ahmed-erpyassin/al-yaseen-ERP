@@ -231,7 +231,7 @@ export default {
                 email: '',
                 phone: '',
                 income_tax_rate: '20%',
-                vat_tax: '20%',
+                vat_rate: '20%',
                 fiscal_year: '2026',
                 from_date: '',
                 to_date: '',
@@ -262,8 +262,8 @@ export default {
                     // logo: this.form.logo,
                     email: this.form.email,
                     phone: this.form.phone,
-                    vat_rate: this.form.vat_tax,
-                    income_tax_rate: this.form.income_tax_rate,
+                    vat_rate: +this.form.vat_rate,
+                    income_tax_rate: +this.form.income_tax_rate,
                     fiscal_year: this.form.fiscal_year,
                     base_currency: this.form.base_currency,
                     from_date: this.form.from_date,
@@ -271,9 +271,8 @@ export default {
                 };
                 const response = await axios.post('/api/create_company', formData);
                 alert(response.data.message);
-                // تخزين التوكن الجديد لو بدك
-                localStorage.setItem("token", response.data.new_token);
-                this.$router.push("/dashboard"); // وجه المستخدم لمكان مناسب
+                // localStorage.setItem("token", response.data.new_token);
+                this.$router.push({ name: 'admin.dashboard' }); 
             } catch (error) {
                     // تحقق إذا في رسالة خطأ من السيرفر
                     if (error.response && error.response.data && error.response.data.message) {
