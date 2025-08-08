@@ -302,14 +302,15 @@
                 </transition>
             </li>
             <li class="nav-item pe-2 ps-2">
-                <button class="nav-link w-100 text-white d-flex align-items-center justify-content-between collapsed"  data-bs-toggle="collapse" data-bs-target="#accounting"
-                aria-expanded="true" aria-controls="accounting">
+                <button class="nav-link w-100 text-white d-flex align-items-center justify-content-between collapsed"
+                    data-bs-toggle="collapse" data-bs-target="#accounting" aria-expanded="true"
+                    aria-controls="accounting">
                     <span class="fs-5">{{ $t('label.accounting') }}</span>
                     <i class="bi bi-chevron-down me-2"></i>
                 </button>
 
                 <div class="collapse" id="accounting">
-                    <div >
+                    <div>
                         <div class=" bg-white text-dark">
                             <router-link :to="{ name: 'admin.accounting.accounts' }"
                                 class="nav-link text-dark d-flex align-items-center justify-content-between">
@@ -347,7 +348,120 @@
                     </div>
                 </div>
             </li>
+            <li class="nav-item pe-2 ps-2">
+                <button class="nav-link w-100 text-white d-flex align-items-center justify-content-between collapsed"
+                    data-bs-toggle="collapse" data-bs-target="#employees" aria-expanded="true"
+                    aria-controls="employees">
+                    <span class="fs-5">{{ $t('label.employees') }}</span>
+                    <i class="bi bi-chevron-down me-2"></i>
+                </button>
 
+                <div class="collapse" id="employees">
+                    <div>
+                        <div class=" bg-white text-dark">
+                            <router-link :to="{ name: 'admin.employees' }"
+                                class="nav-link text-dark d-flex align-items-center justify-content-between">
+                                <span>{{ $t('label.employees') }}</span>
+                            </router-link>
+                            <router-link :to="{ name: 'admin.employees.payroll_report' }"
+                                class="nav-link text-dark d-flex align-items-center justify-content-between">
+                                <span>{{ $t('label.payroll_report') }}</span>
+                            </router-link>
+                            <router-link :to="{ name: 'admin.employees.attendance_sheet' }"
+                                class="nav-link text-dark d-flex align-items-center justify-content-between">
+                                <span>{{ $t('label.attendance_sheet') }}</span>
+                            </router-link>
+                            <router-link :to="{ name: 'admin.employees.leaves' }"
+                                class="nav-link text-dark d-flex align-items-center justify-content-between">
+                                <span>{{ $t('label.leaves') }}</span>
+                            </router-link>
+                            <router-link :to="{ name: 'admin.employees.journal_entries' }"
+                                class="nav-link text-dark d-flex align-items-center justify-content-between">
+                                <span>{{ $t('label.journal_entries') }}</span>
+                            </router-link>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li class="nav-item pe-2 ps-2">
+                <button class="nav-link w-100 text-white d-flex align-items-center justify-content-between collapsed"
+                    data-bs-toggle="collapse" data-bs-target="#warehouses" aria-expanded="true"
+                    aria-controls="warehouses">
+                    <span class="fs-5">{{ $t('label.warehouses') }}</span>
+                    <i class="bi bi-chevron-down me-2"></i>
+                </button>
+
+                <div class="collapse" id="warehouses">
+                    <div>
+                        <div class=" bg-white text-dark">
+                            <router-link :to="{ name: 'admin.warehouses.items' }"
+                                class="nav-link text-dark d-flex align-items-center justify-content-between">
+                                <span>{{ $t('label.items') }}</span>
+                            </router-link>
+                            <router-link :to="{ name: 'admin.warehouses.chart_of_items' }"
+                                class="nav-link text-dark d-flex align-items-center justify-content-between">
+                                <span>{{ $t('label.item_tree') }}</span>
+                            </router-link>
+                            <router-link :to="{ name: 'admin.warehouses.manufacturing-formula' }"
+                                class="nav-link text-dark d-flex align-items-center justify-content-between">
+                                <span>{{ $t('label.manufacturing_formula') }}</span>
+                            </router-link>
+                            <router-link :to="{ name: 'admin.warehouses.manufacturing-formula.manufacturing' }"
+                                class="nav-link text-dark d-flex align-items-center justify-content-between">
+                                <span>{{ $t('label.manufacturing') }}</span>
+                            </router-link>
+                            <router-link :to="{ name: 'admin.warehouses' }"
+                                class="nav-link text-dark d-flex align-items-center justify-content-between">
+                                <span>{{ $t('label.warehouses') }}</span>
+                            </router-link>
+                            <router-link :to="{ name: 'admin.warehouses.warehouse_movements' }"
+                                class="nav-link text-dark d-flex align-items-center justify-content-between">
+                                <span>{{ $t('label.warehouse_movements') }}</span>
+                            </router-link>
+                            <router-link :to="{ name: 'admin.warehouses.current_inventory_value' }"
+                                class="nav-link text-dark d-flex align-items-center justify-content-between">
+                                <span>{{ $t('label.current_inventory_value') }}</span>
+                            </router-link>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li class="nav-item pe-2 ps-2">
+                <button class="nav-link w-100 text-white d-flex align-items-center justify-content-between collapsed"
+                    data-bs-toggle="collapse" data-bs-target="#taxes" aria-expanded="true" aria-controls="taxes">
+                    <span class="fs-5">{{ $t('label.taxes') }}</span>
+                    <i class="bi bi-chevron-down me-2"></i>
+                </button>
+
+                <div class="collapse" id="taxes">
+                    <div>
+                        <div class=" bg-white text-dark">
+                            <router-link :to="{ name: 'admin.taxes.monthly_financials' }"
+                                class="nav-link text-dark d-flex align-items-center justify-content-between">
+                                <span>{{ $t('label.monthly_revenue_expense_report') }}</span>
+                            </router-link>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li class="nav-item pe-2 ps-2">
+                <button class="nav-link w-100 text-white d-flex align-items-center justify-content-between collapsed"
+                    data-bs-toggle="collapse" data-bs-target="#reports" aria-expanded="true" aria-controls="taxes">
+                    <span class="fs-5">{{ $t('label.reports') }}</span>
+                    <i class="bi bi-chevron-down me-2"></i>
+                </button>
+
+                <div class="collapse" id="reports">
+                    <div>
+                        <div class=" bg-white text-dark">
+                            <router-link :to="{ name: 'admin.reports' }"
+                                class="nav-link text-dark d-flex align-items-center justify-content-between">
+                                <span>{{ $t('label.reports') }}</span>
+                            </router-link>
+                        </div>
+                    </div>
+                </div>
+            </li>
         </ul>
     </aside>
 </template>
@@ -401,7 +515,7 @@ aside .logo {
 
 }
 
-button:not(.collapsed){
+button:not(.collapsed) {
     background-color: #FFF;
     color: #333 !important
 }
@@ -409,5 +523,4 @@ button:not(.collapsed){
 button:not(.collapsed) i {
     transform: rotate(180deg);
 }
-
 </style>

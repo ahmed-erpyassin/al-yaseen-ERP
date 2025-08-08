@@ -1,11 +1,11 @@
 import CreateAccountComponent from "@/components/admin/dashboard/accounts/CreateAccountComponent.vue";
 import CreateCustomerComponent from "@/components/admin/sales/customers/CreateCustomerComponent.vue";
 import CreateDebitNoticeComponent from "@/components/admin/sales/DebitNotice/CreateDebitNoticeComponent.vue";
-import CreateEmployeeComponent from "@/components/admin/new/CreateEmployeeComponent.vue";
+import CreateEmployeeComponent from "@/components/admin/employees/employees/CreateEmployeeComponent.vue";
 import CreateExchangeComponent from "@/components/admin/new/CreateExchangeComponent.vue";
 import CreateExpenseComponent from "@/components/admin/purchases/expenses/CreateExpenseComponent.vue";
 import CreateIncomeShipment from "@/components/admin/purchases/incomingShipments/CreateIncomeShipment.vue";
-import CreateItemComponent from "@/components/admin/new/CreateItemComponent.vue";
+import CreateItemComponent from "@/components/admin/warehouses/items/CreateItemComponent.vue";
 import CreateOfferPriceComponent from "@/components/admin/sales/issuedQuotations/CreateOfferPriceComponent.vue";
 import CreateOrderComponent from "@/components/admin/sales/incomingOrders/CreateOrderComponent.vue";
 import CreateOutgoingOrderComponent from "@/components/admin/purchases/outgoingOrders/CreateOutgoingOrderComponent.vue";
@@ -17,7 +17,7 @@ import CreateSaleInvoiceComponent from "@/components/admin/sales/selesInvoice/Cr
 import CreateSalesReturnInvoiceComponent from "@/components/admin/sales/salesReferenceInvoices/CreateSalesReturnInvoiceComponent.vue";
 import CreateServiceComponent from "@/components/admin/sales/services/CreateServiceComponent.vue";
 import CreateSupplierComponent from "@/components/admin/purchases/suppliers/CreateSupplierComponent.vue";
-import CreateWarehouseComponent from "@/components/admin/new/CreateWarehouseComponent.vue";
+import CreateWarehouseComponent from "@/components/admin/warehouses/warehouses/CreateWarehouseComponent.vue";
 import CreateCreditNoticeComponent from "@/components/admin/purchases/creditNotices/CreateCreditNoticeComponent.vue";
 
 export default [

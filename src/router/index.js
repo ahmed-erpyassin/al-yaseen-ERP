@@ -10,6 +10,10 @@ import reciptesAndPayments from "./routes/reciptesAndPayments";
 import projects from "./routes/projects";
 import cheque from "./routes/cheque";
 import accounting from "./routes/accounting";
+import employees from "./routes/employees";
+import warehouses from "./routes/warehouses";
+import taxes from "./routes/taxes";
+import reports from "./routes/reports";
 // Base Routes (public)
 const baseRoutes = [
   {
@@ -25,7 +29,7 @@ const baseRoutes = [
 ];
 
 // Admin Routes with Layout
-const adminRoutes = [...dashboard,..._new,...sales, ...purchases, ...reciptesAndPayments, ...projects, ...cheque, ...accounting];
+const adminRoutes = [...dashboard,..._new,...sales, ...purchases, ...reciptesAndPayments, ...projects, ...cheque, ...accounting, ...employees, ...warehouses, ...taxes,...reports];
 
 const adminRoutesFinal = [
   {
