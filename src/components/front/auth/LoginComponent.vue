@@ -36,7 +36,7 @@
                     <router-link :to="{ name: 'auth.forget-password' }" class="small d-block  forget-password">{{ $t('label.forgetYourPassword')}}</router-link>
                 </div>
 
-                <button class="btn btn-main w-100 rounded-0" type="submit" >{{ $t('label.login') }}</button>
+                <button class="btn btn-main w-100 rounded-0">{{ $t('label.login') }}</button>
                 <div class="or_cont position-relative">
                     <div class="text-center my-3 or">{{ $t('label.or') }}</div>
                     <div class='border border-solid or-border'></div>
@@ -60,7 +60,7 @@
 </template>
 
 <script>
-import axios from '@/axios';
+
 import LogoComponent from '../components/LogoComponent.vue';
 export default {
     name: "LoginComponent",
@@ -68,37 +68,17 @@ export default {
     data() {
         return {
             form: {
-                email: '',
-                password: '',
+                email: null,
+                password: null,
                 remember: false,
             },
-            iti: {},
         };
     },
     methods: {
-        async login() {
-            try {
-                const response = await axios.post('/api/login', this.form);
-                if (response.data.status) {
-                    localStorage.setItem('token', response.data.token);
-                    axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
-                    localStorage.setItem('db_name', response.data.db_name);
-                    this.$router.push({ name: 'home' });
-                } else {
-                    alert(response.data.message || 'بيانات الدخول غير صحيحة');
-                }
-            } catch (error) {
-                if (error.response?.status === 422) {
-                    const errors = error.response.data.errors;
-                    const firstError = Object.values(errors)[0][0];
-                    alert(`خطأ: ${firstError}`);
-                } else {
-                    alert('فشل تسجيل الدخول. تأكد من الاتصال أو البيانات.');
-                    console.error(error);
-                }
-            }
+        login: function () {
+            alert("done");
         },
-    }
+    },
 };
 </script>
 <style scoped>
