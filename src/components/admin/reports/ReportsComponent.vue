@@ -28,10 +28,10 @@
                             <div class="list-group">
                                 <router-link :to = "{ name : 'admin.reports.purchases_invoices' }" class="list-group-item list-group-item-action">{{ $t('label.invoices') }}</router-link>
                                 <router-link :to="{ name : 'admin.reports.purchases_shipments' }" class="list-group-item list-group-item-action">{{ $t('label.shipments') }}</router-link>                            
-                                <a href="#" class="list-group-item list-group-item-action">{{ $t('label.suppliers_index') }}</a>                            
-                                <a href="#" class="list-group-item list-group-item-action">{{ $t('label.suppliers_financial_movements') }}</a>                            
-                                <a href="#" class="list-group-item list-group-item-action">{{ $t('label.suppliers_stock_movements') }}</a>                            
-                                <a href="#" class="list-group-item list-group-item-action">{{ $t('label.suppliers_balances') }}</a>                            
+                                <router-link :to="{ name : 'admin.reports.suppliers_index' }" class="list-group-item list-group-item-action">{{ $t('label.suppliers_index') }}</router-link>                            
+                                <router-link :to="{ name : 'admin.reports.suppliers_financial_movements' }" class="list-group-item list-group-item-action">{{ $t('label.suppliers_financial_movements') }}</router-link>                            
+                                <router-link :to="{ name : 'admin.reports.suppliers_stock_movements' }" class="list-group-item list-group-item-action">{{ $t('label.suppliers_stock_movements') }}</router-link>                            
+                                <router-link :to="{ name : 'admin.reports.suppliers_balances' }" class="list-group-item list-group-item-action">{{ $t('label.suppliers_balances') }}</router-link>                            
                             </div>
                         </div>
                     </div>
@@ -42,11 +42,11 @@
                         <div class="card-header  rounded-0 text-white fw-bold">{{ $t('label.receipts_and_expenses') }}</div>
                         <div class="card-body">
                             <div class="list-group">
-                                <a href="#" class="list-group-item list-group-item-action">{{ $t('label.customer_receipts_and_payments') }}</a>
-                                <a href="#" class="list-group-item list-group-item-action">{{ $t('label.supplier_receipts_and_payments') }}</a>
-                                <a href="#" class="list-group-item list-group-item-action">{{ $t('label.employee_receipts_and_payments') }}</a>
-                                <a href="#" class="list-group-item list-group-item-action">{{ $t('label.account_receipts_and_payments') }}</a>
-                                <a href="#" class="list-group-item list-group-item-action">{{ $t('label.general_ledger') }}</a>
+                                <router-link :to = "{ name : 'admin.reports.customers_payments_receipts' }" class="list-group-item list-group-item-action">{{ $t('label.customer_receipts_and_payments') }}</router-link>
+                                <router-link :to = "{ name : 'admin.reports.suppliers_payments_receipts' }" class="list-group-item list-group-item-action">{{ $t('label.supplier_receipts_and_payments') }}</router-link>
+                                <router-link :to="{ name : 'admin.reports.employees_payments_receipts' }" class="list-group-item list-group-item-action">{{ $t('label.employee_receipts_and_payments') }}</router-link>
+                                <router-link :to="{ name : 'admin.reports.accounts_payments_receipts' }" class="list-group-item list-group-item-action">{{ $t('label.account_receipts_and_payments') }}</router-link>
+                                <router-link :to = "{ name : 'admin.reports.general_ledger' }" class="list-group-item list-group-item-action">{{ $t('label.general_ledger') }}</router-link>
                             </div>
                         </div>
                     </div>
@@ -58,9 +58,9 @@
                         <div class="card-header rounded-0  text-white fw-bold">{{ $t('label.employees') }}</div>
                         <div class="card-body">
                             <div class="list-group">
-                                <a href="#" class="list-group-item list-group-item-action">{{ $t('label.salaries') }}</a>
-                                <a href="#" class="list-group-item list-group-item-action">{{ $t('label.employee_index') }}</a>
-                                <a href="#" class="list-group-item list-group-item-action">{{ $t('label.employee_transactions') }}</a>
+                                <router-link :to = "{ name : 'admin.reports.saleries' }" class="list-group-item list-group-item-action">{{ $t('label.salaries') }}</router-link>
+                                <router-link :to="{ name : 'admin.reports.employees_index' }" class="list-group-item list-group-item-action">{{ $t('label.employee_index') }}</router-link>
+                                <router-link :to = "{ name : 'admin.reports.employees_transactions' }" class="list-group-item list-group-item-action">{{ $t('label.employee_transactions') }}</router-link>
                                 <a href="#" class="list-group-item list-group-item-action">{{ $t('label.employee_balances') }}</a>
                             </div>
                         </div>
