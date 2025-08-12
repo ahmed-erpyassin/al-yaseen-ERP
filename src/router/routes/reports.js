@@ -20,6 +20,11 @@ import GeneralLedgerComponent from "@/components/admin/reports/GeneralLedgerComp
 import SaleriesComponent from "@/components/admin/reports/SaleriesComponent.vue";
 import EmployeesIndexComponent from "@/components/admin/reports/EmployeesIndexComponent.vue";
 import EmployeesTransactionsComponent from "@/components/admin/reports/EmployeesTransactionsComponent.vue";
+import EmployeesBalancesComponent from "@/components/admin/reports/EmployeesBalancesComponent.vue";
+import AccountingEntriesComponent from "@/components/admin/reports/AccountingEntriesComponent.vue";
+import BalanceSheetComponent from "@/components/admin/accounting/balanceSheet/BalanceSheetComponent.vue";
+import DebitAccountsComponent from "@/components/admin/reports/DebitAccountsComponent.vue";
+import TrialBalanceComponent from "@/components/admin/reports/TrialBalanceComponent.vue";
 
 export default [
 
@@ -114,6 +119,26 @@ export default [
                 path: "employees-transactions",
                 component: EmployeesTransactionsComponent,
                 name: "admin.reports.employees_transactions"
+            },{
+                path: "employees-balances",
+                component: EmployeesBalancesComponent,
+                name: "admin.reports.employees_balances"
+            },{
+                path: "accounting-entries",
+                component: AccountingEntriesComponent,
+                name: "admin.reports.accounting_entries"
+            },{
+                path: "trial-balance",
+                component: TrialBalanceComponent,
+                name: "admin.reports.trial_balance"
+            },{
+                path: "debit-accounts",
+                component: DebitAccountsComponent,
+                name: "admin.reports.debit_accounts"
+            },{
+                path: "balance-sheet",
+                component: BalanceSheetComponent,
+                name: "admin.reports.balance_sheet"
             }
         ]
     }

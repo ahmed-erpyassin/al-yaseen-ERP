@@ -61,7 +61,7 @@
                                 <router-link :to = "{ name : 'admin.reports.saleries' }" class="list-group-item list-group-item-action">{{ $t('label.salaries') }}</router-link>
                                 <router-link :to="{ name : 'admin.reports.employees_index' }" class="list-group-item list-group-item-action">{{ $t('label.employee_index') }}</router-link>
                                 <router-link :to = "{ name : 'admin.reports.employees_transactions' }" class="list-group-item list-group-item-action">{{ $t('label.employee_transactions') }}</router-link>
-                                <a href="#" class="list-group-item list-group-item-action">{{ $t('label.employee_balances') }}</a>
+                                <router-link :to="{ name : 'admin.reports.employees_balances' }" class="list-group-item list-group-item-action">{{ $t('label.employee_balances') }}</router-link>
                             </div>
                         </div>
                     </div>
@@ -72,11 +72,11 @@
                         <div class="card-header rounded-0  text-white fw-bold">{{ $t('label.accounting') }}</div>
                         <div class="card-body">
                             <div class="list-group">
-                                <a href="#" class="list-group-item list-group-item-action">{{ $t('label.accounting_entries') }}</a>
-                                <a href="#" class="list-group-item list-group-item-action">{{ $t('label.general_ledger') }}</a>
-                                <a href="#" class="list-group-item list-group-item-action">{{ $t('label.trial_balance') }}</a>
-                                <a href="#" class="list-group-item list-group-item-action">{{ $t('label.balance_sheet') }}</a>
-                                <a href="#" class="list-group-item list-group-item-action">{{ $t('label.debit_accounts') }}</a>
+                                <router-link :to = "{ name : 'admin.reports.accounting_entries' }" class="list-group-item list-group-item-action">{{ $t('label.accounting_entries') }}</router-link>
+                                <router-link :to="{ name: 'admin.reports.general_ledger' }" class="list-group-item list-group-item-action">{{ $t('label.general_ledger') }}</router-link>
+                                <router-link :to="{ name: 'admin.reports.trial_balance' }" class="list-group-item list-group-item-action">{{ $t('label.trial_balance') }}</router-link>
+                                <router-link :to="{ name : 'admin.reports.balance_sheet' }" class="list-group-item list-group-item-action">{{ $t('label.balance_sheet') }}</router-link>
+                                <router-link :to = "{ name: 'admin.reports.debit_accounts' }" class="list-group-item list-group-item-action">{{ $t('label.debit_accounts') }}</router-link>
                                 <a href="#" class="list-group-item list-group-item-action">{{ $t('label.credit_accounts') }}</a>
                                 <a href="#" class="list-group-item list-group-item-action">{{ $t('label.department_balances') }}</a>
                                 <a href="#" class="list-group-item list-group-item-action">{{ $t('label.monthly_account_balances') }}</a>
