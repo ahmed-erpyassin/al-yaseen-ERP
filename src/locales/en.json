@@ -885,7 +885,13 @@
     "sub_accounts_only": "Sub Accounts Only",
     "main_accounts_only": "Main Accounts Only",
     "by_chart_of_accounts": "By Chart of Accounts",
-    "all_accounts_with_subs": "All Accounts with Their Subsidiaries"
+    "all_accounts_with_subs": "All Accounts with Their Subsidiaries",
+    "department_number": "Department Number",
+    "use_chart": "Use Chart",
+    "account_currency_type": "Account Currency Type",
+    "sub_and_main": "Sub and Main",
+    "compare_balances_with_budget": "Compare Balances with Budget",
+    "accounts_exceeding_budget": "Accounts Exceeding Budget"
   },
   "landing": {
     "hero_heading": "Al Yassin ERP System - Ease and Intelligence in Accounting Management Accurate accounting. Instant reporting. Unparalleled ease.",

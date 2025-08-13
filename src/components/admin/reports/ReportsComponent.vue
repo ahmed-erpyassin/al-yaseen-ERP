@@ -77,12 +77,12 @@
                                 <router-link :to="{ name: 'admin.reports.trial_balance' }" class="list-group-item list-group-item-action">{{ $t('label.trial_balance') }}</router-link>
                                 <router-link :to="{ name : 'admin.reports.balance_sheet' }" class="list-group-item list-group-item-action">{{ $t('label.balance_sheet') }}</router-link>
                                 <router-link :to = "{ name: 'admin.reports.debit_accounts' }" class="list-group-item list-group-item-action">{{ $t('label.debit_accounts') }}</router-link>
-                                <a href="#" class="list-group-item list-group-item-action">{{ $t('label.credit_accounts') }}</a>
-                                <a href="#" class="list-group-item list-group-item-action">{{ $t('label.department_balances') }}</a>
-                                <a href="#" class="list-group-item list-group-item-action">{{ $t('label.monthly_account_balances') }}</a>
-                                <a href="#" class="list-group-item list-group-item-action">{{ $t('label.budget_balance_comparison') }}</a>
-                                <a href="#" class="list-group-item list-group-item-action">{{ $t('label.exceeded_budget_accounts') }}</a>
-                                <a href="#" class="list-group-item list-group-item-action">{{ $t('label.daily_report') }}</a>
+                                <router-link :to="{ name : 'admin.reports.credit_accounts' }" class="list-group-item list-group-item-action">{{ $t('label.credit_accounts') }}</router-link>
+                                <router-link :to="{ name : 'admin.reports.department_balances' }" class="list-group-item list-group-item-action">{{ $t('label.department_balances') }}</router-link>
+                                <router-link :to = "{ name : 'admin.reports.monthly_account_balances' }" class="list-group-item list-group-item-action">{{ $t('label.monthly_account_balances') }}</router-link>
+                                <router-link :to="{ name: 'admin.reports.compare_balances_budget' }" class="list-group-item list-group-item-action">{{ $t('label.budget_balance_comparison') }}</router-link>
+                                <router-link :to = "{ name : 'admin.reports.accounts_exceeding_budget' }" class="list-group-item list-group-item-action">{{ $t('label.exceeded_budget_accounts') }}</router-link>
+                                <router-link :to="{  name : 'admin.reports.daily_report' }" class="list-group-item list-group-item-action">{{ $t('label.daily_report') }}</router-link>
                             </div>
                         </div>
                     </div>

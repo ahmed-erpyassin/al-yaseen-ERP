@@ -889,7 +889,13 @@
     "sub_accounts_only": "فرعية فقط",
     "main_accounts_only": "رئيسية فقط",
     "by_chart_of_accounts": "حسب شجرة الحسابات",
-    "all_accounts_with_subs": "جميع الحسابات مع توابعها"
+    "all_accounts_with_subs": "جميع الحسابات مع توابعها",
+    "department_number": "رقم القسم",
+    "use_chart": "إستخدم الرسم البياني",
+    "account_currency_type": "نوع عملة الحساب",
+    "sub_and_main": "فرعي ورئيسي",
+    "compare_balances_with_budget": "مقارنة الأرصدة بالموازنة",
+    "accounts_exceeding_budget": "حسابات تعدت الموازنة"
   },
   "landing": {
     "hero_heading": "نظام الياسين ERP - السهولة والذكاء في إدارة المحاسبة محاسبة دقيقة. تقارير فورية. سهولة لا مثيل لها.",

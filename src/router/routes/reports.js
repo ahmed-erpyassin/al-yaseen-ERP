@@ -25,6 +25,12 @@ import AccountingEntriesComponent from "@/components/admin/reports/AccountingEnt
 import BalanceSheetComponent from "@/components/admin/accounting/balanceSheet/BalanceSheetComponent.vue";
 import DebitAccountsComponent from "@/components/admin/reports/DebitAccountsComponent.vue";
 import TrialBalanceComponent from "@/components/admin/reports/TrialBalanceComponent.vue";
+import CreditAccountsComponent from "@/components/admin/reports/CreditAccountsComponent.vue";
+import DepartmentBalancesComponent from "@/components/admin/reports/DepartmentBalancesComponent.vue";
+import MonthlyAccountBalancesComponent from "@/components/admin/reports/MonthlyAccountBalancesComponent.vue";
+import CompareBalancesBudgetComponent from "@/components/admin/reports/CompareBalancesBudgetComponent.vue";
+import AccountsExceedingBudgetComponent from "@/components/admin/reports/AccountsExceedingBudgetComponent.vue";
+import DailyReportComponent from "@/components/admin/reports/DailyReportComponent.vue";
 
 export default [
 
@@ -139,6 +145,30 @@ export default [
                 path: "balance-sheet",
                 component: BalanceSheetComponent,
                 name: "admin.reports.balance_sheet"
+            },{
+                path: "credit-accounts",
+                component: CreditAccountsComponent,
+                name: "admin.reports.credit_accounts"
+            },{
+                path: "department-balances",
+                component: DepartmentBalancesComponent,
+                name: "admin.reports.department_balances"
+            },{
+                path: "monthly-account-balances",
+                component: MonthlyAccountBalancesComponent,
+                name: "admin.reports.monthly_account_balances"
+            },{
+                path: "compare-balances-budget",
+                component: CompareBalancesBudgetComponent,
+                name: "admin.reports.compare_balances_budget"
+            },{
+                path: "accounts-exceeding-budget",
+                component: AccountsExceedingBudgetComponent,
+                name: "admin.reports.accounts_exceeding_budget"
+            },{
+                path: "daily-report",
+                component: DailyReportComponent,
+                name: "admin.reports.daily_report"
             }
         ]
     }
