@@ -31,6 +31,12 @@ import MonthlyAccountBalancesComponent from "@/components/admin/reports/MonthlyA
 import CompareBalancesBudgetComponent from "@/components/admin/reports/CompareBalancesBudgetComponent.vue";
 import AccountsExceedingBudgetComponent from "@/components/admin/reports/AccountsExceedingBudgetComponent.vue";
 import DailyReportComponent from "@/components/admin/reports/DailyReportComponent.vue";
+import ItemsIndexComponent from "@/components/admin/reports/ItemsIndexComponent.vue";
+import PriceListComponent from "@/components/admin/reports/PriceListComponent.vue";
+import ItemBalancesComponent from "@/components/admin/reports/ItemBalancesComponent.vue";
+import ItemsBelowMinComponent from "@/components/admin/reports/ItemsBelowMinComponent.vue";
+import ItemsAboveMaxComponent from "@/components/admin/reports/ItemsAboveMaxComponent.vue";
+import WarehouseBalancesComponent from "@/components/admin/reports/WarehouseBalancesComponent.vue";
 
 export default [
 
@@ -169,6 +175,30 @@ export default [
                 path: "daily-report",
                 component: DailyReportComponent,
                 name: "admin.reports.daily_report"
+            },{
+                path: "items-index",
+                component: ItemsIndexComponent,
+                name: "admin.reports.items_index"
+            },{
+                path: "price-list",
+                component: PriceListComponent,
+                name : "admin.reports.price_list"
+            },{
+                path: "item-balances",
+                component: ItemBalancesComponent,
+                name : "admin.reports.item_balances"
+            },{
+                path: "items-below-min",
+                component: ItemsBelowMinComponent,
+                name : "admin.reports.items_below_min"
+            },{
+                path: "items-above-max",
+                component: ItemsAboveMaxComponent,
+                name : "admin.reports.items_above_max"
+            },{
+                path: "warehouse-balances",
+                component: WarehouseBalancesComponent,
+                name : "admin.reports.warehouse_balances"
             }
         ]
     }
