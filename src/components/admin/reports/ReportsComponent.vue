@@ -99,12 +99,12 @@
                                 <router-link :to="{ name : 'admin.reports.items_below_min' }" class="list-group-item list-group-item-action">{{ $t('label.items_below_min') }}</router-link>
                                 <router-link :to="{ name : 'admin.reports.items_above_max' }" class="list-group-item list-group-item-action">{{ $t('label.items_above_max') }}</router-link>
                                 <router-link :to="{ name : 'admin.reports.warehouse_balances' }" class="list-group-item list-group-item-action">{{ $t('label.warehouse_balances') }}</router-link>
-                                <a href="#" class="list-group-item list-group-item-action">{{ $t('label.bom') }}</a>
-                                <a href="#" class="list-group-item list-group-item-action">{{ $t('label.inactive_item_balances') }}</a>
-                                <a href="#" class="list-group-item list-group-item-action">{{ $t('label.warehouse_movements') }}</a>
-                                <a href="#" class="list-group-item list-group-item-action">{{ $t('label.item_movements') }}</a>
-                                <a href="#" class="list-group-item list-group-item-action">{{ $t('label.warehouse_movements_by_account') }}</a>
-                                <a href="#" class="list-group-item list-group-item-action">{{ $t('label.monthly_net_sales') }}</a>
+                                <router-link :to="{ name : 'admin.reports.manufacturing_formula' }" class="list-group-item list-group-item-action">{{ $t('label.bom') }}</router-link>
+                                <router-link :to="{ name : 'admin.reports.inactive_item_balances' }" class="list-group-item list-group-item-action">{{ $t('label.inactive_item_balances') }}</router-link>
+                                <router-link :to="{ name : 'admin.reports.warehouse_movements' }" class="list-group-item list-group-item-action">{{ $t('label.warehouse_movements') }}</router-link>
+                                <router-link :to="{ name: 'admin.reports.item_movements' }" class="list-group-item list-group-item-action">{{ $t('label.item_movements') }}</router-link>
+                                <router-link :to="{ name : 'admin.reports.warehouse_movements_by_account' }" class="list-group-item list-group-item-action">{{ $t('label.warehouse_movements_by_account') }}</router-link>
+                                <router-link :to="{ name : 'admin.reports.monthly_net_sales' }" class="list-group-item list-group-item-action">{{ $t('label.monthly_net_sales') }}</router-link>
                                 <a href="#" class="list-group-item list-group-item-action">{{ $t('label.purchase_sale_price_changes') }}</a>
                             </div>
                         </div>

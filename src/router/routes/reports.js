@@ -37,6 +37,12 @@ import ItemBalancesComponent from "@/components/admin/reports/ItemBalancesCompon
 import ItemsBelowMinComponent from "@/components/admin/reports/ItemsBelowMinComponent.vue";
 import ItemsAboveMaxComponent from "@/components/admin/reports/ItemsAboveMaxComponent.vue";
 import WarehouseBalancesComponent from "@/components/admin/reports/WarehouseBalancesComponent.vue";
+import ManufacturingFormulaComponent from "@/components/admin/reports/ManufacturingFormulaComponent.vue";
+import InactiveItemBalancesComponent from "@/components/admin/reports/InactiveItemBalancesComponent.vue";
+import WarehouseMovementsComponent from "@/components/admin/reports/WarehouseMovementsComponent.vue";
+import ItemMovementsComponent from "@/components/admin/reports/ItemMovementsComponent.vue";
+import WarehouseMovementsByAccountComponent from "@/components/admin/reports/WarehouseMovementsByAccountComponent.vue";
+import MonthlyNetSalesComponent from "@/components/admin/reports/MonthlyNetSalesComponent.vue";
 
 export default [
 
@@ -199,6 +205,30 @@ export default [
                 path: "warehouse-balances",
                 component: WarehouseBalancesComponent,
                 name : "admin.reports.warehouse_balances"
+            },{
+                path: "manufacturing-formula",
+                component: ManufacturingFormulaComponent,
+                name : "admin.reports.manufacturing_formula"
+            },{
+                path: 'inactive-item-balances',
+                component: InactiveItemBalancesComponent,
+                name: "admin.reports.inactive_item_balances"
+            },{
+                path: 'warehouse-movements',
+                component: WarehouseMovementsComponent,
+                name: "admin.reports.warehouse_movements"
+            },{
+                path: 'item-movements',
+                component: ItemMovementsComponent,
+                name: "admin.reports.item_movements"
+            },{
+                path: 'warehouse-movements-by-account',
+                component: WarehouseMovementsByAccountComponent,
+                name: "admin.reports.warehouse_movements_by_account"
+            },{
+                path: 'monthly-net-sales',
+                component: MonthlyNetSalesComponent,
+                name: "admin.reports.monthly_net_sales"
             }
         ]
     }

@@ -915,7 +915,11 @@
     "minimum_limit": "الحد الأدنى",
     "below_reorder_point": "أقل من نقطة الطلب",
     "by_price": "حسب سعر",
-    "at_price": "بسعر"
+    "at_price": "بسعر",
+    "detailed_each_transaction": "مفصل كل حركة في الصفحة",
+    "all_transactions": "جميع الحركات",
+    "transfer": "تحويل",
+    "licensed": "مرخص"
   },
   "landing": {
     "hero_heading": "نظام الياسين ERP - السهولة والذكاء في إدارة المحاسبة محاسبة دقيقة. تقارير فورية. سهولة لا مثيل لها.",

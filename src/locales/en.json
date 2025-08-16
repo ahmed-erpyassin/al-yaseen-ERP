@@ -911,7 +911,11 @@
     "minimum_limit": "Minimum Limit",
     "below_reorder_point": "Below Reorder Point",
     "by_price": "By Price",
-    "at_price": "At Price"
+    "at_price": "At Price",
+    "detailed_each_transaction": "Detailed - Each Transaction on Page",
+    "all_transactions": "All Transactions",
+    "transfer": "Transfer",
+    "licensed": "Licensed"
   },
   "landing": {
     "hero_heading": "Al Yassin ERP System - Ease and Intelligence in Accounting Management Accurate accounting. Instant reporting. Unparalleled ease.",
