@@ -105,7 +105,7 @@
                                 <router-link :to="{ name: 'admin.reports.item_movements' }" class="list-group-item list-group-item-action">{{ $t('label.item_movements') }}</router-link>
                                 <router-link :to="{ name : 'admin.reports.warehouse_movements_by_account' }" class="list-group-item list-group-item-action">{{ $t('label.warehouse_movements_by_account') }}</router-link>
                                 <router-link :to="{ name : 'admin.reports.monthly_net_sales' }" class="list-group-item list-group-item-action">{{ $t('label.monthly_net_sales') }}</router-link>
-                                <a href="#" class="list-group-item list-group-item-action">{{ $t('label.purchase_sale_price_changes') }}</a>
+                                <router-link :to="{ name : 'admin.reports.purchase_sale_price_changes' }" class="list-group-item list-group-item-action">{{ $t('label.purchase_sale_price_changes') }}</router-link>
                             </div>
                         </div>
                     </div>
@@ -117,9 +117,9 @@
                         <div class="card-header rounded-0  text-white fw-bold">{{ $t('label.cheques') }}</div>
                         <div class="card-body">
                             <div class="list-group">
-                                <a href="#" class="list-group-item list-group-item-action">{{ $t('label.incoming_checks') }}</a>
-                                <a href="#" class="list-group-item list-group-item-action">{{ $t('label.outgoing_checks') }}</a>
-                                <a href="#" class="list-group-item list-group-item-action">{{ $t('label.bank_cash_flow') }}</a>
+                                <router-link :to="{ name : 'admin.reports.incoming_checks' }" class="list-group-item list-group-item-action">{{ $t('label.incoming_checks') }}</router-link>
+                                <router-link :to="{ name : 'admin.reports.outgoing_checks' }" class="list-group-item list-group-item-action">{{ $t('label.outgoing_checks') }}</router-link>
+                                <router-link :to="{ name : 'admin.reports.bank_cash_flow'}" class="list-group-item list-group-item-action">{{ $t('label.bank_cash_flow') }}</router-link>
                             </div>
                         </div>
                     </div>
@@ -131,8 +131,8 @@
                         <div class="card-body">
                             <div class="list-group">
                                 <a href="#" class="list-group-item list-group-item-action">{{ $t('label.income_and_expenses') }}</a>
-                                <a href="#" class="list-group-item list-group-item-action">{{ $t('label.invoices_not_in_cash_statements') }}</a>
-                                <a href="#" class="list-group-item list-group-item-action">{{ $t('label.invoices_without_vat') }}</a>
+                                <router-link :to="{ name : 'admin.reports.invoice_without_statements' }" class="list-group-item list-group-item-action">{{ $t('label.invoices_not_in_cash_statements') }}</router-link>
+                                <router-link :to="{ name : 'admin.reports.invoice_without_vat' }" class="list-group-item list-group-item-action">{{ $t('label.invoices_without_vat') }}</router-link>
                                 <a href="#" class="list-group-item list-group-item-action">{{ $t('label.invoices_with_wrong_tax_rate') }}</a>
                                 <a href="#" class="list-group-item list-group-item-action">{{ $t('label.offset_invoices') }}</a>
                                 <a href="#" class="list-group-item list-group-item-action">{{ $t('label.withholding_on_vouchers') }}</a>

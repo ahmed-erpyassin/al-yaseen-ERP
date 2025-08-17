@@ -43,6 +43,12 @@ import WarehouseMovementsComponent from "@/components/admin/reports/WarehouseMov
 import ItemMovementsComponent from "@/components/admin/reports/ItemMovementsComponent.vue";
 import WarehouseMovementsByAccountComponent from "@/components/admin/reports/WarehouseMovementsByAccountComponent.vue";
 import MonthlyNetSalesComponent from "@/components/admin/reports/MonthlyNetSalesComponent.vue";
+import PurchaseSalePriceChangesComponent from "@/components/admin/reports/PurchaseSalePriceChangesComponent.vue";
+import IncomingChecksComponent from "@/components/admin/reports/IncomingChecksComponent.vue";
+import OutgoingChecksComponent from "@/components/admin/reports/OutgoingChecksComponent.vue";
+import BankCashFlowComponent from "@/components/admin/reports/BankCashFlowComponent.vue";
+import InvoicesWithoutStatementsComponent from "@/components/admin/reports/InvoicesWithoutStatementsComponent.vue";
+import InvoiceWithoutVatComponent from "@/components/admin/reports/InvoiceWithoutVatComponent.vue";
 
 export default [
 
@@ -229,6 +235,30 @@ export default [
                 path: 'monthly-net-sales',
                 component: MonthlyNetSalesComponent,
                 name: "admin.reports.monthly_net_sales"
+            },{
+                path: 'purchase-sale-price-changes',
+                component: PurchaseSalePriceChangesComponent,
+                name: "admin.reports.purchase_sale_price_changes"
+            },{
+                path: 'incoming-checks',
+                component : IncomingChecksComponent,
+                name : "admin.reports.incoming_checks"
+            },{
+                path: 'outgoing-checks',
+                component: OutgoingChecksComponent,
+                name : "admin.reports.outgoing_checks"
+            },{
+                path: 'bank-cash-flow',
+                component: BankCashFlowComponent,
+                name : "admin.reports.bank_cash_flow"
+            },{
+                path: 'invoice-without-statements',
+                component: InvoicesWithoutStatementsComponent,
+                name : "admin.reports.invoice_without_statements"
+            },{
+                path: 'invoice-without-vat',
+                component: InvoiceWithoutVatComponent,
+                name : "admin.reports.invoice_without_vat"
             }
         ]
     }
