@@ -130,12 +130,12 @@
                         <div class="card-header rounded-0  text-white fw-bold">{{ $t('label.tax_reports') }}</div>
                         <div class="card-body">
                             <div class="list-group">
-                                <a href="#" class="list-group-item list-group-item-action">{{ $t('label.income_and_expenses') }}</a>
+                                <router-link :to="{ name : 'admin.reports.income_and_expenses' }" class="list-group-item list-group-item-action">{{ $t('label.income_and_expenses') }}</router-link>
                                 <router-link :to="{ name : 'admin.reports.invoice_without_statements' }" class="list-group-item list-group-item-action">{{ $t('label.invoices_not_in_cash_statements') }}</router-link>
                                 <router-link :to="{ name : 'admin.reports.invoice_without_vat' }" class="list-group-item list-group-item-action">{{ $t('label.invoices_without_vat') }}</router-link>
-                                <a href="#" class="list-group-item list-group-item-action">{{ $t('label.invoices_with_wrong_tax_rate') }}</a>
-                                <a href="#" class="list-group-item list-group-item-action">{{ $t('label.offset_invoices') }}</a>
-                                <a href="#" class="list-group-item list-group-item-action">{{ $t('label.withholding_on_vouchers') }}</a>
+                                <router-link :to="{ name : 'admin.reports.invoice_tax_rate_diff' }" class="list-group-item list-group-item-action">{{ $t('label.invoices_with_wrong_tax_rate') }}</router-link>
+                                <router-link :to="{ name : 'admin.reports.offset_invoices' }" class="list-group-item list-group-item-action">{{ $t('label.offset_invoices') }}</router-link>
+                                <router-link :to="{ name : 'admin.reports.withholding-on-vouchers' }" class="list-group-item list-group-item-action">{{ $t('label.withholding_on_vouchers') }}</router-link>
                             </div>
                         </div>
                     </div>

@@ -49,6 +49,10 @@ import OutgoingChecksComponent from "@/components/admin/reports/OutgoingChecksCo
 import BankCashFlowComponent from "@/components/admin/reports/BankCashFlowComponent.vue";
 import InvoicesWithoutStatementsComponent from "@/components/admin/reports/InvoicesWithoutStatementsComponent.vue";
 import InvoiceWithoutVatComponent from "@/components/admin/reports/InvoiceWithoutVatComponent.vue";
+import IncomeAndExpensesComponent from "@/components/admin/reports/IncomeAndExpensesComponent.vue";
+import InvoicesTaxRateDiffComponent from "@/components/admin/reports/InvoicesTaxRateDiffComponent.vue";
+import OffsetInvoicesComponent from "@/components/admin/reports/OffsetInvoicesComponent.vue";
+import WithholdingOnVouchersComponent from "@/components/admin/reports/WithholdingOnVouchersComponent.vue";
 
 export default [
 
@@ -259,6 +263,22 @@ export default [
                 path: 'invoice-without-vat',
                 component: InvoiceWithoutVatComponent,
                 name : "admin.reports.invoice_without_vat"
+            },{
+                path: 'income-and-expenses',
+                component: IncomeAndExpensesComponent,
+                name : "admin.reports.income_and_expenses"
+            },{
+                path: 'invoice-tax-rate-diff',
+                component: InvoicesTaxRateDiffComponent,
+                name : "admin.reports.invoice_tax_rate_diff"
+            },{
+                path: 'offset-invoices',
+                component: OffsetInvoicesComponent,
+                name : "admin.reports.offset_invoices"
+            },{
+                path: 'withholding-on-vouchers',
+                component: WithholdingOnVouchersComponent,
+                name : "admin.reports.withholding-on-vouchers"
             }
         ]
     }
