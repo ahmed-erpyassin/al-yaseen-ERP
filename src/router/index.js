@@ -29,7 +29,7 @@ const baseRoutes = [
 ];
 
 // Admin Routes with Layout
-const adminRoutes = [...dashboard,..._new,...sales, ...purchases, ...reciptesAndPayments, ...projects, ...cheque, ...accounting, ...employees, ...warehouses, ...taxes,...reports];
+const adminRoutes = [...dashboard, ..._new, ...sales, ...purchases, ...reciptesAndPayments, ...projects, ...cheque, ...accounting, ...employees, ...warehouses, ...taxes, ...reports];
 
 const adminRoutesFinal = [
   {
@@ -50,5 +50,21 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
 });
+router.beforeEach((to, from, next) => {
+  const step = localStorage.getItem("resetStep");
 
+  if (to.name === "auth.otp" && step !== "email_sent") {
+    return next({ name: "auth.forget-password" });
+  }
+
+  if (to.name === "auth.password-reset" && step !== "otp_verified") {
+    return next({ name: "auth.forget-password" });
+  }
+
+  if (to.name === "auth.reset-password-success" && step !== "password_reset") {
+    return next({ name: "auth.forget-password" });
+  }
+
+  next();
+});
 export default router;

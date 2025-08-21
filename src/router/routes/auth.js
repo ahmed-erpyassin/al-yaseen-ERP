@@ -11,27 +11,29 @@ export default [
     path: "/login",
     component: LoginComponent,
     name: "auth.login",
-  },{
+  }, {
     path: "/register",
     component: RegisterComponent,
     name: "auth.register",
-  },{
+  }, {
     path: "/forget-password",
     component: ForgetPasswordComponent,
     name: "auth.forget-password",
-  },{
-    path: "/otp",
+  }, {
+    path: "/otp/:token",
     component: OtpComponent,
     name: "auth.otp",
-  },{
-    path: "/reset-password",
+    props: true
+  }, {
+    path: "/reset-password/:token",
     component: PasswordResetComponent,
     name: "auth.password-reset",
-  },{
+    props: true
+  }, {
     path: "/reset-password-success",
     component: RestPasswordSuccessComponent,
     name: "auth.reset-password-success",
-  },{
+  }, {
     path: "/create-company",
     component: RegisterCompanyComponent,
     name: "auth.create-company",

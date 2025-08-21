@@ -7,6 +7,7 @@
                     <LogoComponent />
                     <p class="text-center fs-5 fw-bold mt-3 mb-5">{{ $t('label.login_now') }}</p>
                 </div>
+                <div class="alert alert-danger" v-if="errorMsg">{{ errorMsg }}</div>
                 <div class="mb-3 position-relative">
                     <label for="email" class="form-label">{{ $t('label.email') }}</label>
                     <div class=" position-relative group">
@@ -15,6 +16,7 @@
                             placeholder="yassin2029@gmail.com" />
                         <i class="bi bi-envelope"></i>
                     </div>
+                    <p class="form-text text-danger" v-if="errors.email">{{ errors.email[0] }}</p>
 
                 </div>
 
@@ -26,6 +28,8 @@
                             placeholder="******" />
                         <i class="bi bi-lock"></i>
                     </div>
+                    <p class="form-text text-danger" v-if="errors.password">{{ errors.password[0] }}</p>
+
                 </div>
                 <div class="d-flex align-items-center justify-content-between mb-3">
                     <div class="form-check ">
@@ -33,27 +37,27 @@
                             v-model="form.remember" />
                         <label class="form-check-label" for="remember">{{ $t('label.rememberMe') }}</label>
                     </div>
-                    <router-link :to="{ name: 'auth.forget-password' }" class="small d-block  forget-password">{{ $t('label.forgetYourPassword')}}</router-link>
+                    <router-link :to="{ name: 'auth.forget-password' }" class="small d-block  forget-password">{{
+                        $t('label.forgetYourPassword') }}</router-link>
                 </div>
 
-                <button class="btn btn-main w-100 rounded-0">{{ $t('label.login') }}</button>
+                <button class="btn btn-main w-100 rounded-0 text-white">{{ $t('label.login') }}</button>
                 <div class="or_cont position-relative">
                     <div class="text-center my-3 or">{{ $t('label.or') }}</div>
                     <div class='border border-solid or-border'></div>
                 </div>
 
                 <div class="d-flex justify-content-around gap-3 mt-3">
-                    <img src="@/assets/icons/socials/facebook.png" alt="Facebook" width="30"
-                        style="cursor: pointer" />
-                    <img src="@/assets/icons/socials/google.png" alt="Google" width="30"
-                        style="cursor: pointer" />
+                    <img src="@/assets/icons/socials/facebook.png" alt="Facebook" width="30" style="cursor: pointer" />
+                    <img src="@/assets/icons/socials/google.png" alt="Google" width="30" style="cursor: pointer" />
                     <img src="@/assets/icons/socials/apple.png" alt="Apple" width="30" style="cursor: pointer" />
                 </div>
-                
+
             </form>
             <div class="d-flex align-items-center justify-content-center mt-5">
                 <p class="mb-0">{{ $t('label.not_have_account') }}</p>
-                <router-link :to="{ name: 'auth.register' }" class="text-decoration-none sign-up-action">{{ $t('label.register') }}</router-link>
+                <router-link :to="{ name: 'auth.register' }" class="text-decoration-none sign-up-action">{{
+                    $t('label.register') }}</router-link>
             </div>
         </div>
     </div>
@@ -72,11 +76,38 @@ export default {
                 password: null,
                 remember: false,
             },
+            errors: [],
+            errorMsg: null,
         };
+    },
+    computed: {
+        aceessToken: function () {
+
+            return this.$store.getters['auth/accessToken'];
+
+        }
     },
     methods: {
         login: function () {
-            alert("done");
+            this.errors = [];
+            this.errorMsg = null;
+            this.$store.dispatch('auth/login', this.form).then(res => {
+                if (res.data.success) {
+                    localStorage.setItem('accessToken', res.data.token); // save token
+                    this.$router.push("/admin");
+                } else {
+                    alert(res.data.message);
+                }
+            }).catch(err => {
+                if (err.response && err.response.status === 422) {
+                    this.errors = err.response.data.errors;
+                } else if (err.response && err.response.status === 401) {
+                    this.errorMsg = err.response.data.message;
+                } else {
+                    this.errorMsg = "Something went wrong";
+
+                }
+            });
         },
     },
 };
@@ -116,6 +147,7 @@ export default {
     width: 100%;
     border: 1px solid #ACB7CA !important;
 }
+
 .sign-up-action {
     color: #1D7342;
 }

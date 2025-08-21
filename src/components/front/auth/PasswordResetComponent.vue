@@ -2,7 +2,7 @@
     <div class="container">
         <div class="form mt-5">
 
-            <form @submit.prevent="login">
+            <form @submit.prevent="ResetPassword">
                 <div class="header ">
                     <LogoComponent />
                     <h4 class="text-center fs-5 fw-bold mt-3">{{ $t('label.reset_password') }}</h4>
@@ -16,6 +16,8 @@
                             placeholder="******" />
                         <i class="bi bi-lock"></i>
                     </div>
+                    <p class="text-danger form-text" v-if="errors.password">{{ errors.password[0] }}</p>
+                    <p class="text-danger form-text" v-if="errorMsg">{{ errorMsg }}</p>
                 </div>
                 <button class="btn btn-main w-100 rounded-0">{{ $t('label.verification') }}</button>
             </form>
@@ -27,20 +29,36 @@
 
 import LogoComponent from '../components/LogoComponent.vue';
 export default {
-    name: "LoginComponent",
+    name: "PasswordResetComponent",
     components: { LogoComponent },
+    props: ['token'],
     data() {
         return {
             form: {
-                email: null,
                 password: null,
-                remember: false,
             },
+            errors: [],
+            errorMsg: null
         };
     },
     methods: {
-        login: function () {
-            alert("done");
+        ResetPassword: function () {
+            this.$store.dispatch('auth/resetPassword', { password: this.form.password, token: this.token }).then(res => {
+                if (res.data.success) {
+                    localStorage.setItem("resetStep", 'password_reset');
+
+                    this.$router.push({ name: 'auth.reset-password-success' });
+                } else {
+                    alert(res.data.message);
+                }
+            }).catch(err => {
+                if (err.response && err.response.status === 422) {
+                    this.errors = err.response.data.errors;
+                } else {
+                    this.errorMsg = "Something went wrong";
+
+                }
+            });
         },
     },
 };

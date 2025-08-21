@@ -2,7 +2,7 @@
     <div class="container">
         <div class="form mt-5">
 
-            <form @submit.prevent="login">
+            <form @submit.prevent="checkOtp">
                 <div class="header ">
                     <LogoComponent />
                     <h4 class="text-center fs-5 fw-bold mt-3 ">{{ $t('label.enter_otp') }}</h4>
@@ -14,6 +14,8 @@
                         maxlength="1" v-model="code[index]" @input="onInput(index)"
                         @keydown.backspace="onBackspace(index, $event)" @paste="onPaste" ref="inputs" />
                 </div>
+                <p class="text-danger form-text" v-if="errors.otp">{{ errors.otp[0] }}</p>
+                <p class="text-danger form-text" v-if="errorMsg">{{ errorMsg }}</p>
                 <button class="btn btn-main w-100 rounded-0">{{ $t('label.verification') }}</button>
                 <div class="text-center mt-5">
                     <p class="fw-bold">{{ $t('label.text1') }}</p>
@@ -29,21 +31,45 @@
 
 import LogoComponent from '../components/LogoComponent.vue';
 export default {
-    name: "LoginComponent",
+    name: "OtpComponent",
     components: { LogoComponent },
+    props: ['token'],
     data() {
         return {
-            form: {
-                email: null,
-                password: null,
-                remember: false,
-            },
             code: ['', '', '', ''],
+            errors: [],
+            errorMsg: null
         };
     },
     methods: {
-        login: function () {
-            alert("done");
+        checkOtp: function () {
+            this.errors = [];
+            this.errorMsg = null;
+            let payload = {
+                token: this.token,
+                otp: this.getFullCode()
+            };
+            this.$store.dispatch('auth/checkOtp', payload).then(res => {
+                if (res.data.success) {
+                    localStorage.setItem("resetStep", 'otp_verified');
+
+                    this.$router.push({
+                        name: 'auth.password-reset',
+                        params: { token: res.data.token }
+                    });
+                } else {
+                    alert(res.data.message);
+                }
+            }).catch(err => {
+                if (err.response && err.response.status === 422) {
+                    this.errors = err.response.data.errors;
+                } else if (err.response && err.response.status === 401) {
+                    this.errorMsg = err.response.data.message;
+                } else {
+                    this.errorMsg = "Something went wrong";
+
+                }
+            });
         },
         onInput(index) {
             const input = this.code[index];

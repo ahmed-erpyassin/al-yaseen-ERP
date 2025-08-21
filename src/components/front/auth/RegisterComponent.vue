@@ -2,20 +2,25 @@
     <div class="container">
         <div class="form mt-5">
 
-            <form @submit.prevent="login">
+            <form @submit.prevent="register">
                 <div class="header ">
                     <LogoComponent />
                     <p class="text-center fs-5 fw-bold mt-3 mb-5">{{ $t('label.register') }}</p>
                 </div>
+                <div class="alert alert-danger" v-if="errorMsg">{{ errorMsg }}</div>
+
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <div class="mb-3 position-relative">
                             <label for="first_name" class="form-label">{{ $t('label.first_name') }}</label>
                             <div class=" position-relative group">
 
-                                <input type="text" id="first_name" class="form-control rounded-0" />
+                                <input type="text" id="first_name" class="form-control rounded-0"
+                                    v-model="form.firstname" />
                                 <i class="bi bi-person"></i>
                             </div>
+                            <p class="form-text text-danger" v-if="errors.firstname">{{ errors.firstname[0] }}</p>
+
 
                         </div>
                     </div>
@@ -24,8 +29,10 @@
                             <label for="second_name" class="form-label">{{ $t('label.second_name') }}</label>
                             <div class=" position-relative group">
 
-                                <input type="text" id="second_name" class="form-control rounded-0" />
+                                <input type="text" id="second_name" class="form-control rounded-0"
+                                    v-model="form.secondname" />
                             </div>
+                            <p class="form-text text-danger" v-if="errors.secondname">{{ errors.secondname[0] }}</p>
 
                         </div>
                     </div>
@@ -39,18 +46,22 @@
                         <i class="bi bi-envelope"></i>
                     </div>
 
+                    <p class="form-text text-danger" v-if="errors.email">{{ errors.email[0] }}</p>
+
                 </div>
                 <div class="mb-3 mt-4 position-relative ">
                     <label for="phone" class="form-label">{{ $t('label.phone_number') }}</label>
                     <div class=" position-relative group">
 
-                        <input type="tel" id="phone" class="form-control rounded-0 w-100" />
+                        <input type="tel" id="phone" class="form-control rounded-0 w-100" v-model="form.phone" />
                     </div>
+                    <p class="form-text text-danger" v-if="errors.phone">{{ errors.phone[0] }}</p>
 
                 </div>
                 <div class="form-check ">
-                    <input type="checkbox" checked class="form-check-input rounded-circle" id="remember"/>
-                    <label class="form-check-label" for="remember">{{ $t('label.messages_push') }}</label>
+                    <input type="checkbox" checked class="form-check-input rounded-circle" id="allows_emails"
+                        v-model="form.allows_emails" />
+                    <label class="form-check-label" for="allows_emails">{{ $t('label.messages_push') }}</label>
                 </div>
                 <div class="mb-3 mt-4 position-relative">
                     <label for="password" class="form-label">{{ $t('label.password') }}</label>
@@ -60,16 +71,21 @@
                             placeholder="******" />
                         <i class="bi bi-lock"></i>
                     </div>
+                    <p class="form-text text-danger" v-if="errors.password">{{ errors.password[0] }}</p>
+
                 </div>
                 <div class="mb-3 mt-4 position-relative">
                     <label for="password_confirmtion" class="form-label">{{ $t('label.password_confirmtion')
                         }}</label>
                     <div class=" position-relative group">
 
-                        <input type="password_confirmtion" id="password_confirmtion" class="form-control rounded-0"
-                            placeholder="******" />
+                        <input type="password" id="password_confirmtion" class="form-control rounded-0"
+                            placeholder="******" v-model="form.password_confirmation" />
                         <i class="bi bi-lock"></i>
                     </div>
+                    <p class="form-text text-danger" v-if="errors.password_confirmation">{{
+                        errors.password_confirmation[0] }}</p>
+
                 </div>
                 <p class="mb-3 form-text">{{ $t('label.password_text') }}</p>
                 <button class="btn btn-main w-100 rounded-0">{{ $t('label.register') }}</button>
@@ -79,10 +95,8 @@
                 </div>
 
                 <div class="d-flex justify-content-around gap-3 mt-3 mb-5">
-                    <img src="@/assets/icons/socials/facebook.png" alt="Facebook" width="30"
-                        style="cursor: pointer" />
-                    <img src="@/assets/icons/socials/google.png" alt="Google" width="30"
-                        style="cursor: pointer" />
+                    <img src="@/assets/icons/socials/facebook.png" alt="Facebook" width="30" style="cursor: pointer" />
+                    <img src="@/assets/icons/socials/google.png" alt="Google" width="30" style="cursor: pointer" />
                     <img src="@/assets/icons/socials/apple.png" alt="Apple" width="30" style="cursor: pointer" />
                 </div>
 
@@ -102,11 +116,18 @@ export default {
     data() {
         return {
             form: {
+                firstname: null,
+                secondname: null,
                 email: null,
+                country_code: null,
+                phone: null,
+                allows_emails: false,
                 password: null,
-                remember: false,
+                password_confirmation: null,
             },
             iti: {},
+            errors: [],
+            errorMsg: null
         };
     },
     mounted() {
@@ -117,12 +138,31 @@ export default {
             containerClass: 'w-100',
 
         });
+        this.form.country_code = this.iti.getSelectedCountryData().dialCode;
+
+        input.addEventListener("countrychange", () => {
+            this.form.country_code = this.iti.getSelectedCountryData().dialCode;
+        });
 
 
     },
     methods: {
-        login: function () {
-            alert("done");
+        register: function () {
+            this.$store.dispatch('auth/register', this.form).then(res => {
+                if (res.data.success) {
+                    localStorage.setItem('accessToken', res.data.token); // save token
+                    this.$router.push("/admin");
+                } else {
+                    alert(res.data.message);
+                }
+            }).catch(err => {
+                if (err.response && err.response.status === 422) {
+                    this.errors = err.response.data.errors;
+                } else {
+                    this.errorMsg = "Something went wrong";
+
+                }
+            });
         },
     },
 };

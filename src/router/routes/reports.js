@@ -15,7 +15,7 @@ import SuppliersCollectionPaymentReceiptsComponent from "@/components/admin/repo
 import SuppliersFinancialMovementsComponent from "@/components/admin/reports/SuppliersFinancialMovementsComponent.vue";
 import SuppliersInexComponent from "@/components/admin/reports/SuppliersInexComponent.vue";
 import SuppliersStockMovementsComponent from "@/components/admin/reports/SuppliersStockMovementsComponent.vue";
-import AccountsCollectionPaymentReceiptsComponent from "./AccountsCollectionPaymentReceiptsComponent.vue";
+import AccountsCollectionPaymentReceiptsComponent from "../../components/admin/reports/AccountsCollectionPaymentReceiptsComponent.vue";
 import GeneralLedgerComponent from "@/components/admin/reports/GeneralLedgerComponent.vue";
 import SaleriesComponent from "@/components/admin/reports/SaleriesComponent.vue";
 import EmployeesIndexComponent from "@/components/admin/reports/EmployeesIndexComponent.vue";

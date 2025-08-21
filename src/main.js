@@ -5,6 +5,7 @@ import store from "./store";
 import BootstrapVue3 from 'bootstrap-vue-3';
 import i18n from './i18n';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import axios from 'axios';
 
 async function bootstrapApp() {
   const lang = localStorage.getItem('locale') || 'en';
@@ -20,6 +21,9 @@ async function bootstrapApp() {
     await import('../public/css/main.css');
   }
 
+  axios.defaults.baseURL = 'https://api.alyaseenerp.com/public/api';
+  axios.defaults.headers.common['Accept'] = 'application/json';
+  axios.defaults.headers.common['Content-Type'] = 'application/json';
   createApp(App)
     .use(BootstrapVue3)
     .use(i18n)
