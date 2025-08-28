@@ -1,4 +1,5 @@
 <template>
+    <LoadingComponent :isLoading="isLoading" />
     <div class="container">
         <div class="form mt-5">
 
@@ -18,8 +19,8 @@
                 <p class="text-danger form-text" v-if="errorMsg">{{ errorMsg }}</p>
                 <button class="btn btn-main w-100 rounded-0">{{ $t('label.verification') }}</button>
                 <div class="text-center mt-5">
-                    <p class="fw-bold">{{ $t('label.text1') }}</p>
-                    <p class="fw-bold">{{ $t('label.text2') }}</p>
+                    <p class="fw-bold">{{ $t('label.text1')  }}</p>
+                    <p class="fw-bold">{{ $t('label.text2') + formattedTime  }}</p>
                 </div>
             </form>
 
@@ -28,28 +29,62 @@
 </template>
 
 <script>
-
+import LoadingComponent from '@/components/components/LoadingComponent.vue';
 import LogoComponent from '../components/LogoComponent.vue';
 export default {
     name: "OtpComponent",
-    components: { LogoComponent },
+    components: { LogoComponent, LoadingComponent },
     props: ['token'],
     data() {
         return {
+            isLoading: true,
             code: ['', '', '', ''],
+            counter: 60,
+            timer: null,
             errors: [],
             errorMsg: null
         };
     },
+    mounted() {
+        this.isLoading = false;
+        this.startCounter();
+
+    },
+    computed: {
+        formattedTime() {
+            let minutes = String(Math.floor(this.counter / 60)).padStart(2, "0");
+            let seconds = String(this.counter % 60).padStart(2, "0");
+            return `${minutes}:${seconds}`;
+        },
+    },
     methods: {
+        startCounter() {
+            this.counter = 60; // reset
+            this.timer = setInterval(() => {
+                if (this.counter > 0) {
+                    this.counter--;
+                } else {
+                    clearInterval(this.timer);
+                }
+            }, 1000);
+        },
+        resendCode() {
+            // هنا تكتب كود API أو الإجراء اللي يرسل الكود
+            alert("تم إرسال الكود مرة أخرى ✅");
+            this.startCounter(); // إعادة تشغيل العداد
+        },
         checkOtp: function () {
             this.errors = [];
             this.errorMsg = null;
+            this.isLoading = true;
+
             let payload = {
                 token: this.token,
                 otp: this.getFullCode()
             };
             this.$store.dispatch('auth/checkOtp', payload).then(res => {
+                this.isLoading = false;
+
                 if (res.data.success) {
                     localStorage.setItem("resetStep", 'otp_verified');
 
@@ -61,6 +96,8 @@ export default {
                     alert(res.data.message);
                 }
             }).catch(err => {
+                this.isLoading = false;
+
                 if (err.response && err.response.status === 422) {
                     this.errors = err.response.data.errors;
                 } else if (err.response && err.response.status === 401) {
@@ -108,6 +145,9 @@ export default {
         getFullCode() {
             return this.code.join('');
         }
+    },
+    beforeUnmount() {
+        if (this.timer) clearInterval(this.timer);
     },
 };
 </script>

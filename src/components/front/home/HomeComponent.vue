@@ -1,4 +1,5 @@
 <template>
+    <LoadingComponent :is-loading="isLoading"/>
     <header class='top-header'>
         <nav class="navbar navbar-expand-lg bg-white border-bottom shadow-sm">
             <div class="container">
@@ -39,6 +40,7 @@
 
 <script>
 import { useI18n } from 'vue-i18n';
+import LoadingComponent from '@/components/components/LoadingComponent.vue';
 import HeroComponent from './partials/HeroComponent.vue';
 import WhyAlyassenComponent from './partials/WhyAlyassenComponent.vue';
 import PricingComponent from './partials/PricingComponent.vue';
@@ -62,7 +64,16 @@ export default {
         AccountingComponent,
         WorkFlowComponent,
         PricingComponent,
-        CtaComponent
+        CtaComponent,
+        LoadingComponent
+    },
+    data() {
+        return {
+            isLoading: true
+        }
+    },
+    mounted() {
+        this.isLoading = false;
     },
     setup() {
         const { locale } = useI18n()

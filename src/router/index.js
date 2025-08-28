@@ -14,6 +14,7 @@ import employees from "./routes/employees";
 import warehouses from "./routes/warehouses";
 import taxes from "./routes/taxes";
 import reports from "./routes/reports";
+import tools from "./routes/tools";
 // Base Routes (public)
 const baseRoutes = [
   {
@@ -29,7 +30,7 @@ const baseRoutes = [
 ];
 
 // Admin Routes with Layout
-const adminRoutes = [...dashboard, ..._new, ...sales, ...purchases, ...reciptesAndPayments, ...projects, ...cheque, ...accounting, ...employees, ...warehouses, ...taxes, ...reports];
+const adminRoutes = [...dashboard, ..._new, ...sales, ...purchases, ...reciptesAndPayments, ...projects, ...cheque, ...accounting, ...employees, ...warehouses, ...taxes, ...reports, ...tools];
 
 const adminRoutesFinal = [
   {

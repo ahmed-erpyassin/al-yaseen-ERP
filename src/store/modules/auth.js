@@ -58,6 +58,20 @@ export const auth = {
                     reject(err);
                 });
             });
+        },
+        registerCompany: function (context, payload) {
+            return new Promise((resolve, reject) => {
+                axios.post('auth/create-company', payload, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'Authorization': 'Bearer ' + auth.state.accessToken
+                    }
+                }).then((res) => {
+                    resolve(res);
+                }).catch((err) => {
+                    reject(err);
+                });
+            });
         }
     },
     mutations: {

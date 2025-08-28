@@ -1,7 +1,7 @@
 <template>
+    <LoadingComponent :isLoading="isLoading" />
     <div class="container">
         <div class="form mt-5">
-
             <form @submit.prevent="login">
                 <div class="header ">
                     <LogoComponent />
@@ -66,11 +66,13 @@
 <script>
 
 import LogoComponent from '../components/LogoComponent.vue';
+import LoadingComponent from '@/components/components/LoadingComponent.vue';
 export default {
     name: "LoginComponent",
-    components: { LogoComponent },
+    components: { LogoComponent, LoadingComponent },
     data() {
         return {
+            isLoading: true,
             form: {
                 email: null,
                 password: null,
@@ -79,6 +81,9 @@ export default {
             errors: [],
             errorMsg: null,
         };
+    },
+    mounted() {
+        this.isLoading = false;
     },
     computed: {
         aceessToken: function () {
@@ -91,7 +96,10 @@ export default {
         login: function () {
             this.errors = [];
             this.errorMsg = null;
+            this.isLoading = true;
             this.$store.dispatch('auth/login', this.form).then(res => {
+                this.isLoading = false;
+
                 if (res.data.success) {
                     localStorage.setItem('accessToken', res.data.token); // save token
                     this.$router.push("/admin");
@@ -99,6 +107,8 @@ export default {
                     alert(res.data.message);
                 }
             }).catch(err => {
+                this.isLoading = false;
+
                 if (err.response && err.response.status === 422) {
                     this.errors = err.response.data.errors;
                 } else if (err.response && err.response.status === 401) {

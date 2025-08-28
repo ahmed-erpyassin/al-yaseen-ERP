@@ -1,4 +1,6 @@
 <template>
+    <LoadingComponent :isLoading="isLoading" />
+
     <div class="container">
         <div class="form mt-5">
 
@@ -28,23 +30,33 @@
 <script>
 
 import LogoComponent from '../components/LogoComponent.vue';
+import LoadingComponent from '@/components/components/LoadingComponent.vue';
+
 export default {
     name: "ForgetPasswordComponent",
-    components: { LogoComponent },
+    components: { LogoComponent, LoadingComponent },
     data() {
         return {
+            isLoading: true,
             form: {
                 email: null,
             },
             errors: [],
-            errorMsg: null
+            errorMsg: null,
         };
+    },
+    mounted() {
+        this.isLoading = false;
     },
     methods: {
         forgetPassword: function () {
             this.errors = [];
             this.errorMsg = null;
+            this.isLoading = true;
+
             this.$store.dispatch('auth/forgetPassword', this.form).then(res => {
+                this.isLoading = false;
+
                 if (res.data.success) {
                     localStorage.setItem("resetStep", 'email_sent');
                     this.$router.push({
@@ -55,6 +67,8 @@ export default {
                     alert(res.data.message);
                 }
             }).catch(err => {
+                this.isLoading = false;
+
                 if (err.response && err.response.status === 422) {
                     this.errors = err.response.data.errors;
                 } else if (err.response && err.response.status === 401) {

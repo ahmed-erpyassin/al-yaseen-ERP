@@ -6,6 +6,7 @@ import BootstrapVue3 from 'bootstrap-vue-3';
 import i18n from './i18n';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import axios from 'axios';
+import "vue3-select/dist/vue3-select.css"
 
 async function bootstrapApp() {
   const lang = localStorage.getItem('locale') || 'en';

@@ -151,7 +151,7 @@ export default {
             this.$store.dispatch('auth/register', this.form).then(res => {
                 if (res.data.success) {
                     localStorage.setItem('accessToken', res.data.token); // save token
-                    this.$router.push("/admin");
+                    this.$router.push({ name: "auth.create-company" });
                 } else {
                     alert(res.data.message);
                 }

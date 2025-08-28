@@ -1,4 +1,6 @@
 <template>
+    <LoadingComponent :isLoading="isLoading" />
+
     <div class="container">
         <div class="form mt-5">
 
@@ -28,12 +30,15 @@
 <script>
 
 import LogoComponent from '../components/LogoComponent.vue';
+import LoadingComponent from '@/components/components/LoadingComponent.vue';
+
 export default {
     name: "PasswordResetComponent",
-    components: { LogoComponent },
+    components: { LogoComponent, LoadingComponent },
     props: ['token'],
     data() {
         return {
+            isLoading: true,
             form: {
                 password: null,
             },
@@ -41,9 +46,18 @@ export default {
             errorMsg: null
         };
     },
+    mounted() {
+        this.isLoading = false;
+    },
     methods: {
         ResetPassword: function () {
+            this.errors = [];
+            this.errorMsg = null;
+            this.isLoading = true;
+
             this.$store.dispatch('auth/resetPassword', { password: this.form.password, token: this.token }).then(res => {
+                this.isLoading = false;
+
                 if (res.data.success) {
                     localStorage.setItem("resetStep", 'password_reset');
 
@@ -52,6 +66,8 @@ export default {
                     alert(res.data.message);
                 }
             }).catch(err => {
+                this.isLoading = false;
+
                 if (err.response && err.response.status === 422) {
                     this.errors = err.response.data.errors;
                 } else {
