@@ -1,15 +1,13 @@
 <template>
-
     <div class="d-flex justify-content-between align-items-center mb-4 navbar">
         <div class="container">
-
             <div>
                 <i class="bi bi-chevron-left fw-bold aside-trigger me-2"></i>
             </div>
             <div>
                 <div class="links d-flex align-items-center">
                     <!-- Gear Icon -->
-                    <i class="bi bi-gear-fill fs-4 me-3"></i>
+                    <i class="bi bi-gear-fill fs-4 me-3" data-bs-toggle="modal" data-bs-target="#settings"></i>
 
                     <!-- Checklist Icon -->
                     <i class="bi bi-clipboard-check fs-4 me-3"></i>
@@ -41,30 +39,129 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade " id="settings" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered " style="max-width: 1100px;">
+                <div class="modal-content p-4 custom-modal rounded-0">
+                    <div class="modal-body">
+                        <div class="row text-center">
+                            <div class="col-6 border-end pe-4">
+                                <h5 class="fw-bold mb-3 text-success">
+                                    <i class="bi bi-people-fill me-2"></i> {{ $t('label.account_settings') }}
+                                </h5>
+                                <ul class="list-unstyled lh-lg">
+                                    <li><router-link :to="{ name: 'admin.tools.group-settings' }">{{
+                                        $t('label.group_settings') }}</router-link></li>
+                                    <li><a href="#">{{ $t('label.user_management') }}</a></li>
+                                    <li><a href="#">{{ $t('label.switch_users') }}</a></li>
+                                    <li><a href="#">{{ $t('label.change_language') }}</a></li>
+                                    <li><a href="#">{{ $t('label.identifier_number') }}</a></li>
+                                </ul>
+                            </div>
+
+                            <div class="col-6 ps-4">
+                                <h5 class="fw-bold mb-3 text-success">
+                                    <i class="bi bi-tools me-2"></i> {{ $t('label.tools') }}
+                                </h5>
+                                <ul class="list-unstyled lh-lg">
+                                    <li>
+                                        <router-link :to="{ name: 'admin.tools.group-data-copy' }">
+                                            {{ $t('label.copy_group_data') }}
+                                        </router-link>
+                                    </li>
+
+                                    <li>
+                                        <router-link :to="{ name: 'admin.tools.group-data-restore' }">
+                                            {{ $t('label.restore_group_data') }}
+                                        </router-link>
+                                    </li>
+
+                                    <li>
+                                        <router-link :to="{ name: 'admin.tools.copy-accounts-and-items' }">
+                                            {{ $t('label.copy_accounts_from_other_group') }}
+                                        </router-link>
+                                    </li>
+
+                                    <li>
+                                        <router-link :to="{ name: 'admin.tools.group-transaction-copy' }">
+                                            {{ $t('label.copy_transactions_from_other_group') }}
+                                        </router-link>
+                                    </li>
+
+                                    <li>
+                                        <router-link :to="{ name: 'admin.tools.currency-revaluation' }">
+                                            {{ $t('label.calculate_account_currency_diff') }}
+                                        </router-link>
+                                    </li>
+
+                                    <li>
+                                        <router-link :to="{ name: 'admin.tools.checks-currency-revaluation' }">
+                                            {{ $t('label.calculate_network_currency_diff') }}
+                                        </router-link>
+                                    </li>
+
+                                    <li>
+                                        <router-link :to="{ name: 'admin.tools.file-maintenance' }">
+                                            {{ $t('label.check_and_maintain_files') }}
+                                        </router-link>
+                                    </li>
+
+                                    <li>
+                                        <router-link :to="{ name: 'admin.tools.group-data-audit' }">
+                                            {{ $t('label.audit_group_data') }}
+                                        </router-link>
+                                    </li>
+
+                                    <li>
+                                        <router-link :to="{ name: 'admin.tools.posting-closing' }">
+                                            {{ $t('label.post_and_close_transactions') }}
+                                        </router-link>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
             </div>
         </div>
     </div>
-
 </template>
 
 <script>
-
+import bootstrap from 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import router from '@/router';
 export default {
-
     name: "NavbarComponent",
+    setup() {
+        router.afterEach(() => {
+            document.querySelectorAll(".modal.show").forEach((modalEl) => {
+                const modal = bootstrap.Modal.getInstance(modalEl);
+                if (modal) {
+                    modal.hide();
+                    modal.dispose();
+                }
+            });
 
-}
+            document.querySelectorAll(".modal-backdrop").forEach((el) => el.remove());
 
+            document.body.classList.remove("modal-open");
+            document.body.style.removeProperty("padding-right");
+        });
+    }
+};
 </script>
 
 <style scoped>
 .navbar {
-    background-color: #1D7342;
+    background-color: #1d7342;
     height: 96px;
     border-radius: 0 10px 10px 0;
-    color: #FFF;
+    color: #fff;
 }
 
 .aside-trigger {
@@ -76,6 +173,27 @@ export default {
 }
 
 .info {
-    color: #DBD9D9;
+    color: #dbd9d9;
+}
+
+/* تنسيق المودال */
+.custom-modal {
+    background-color: #f8f8f8;
+    border-radius: 12px;
+    min-height: 500px;
+}
+
+.custom-modal h5 {
+    color: #1d7342;
+}
+
+.custom-modal a {
+    text-decoration: none;
+    color: #000;
+}
+
+.custom-modal a:hover {
+    color: #1d7342;
+    font-weight: bold;
 }
 </style>
