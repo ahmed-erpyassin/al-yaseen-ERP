@@ -44,7 +44,7 @@
         </div>
 
         <div class="modal fade " id="settings" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered " style="max-width: 1100px;">
+            <div class="modal-dialog modal-dialog-centered " style="max-width: 900px;">
                 <div class="modal-content p-4 custom-modal rounded-0">
                     <div class="modal-body">
                         <div class="row text-center">
@@ -55,7 +55,7 @@
                                 <ul class="list-unstyled lh-lg">
                                     <li><router-link :to="{ name: 'admin.tools.group-settings' }">{{
                                         $t('label.group_settings') }}</router-link></li>
-                                    <li><a href="#">{{ $t('label.user_management') }}</a></li>
+                                    <li><router-link :to="{ name: 'admin.tools.users' }">{{ $t('label.user_management') }}</router-link></li>
                                     <li><a href="#">{{ $t('label.switch_users') }}</a></li>
                                     <li><a href="#">{{ $t('label.change_language') }}</a></li>
                                     <li><a href="#">{{ $t('label.identifier_number') }}</a></li>
