@@ -1,5 +1,6 @@
 import ChecksCurrencyRevaluationComponent from "@/components/admin/tools/ChecksCurrencyRevaluationComponent.vue";
 import CopyAccountsAndItemsFromGroupComponent from "@/components/admin/tools/CopyAccountsAndItemsFromGroupComponent.vue";
+import CreateUserComponent from "@/components/admin/tools/CreateUserComponent.vue";
 import CurrencyRevaluationComponent from "@/components/admin/tools/CurrencyRevaluationComponent.vue";
 import FileMaintenanceComponent from "@/components/admin/tools/FileMaintenanceComponent.vue";
 import GroupDataAuditComponent from "@/components/admin/tools/GroupDataAuditComponent.vue";
@@ -8,6 +9,7 @@ import GroupDataRestoreComponent from "@/components/admin/tools/GroupDataRestore
 import GroupSettingsComponent from "@/components/admin/tools/GroupSettingsComponent.vue";
 import GroupTransactionCopyComponent from "@/components/admin/tools/GroupTransactionCopyComponent.vue";
 import PostingClosingComponent from "@/components/admin/tools/PostingClosingComponent.vue";
+import UserRecordsComponent from "@/components/admin/tools/UserRecordsComponent.vue";
 
 export default [
 
@@ -63,6 +65,16 @@ export default [
                 path: "group-settings",
                 name: "admin.tools.group-settings",
                 component: GroupSettingsComponent,
+            },
+            {
+                path: "users",
+                name: "admin.tools.users",
+                component: UserRecordsComponent,
+            },   
+            {
+                path: "users/create",
+                name: "admin.tools.users.create",
+                component: CreateUserComponent,
             },
         ]
     }
