@@ -1,5 +1,5 @@
 <template>
-    <LoadingComponent :is-loading="isLoading"/>
+    <LoadingComponent :is-loading="isLoading" />
     <header class='top-header'>
         <nav class="navbar navbar-expand-lg bg-white border-bottom shadow-sm">
             <div class="container">
@@ -79,11 +79,13 @@ export default {
         const { locale } = useI18n()
 
         const switchLanguage = () => {
-            locale.value = locale.value === 'ar' ? 'en' : 'ar'
-            localStorage.setItem('lang', locale.value)
-            document.dir = locale === 'ar' ? 'rtl' : 'ltr';
-            document.lang = locale;
+            let currentLocale = locale.value == 'ar' ? 'en' : 'ar';
+            localStorage.setItem('lang', currentLocale);
+            document.documentElement.dir = currentLocale === 'ar' ? 'rtl' : 'ltr';
+            document.documentElement.lang = currentLocale;
+
             window.location.reload();
+
         }
 
         return {

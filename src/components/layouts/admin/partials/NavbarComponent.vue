@@ -133,26 +133,26 @@
 </template>
 
 <script>
-import bootstrap from 'bootstrap/dist/js/bootstrap.bundle.min.js';
-import router from '@/router';
+// import bootstrap from 'bootstrap/dist/js/bootstrap.bundle.min.js';
+// import router from '@/router';
 export default {
     name: "NavbarComponent",
-    setup() {
-        router.afterEach(() => {
-            document.querySelectorAll(".modal.show").forEach((modalEl) => {
-                const modal = bootstrap.Modal.getInstance(modalEl);
-                if (modal) {
-                    modal.hide();
-                    modal.dispose();
-                }
-            });
+    // setup() {
+    //     // router.afterEach(() => {
+    //     //     document.querySelectorAll(".modal.show").forEach((modalEl) => {
+    //     //         const modal = bootstrap.Modal.getInstance(modalEl);
+    //     //         if (modal) {
+    //     //             modal.hide();
+    //     //             modal.dispose();
+    //     //         }
+    //     //     });
 
-            document.querySelectorAll(".modal-backdrop").forEach((el) => el.remove());
+    //     //     document.querySelectorAll(".modal-backdrop").forEach((el) => el.remove());
 
-            document.body.classList.remove("modal-open");
-            document.body.style.removeProperty("padding-right");
-        });
-    }
+    //     //     document.body.classList.remove("modal-open");
+    //     //     document.body.style.removeProperty("padding-right");
+    //     // });
+    // }
 };
 </script>
 

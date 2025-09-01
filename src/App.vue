@@ -8,7 +8,31 @@ export default {
 
   name: "App",
 
+  data() {
+    return {
+      locale: 'en',
+    }
+  },
 
+  mounted() {
+    
+    const savedLang = localStorage.getItem('lang')
+    if (savedLang) {
+      this.locale = savedLang
+      document.dir = savedLang === 'ar' ? 'rtl' : 'ltr'
+      document.documentElement.lang = savedLang
+    }
+  },
+
+  methods: {
+    switchLanguage() {
+      this.locale = this.locale === 'ar' ? 'en' : 'ar'
+      localStorage.setItem('lang', this.locale)
+      document.dir = this.locale === 'ar' ? 'rtl' : 'ltr'
+      document.documentElement.lang = this.locale
+      window.location.reload()
+    }
+  }
 }
 
 </script>

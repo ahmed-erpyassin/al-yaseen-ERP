@@ -1,6 +1,6 @@
 <template>
     <div class="container pe-5 ps-5">
-        <h1><i class="bi bi-image"></i> {{ $t('company_undefined') }}</h1>
+        <h1><i class="bi bi-image"></i> {{ $t('label.company_undefined') }}</h1>
         <div class="d-flex align-items-center justify-content-end">
             <button class="btn btn-lg btn-outline-secondary me-3">{{ $t('buttons.cancel') }}</button>
             <button class="btn btn-lg btn-success" type="button">
@@ -184,18 +184,414 @@
                         <table class="table table-bordered">
                             <thead class="table-light">
                                 <tr>
-                                    <th>البيان</th>
+                                    <th>{{ $t('label.statement') }}</th>
                                     <th></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td></td>
-                                    <td><span class="icon icon-yes me-2">✔</span><span class="icon icon-no">✖</span></td>
+                                    <td><span class="icon icon-yes me-2">✔</span><span class="icon icon-no">✖</span>
+                                    </td>
                                 </tr>
 
                             </tbody>
                         </table>
+                    </div>
+                    <div class="tab-pane fade show" id="other_permissions" role="tabpanel"
+                        aria-labelledby="user_options-tab">
+                        <table class="table table-bordered">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>{{ $t('label.statement') }}</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td></td>
+                                    <td><span class="icon icon-yes me-2">✔</span><span class="icon icon-no">✖</span>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="tab-pane fade show" id="other" role="tabpanel" aria-labelledby="user_options-tab">
+                        <div class="tabs others">
+                            <ul class="nav nav-pills justify-content-start rounded-2" id="myTab2" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="accounts-tab" data-bs-toggle="tab"
+                                        data-bs-target="#cashBox" type="button" role="tab" aria-controls="cashBox"
+                                        aria-selected="true">
+                                        {{ $t('label.cashBox') }}
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="checkWallet-tab" data-bs-toggle="tab"
+                                        data-bs-target="#checkWallet" type="button" role="tab"
+                                        aria-controls="checkWallet" aria-selected="false">
+                                        {{ $t('label.checkWallet') }}
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="specialCases-tab" data-bs-toggle="tab"
+                                        data-bs-target="#specialCases" type="button" role="tab"
+                                        aria-controls="specialCases" aria-selected="false">
+                                        {{ $t('label.specialCases') }}
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="paths-tab" data-bs-toggle="tab" data-bs-target="#paths"
+                                        type="button" role="tab" aria-controls="paths" aria-selected="false">
+                                        {{ $t('label.paths') }}
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="warehouse-tab" data-bs-toggle="tab"
+                                        data-bs-target="#warehouse" type="button" role="tab" aria-controls="warehouse"
+                                        aria-selected="false">
+                                        {{ $t('label.warehouse') }}
+                                    </button>
+                                </li>
+
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="costCenter-tab" data-bs-toggle="tab"
+                                        data-bs-target="#costCenter" type="button" role="tab" aria-controls="costCenter"
+                                        aria-selected="false">
+                                        {{ $t('label.costCenter') }}
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="ledger-tab" data-bs-toggle="tab"
+                                        data-bs-target="#ledger" type="button" role="tab" aria-controls="ledger"
+                                        aria-selected="false">
+                                        {{ $t('label.ledger') }}
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="branches-tab" data-bs-toggle="tab"
+                                        data-bs-target="#branches" type="button" role="tab" aria-controls="branches"
+                                        aria-selected="false">
+                                        {{ $t('label.branches') }}
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="groups-tab" data-bs-toggle="tab"
+                                        data-bs-target="#groups" type="button" role="tab" aria-controls="groups"
+                                        aria-selected="false">
+                                        {{ $t('label.groups') }}
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="others-tab" data-bs-toggle="tab"
+                                        data-bs-target="#others" type="button" role="tab" aria-controls="others"
+                                        aria-selected="false">
+                                        {{ $t('label.others') }}
+                                    </button>
+                                </li>
+                            </ul>
+                            <div class="tab-content" id="myTabContent">
+                                <div class="tab-pane fade active show" id="cashBox" role="tabpanel"
+                                    aria-labelledby="accounts-tab">
+                                    <p class="mt-3 text-primary">{{ $t('label.fillCashBoxAccount') }}</p>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="payMethod" id="default"
+                                            value="cash" required>
+                                        <label class="form-check-label" for="default">{{ $t('label.default') }}</label>
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="radio" name="payMethod" id="required"
+                                            value="cash" required>
+                                        <label class="form-check-label" for="required">{{ $t('label.required')
+                                        }}</label>
+                                    </div>
+                                    <div class="mb-3 position-relative">
+                                        <label for="from" class="form-label">{{
+                                            $t('label.accountNumber') }}</label>
+                                        <input type="text" id="from" class="form-control rounded-1" />
+
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade show" id="checkWallet" role="tabpanel"
+                                    aria-labelledby="accounts-tab">
+                                    <p class="mt-3 text-primary">{{ $t('label.fill_check_wallet_account_on_entry') }}
+                                    </p>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="payMethod" id="default"
+                                            value="cash" required>
+                                        <label class="form-check-label" for="default">{{ $t('label.default') }}</label>
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="radio" name="payMethod" id="required"
+                                            value="cash" required>
+                                        <label class="form-check-label" for="required">{{ $t('label.required')
+                                        }}</label>
+                                    </div>
+                                    <div class="mb-3 position-relative">
+                                        <label for="from" class="form-label">{{
+                                            $t('label.accountNumber') }}</label>
+                                        <input type="text" id="from" class="form-control rounded-1" />
+
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade show" id="specialCases" role="tabpanel"
+                                    aria-labelledby="accounts-tab">
+                                    <div class="mb-3 position-relative mt-5">
+                                        <label for="from" class="form-label">{{
+                                            $t('label.documents_reprint_original') }}</label>
+                                        <input type="text" id="from" class="form-control rounded-1" />
+
+                                    </div>
+                                    <div class="mb-3 position-relative">
+                                        <label for="from" class="form-label">{{
+                                            $t('label.documents_edit_after_print') }}</label>
+                                        <input type="text" id="from" class="form-control rounded-1" />
+
+                                    </div>
+                                    <div class="mb-3 position-relative">
+                                        <label for="from" class="form-label">{{
+                                            $t('label.documents_edit_other_users') }}</label>
+                                        <input type="text" id="from" class="form-control rounded-1" />
+
+                                    </div>
+                                    <div class="mb-3 position-relative">
+                                        <label for="from" class="form-label">{{
+                                            $t('label.documents_edit_closed') }}</label>
+                                        <input type="text" id="from" class="form-control rounded-1" />
+
+                                    </div>
+                                    <div class="mb-3 position-relative">
+                                        <label for="from" class="form-label">{{
+                                            $t('label.reports_allowed') }}</label>
+                                        <input type="text" id="from" class="form-control rounded-1" />
+
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade show" id="paths" role="tabpanel"
+                                    aria-labelledby="accounts-tab">
+                                    <div class="mb-3 position-relative mt-5">
+                                        <label for="from" class="form-label">{{
+                                            $t('label.default_printer') }}</label>
+                                        <input type="text" id="from" class="form-control rounded-1" />
+
+                                    </div>
+                                    <div class="mb-3 position-relative">
+                                        <label for="from" class="form-label">{{
+                                            $t('label.custom_path') }}</label>
+                                        <input type="text" id="from" class="form-control rounded-1" />
+
+                                    </div>
+
+                                </div>
+                                <div class="tab-pane fade show" id="warehouse" role="tabpanel"
+                                    aria-labelledby="accounts-tab">
+                                    <p class="mt-3 text-primary">{{ $t('label.fill_selected_store_on_new_transactions')
+                                    }}
+                                    </p>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="payMethod" id="default"
+                                            value="cash" required>
+                                        <label class="form-check-label" for="default">{{ $t('label.default') }}</label>
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="radio" name="payMethod" id="required"
+                                            value="cash" required>
+                                        <label class="form-check-label" for="required">{{ $t('label.required')
+                                        }}</label>
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="radio" name="payMethod"
+                                            id="mandatory_show_transactions_only" value="cash" required>
+                                        <label class="form-check-label" for="mandatory_show_transactions_only">{{
+                                            $t('label.mandatory_show_transactions_only')
+                                        }}</label>
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="radio" name="payMethod"
+                                            id="default_if_no_store_defined" value="cash" required>
+                                        <label class="form-check-label" for="default_if_no_store_defined">{{
+                                            $t('label.default_if_no_store_defined')
+                                        }}</label>
+                                    </div>
+                                    <div class="mb-3 position-relative">
+                                        <label for="from" class="form-label">{{
+                                            $t('label.warehouse_number') }}</label>
+                                        <input type="text" id="from" class="form-control rounded-1" />
+
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade show" id="costCenter" role="tabpanel"
+                                    aria-labelledby="accounts-tab">
+                                    <p class="mt-3 text-primary">{{ $t('label.fill_selected_budget_on_new_transactions')
+                                        }}
+                                    </p>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="payMethod" id="default"
+                                            value="cash" required>
+                                        <label class="form-check-label" for="default">{{ $t('label.default') }}</label>
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="radio" name="payMethod" id="required"
+                                            value="cash" required>
+                                        <label class="form-check-label" for="required">{{ $t('label.required')
+                                        }}</label>
+                                    </div>
+                                    <div class="mb-3 position-relative">
+                                        <label for="from" class="form-label">{{
+                                            $t('label.budget_number') }}</label>
+                                        <input type="text" id="from" class="form-control rounded-1" />
+
+                                    </div>
+                                    <p class="mt-3 text-primary">{{
+                                        $t('label.fill_selected_department_on_new_transactions') }}
+                                    </p>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="payMethod" id="default"
+                                            value="cash" required>
+                                        <label class="form-check-label" for="default">{{ $t('label.default') }}</label>
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="radio" name="payMethod" id="required"
+                                            value="cash" required>
+                                        <label class="form-check-label" for="required">{{ $t('label.required')
+                                        }}</label>
+                                    </div>
+                                    <div class="mb-3 position-relative">
+                                        <label for="from" class="form-label">{{
+                                            $t('label.department_number') }}</label>
+                                        <input type="text" id="from" class="form-control rounded-1" />
+
+                                    </div>
+                                    <p class="mt-3 text-primary">{{
+                                        $t('label.fill_selected_supplier_on_new_transactions') }}
+                                    </p>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="payMethod" id="default"
+                                            value="cash" required>
+                                        <label class="form-check-label" for="default">{{ $t('label.default') }}</label>
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="radio" name="payMethod" id="required"
+                                            value="cash" required>
+                                        <label class="form-check-label" for="required">{{ $t('label.required')
+                                        }}</label>
+                                    </div>
+                                    <div class="mb-3 position-relative">
+                                        <label for="from" class="form-label">{{
+                                            $t('label.supplier_number') }}</label>
+                                        <input type="text" id="from" class="form-control rounded-1" />
+
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade show" id="ledger" role="tabpanel"
+                                    aria-labelledby="accounts-tab">
+                                    <p class="mt-3 text-primary">{{ $t('label.fill_selected_journal_on_new_documents')
+                                    }}
+                                    </p>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="payMethod" id="default"
+                                            value="cash" required>
+                                        <label class="form-check-label" for="default">{{ $t('label.default') }}</label>
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="radio" name="payMethod" id="required"
+                                            value="cash" required>
+                                        <label class="form-check-label" for="required">{{ $t('label.required')
+                                        }}</label>
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="radio" name="payMethod"
+                                            id="mandatory_show_same_journal_documents" value="cash" required>
+                                        <label class="form-check-label" for="mandatory_show_same_journal_documents">{{
+                                            $t('label.mandatory_show_same_journal_documents')
+                                        }}</label>
+                                    </div>
+                                    <div class="mb-3 position-relative">
+                                        <label for="from" class="form-label">{{
+                                            $t('label.journal_number') }}</label>
+                                        <input type="text" id="from" class="form-control rounded-1" />
+
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade show" id="branches" role="tabpanel"
+                                    aria-labelledby="accounts-tab">
+                                    <p class="mt-3 text-primary">{{ $t('label.branches_allowed_to_access')
+                                    }}
+                                    </p>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="payMethod" id="allowed_to_open_all_branches"
+                                            value="cash" required>
+                                        <label class="form-check-label" for="allowed_to_open_all_branches">{{ $t('label.allowed_to_open_all_branches') }}</label>
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="radio" name="payMethod" id="allowed_to_open_specified_branches"
+                                            value="cash" required>
+                                        <label class="form-check-label" for="allowed_to_open_specified_branches">{{ $t('label.allowed_to_open_specified_branches')
+                                        }}</label>
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="radio" name="payMethod"
+                                            id="not_allowed_to_open_specified_branches" value="cash" required>
+                                        <label class="form-check-label" for="not_allowed_to_open_specified_branches">{{
+                                            $t('label.not_allowed_to_open_specified_branches')
+                                        }}</label>
+                                    </div>
+                                    <div class="mb-3 position-relative">
+                                        <label for="from" class="form-label">{{
+                                            $t('label.branches') }}</label>
+                                        <input type="text" id="from" class="form-control rounded-1" />
+
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade show" id="groups" role="tabpanel"
+                                    aria-labelledby="accounts-tab">
+                                    <p class="mt-3 text-primary">{{ $t('label.groups_allowed_to_access')
+                                    }}
+                                    </p>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="payMethod" id="allowed_to_access_all_groups"
+                                            value="cash" required>
+                                        <label class="form-check-label" for="allowed_to_access_all_groups">{{ $t('label.allowed_to_access_all_groups') }}</label>
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="radio" name="payMethod" id="allowed_to_access_specified_groups"
+                                            value="cash" required>
+                                        <label class="form-check-label" for="allowed_to_access_specified_groups">{{ $t('label.allowed_to_access_specified_groups')
+                                        }}</label>
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="radio" name="payMethod"
+                                            id="not_allowed_to_access_specified_groups" value="cash" required>
+                                        <label class="form-check-label" for="not_allowed_to_access_specified_groups">{{
+                                            $t('label.not_allowed_to_access_specified_groups')
+                                        }}</label>
+                                    </div>
+                                    <div class="mb-3 position-relative">
+                                        <label for="from" class="form-label">{{
+                                            $t('label.groups') }}</label>
+                                        <input type="text" id="from" class="form-control rounded-1" />
+
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade show" id="others" role="tabpanel"
+                                    aria-labelledby="accounts-tab">
+        
+                                    <div class="mb-3 position-relative mt-3">
+                                        <label for="from" class="form-label">{{
+                                            $t('label.max_discount_percentage') }}</label>
+                                        <input type="text" id="from" class="form-control rounded-1" />
+
+                                    </div>
+                                    <div class="mb-3 position-relative">
+                                        <label for="from" class="form-label">{{
+                                            $t('label.max_discount_amount') }}</label>
+                                        <input type="text" id="from" class="form-control rounded-1" />
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
 
@@ -283,5 +679,21 @@ thead tr th {
 
 .icon-no {
     color: red;
+}
+
+.others .nav-pills {
+    background-color: #1D7342;
+}
+
+.others .nav-pills .nav-link {
+    border-radius: 0;
+    background-color: #1D7342;
+    color: #fff !important;
+    margin: 0 5px;
+}
+
+.others .nav-pills .nav-link.active {
+    background-color: #FFF;
+    color: #333 !important;
 }
 </style>
