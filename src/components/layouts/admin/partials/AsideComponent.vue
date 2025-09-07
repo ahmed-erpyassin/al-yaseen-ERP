@@ -88,6 +88,22 @@
                                 class="nav-link text-dark d-flex align-items-center justify-content-between">
                                 <span>{{ $t('aside.chart_of_accounts') }}</span>
                             </router-link>
+                            <router-link :to="{ name: 'admin.currency-rates' }"
+                                class="nav-link text-dark d-flex align-items-center justify-content-between">
+                                <span>{{ $t('label.exchange_rates') }}</span>
+                            </router-link>
+                            <router-link :to="{ name: 'admin.currency-rates-from-internet' }"
+                                class="nav-link text-dark d-flex align-items-center justify-content-between">
+                                <span>{{ $t('label.currency_rates_from_internet') }}</span>
+                            </router-link>
+                            <router-link :to="{ name: 'admin.banks' }"
+                                class="nav-link text-dark d-flex align-items-center justify-content-between">
+                                <span>{{ $t('label.banks') }}</span>
+                            </router-link>
+                            <router-link :to="{ name: 'admin.contacts' }"
+                                class="nav-link text-dark d-flex align-items-center justify-content-between">
+                                <span>{{ $t('label.contact_info') }}</span>
+                            </router-link>
                         </div>
                     </div>
                 </transition>
