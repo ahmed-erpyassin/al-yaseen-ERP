@@ -21,9 +21,13 @@ export const options = {
         },
     },
     actions: {
-        getCurrencies: function (context, payload) {
+        getCurrencies: function (context) {
             return new Promise((resolve, reject) => {
-                axios.get('currency/all', payload).then((res) => {
+                axios.get('currencies', {
+                    headers: {
+                        'Authorization': 'Bearer ' + context.rootState.auth.authToken
+                    }
+                }).then((res) => {
                     context.commit('currencies', res.data.data);
                     resolve(res);
                 }).catch((err) => {
@@ -31,9 +35,9 @@ export const options = {
                 });
             });
         },
-        getWorkTypes: function (context, payload) {
+        getWorkTypes: function (context) {
             return new Promise((resolve, reject) => {
-                axios.get('work-types/all', payload).then((res) => {
+                axios.get('work-types/all').then((res) => {
                     context.commit('workTypes', res.data.data);
                     resolve(res);
                 }).catch((err) => {
@@ -41,9 +45,9 @@ export const options = {
                 });
             });
         },
-        getCompanyTypes: function (context, payload) {
+        getCompanyTypes: function (context) {
             return new Promise((resolve, reject) => {
-                axios.get('company-types/all', payload).then((res) => {
+                axios.get('company-types/all').then((res) => {
                     context.commit('companyTypes', res.data.data);
                     resolve(res);
                 }).catch((err) => {
@@ -55,13 +59,13 @@ export const options = {
     },
     mutations: {
         currencies: function (state, payload) {
-            return state.currencies = payload;
+            state.currencies = payload;
         },
         workTypes: function (state, payload) {
-            return state.workTypes = payload;
+            state.workTypes = payload;
         },
         companyTypes: function (state, payload) {
-            return state.companyTypes = payload;
+            state.companyTypes = payload;
         },
     },
 }

@@ -14,17 +14,17 @@
 
         <ul class="nav flex-column">
             <li class="nav-item pe-2 ps-2">
-                <a class="nav-link d-flex align-items-center justify-content-between" href="#" @click="toggle(1)"
-                    :class="openBox.id == 1 && openBox.collapse ? 'bg-white text-dark' : 'text-white'">
+                <button class="nav-link w-100 text-white d-flex align-items-center justify-content-between collapsed"
+                    data-bs-toggle="collapse" data-bs-target="#new" aria-expanded="true"
+                    aria-controls="new">
                     <span class="fs-5">{{ $t('aside.New') }}</span>
-                    <i class="bi bi-chevron-down me-2"
-                        :style="openBox.id == 1 && openBox.collapse ? 'transform: rotate(180deg)' : ''"></i>
-                </a>
+                    <i class="bi bi-chevron-down me-2"></i>
+                </button>
 
-                <transition @enter="enter('new')" @leave="leave('new')" id='new'>
-                    <div v-show="openBox.collapse && openBox.id == 1" class="overflow-hidden">
+                <div class="collapse" id="new">
+                    <div>
                         <div class=" bg-white text-dark">
-                            <router-link :to="{ name: 'admin.new-customer' }"
+                            <router-link :to="{ name: 'admin.customers.create' }"
                                 class="nav-link text-dark d-flex align-items-center justify-content-between">
                                 <span>{{ $t('aside.Add Customer') }}</span>
                             </router-link>
@@ -70,19 +70,19 @@
                             </router-link>
                         </div>
                     </div>
-                </transition>
+                </div>
             </li>
 
             <li class="nav-item pe-2 ps-2">
-                <a class="nav-link d-flex align-items-center justify-content-between" href="#" @click="toggle(2)"
-                    :class="openBox.id == 2 && openBox.collapse ? 'bg-white text-dark' : 'text-white'">
+                <button class="nav-link w-100 text-white d-flex align-items-center justify-content-between collapsed"
+                    data-bs-toggle="collapse" data-bs-target="#dashboard" aria-expanded="true"
+                    aria-controls="dashboard">
                     <span class="fs-5">{{ $t('aside.home') }}</span>
-                    <i class="bi bi-chevron-down me-2"
-                        :style="openBox.id == 2 && openBox.collapse ? 'transform: rotate(180deg)' : ''"></i>
-                </a>
+                    <i class="bi bi-chevron-down me-2"></i>
+                </button>
 
-                <transition @enter="enter('dashboard')" @leave="leave('dashboard')" id='dashboard'>
-                    <div v-show="openBox.collapse && openBox.id == 2" class="overflow-hidden">
+                <div class="collapse" id="dashboard">
+                    <div>
                         <div class=" bg-white text-dark">
                             <router-link :to="{ name: 'admin.account-list' }"
                                 class="nav-link text-dark d-flex align-items-center justify-content-between">
@@ -106,18 +106,18 @@
                             </router-link>
                         </div>
                     </div>
-                </transition>
+                </div>
             </li>
             <li class="nav-item pe-2 ps-2">
-                <a class="nav-link d-flex align-items-center justify-content-between" href="#" @click="toggle(3)"
-                    :class="openBox.id == 3 && openBox.collapse ? 'bg-white text-dark' : 'text-white'">
+                <button class="nav-link w-100 text-white d-flex align-items-center justify-content-between collapsed"
+                    data-bs-toggle="collapse" data-bs-target="#sales" aria-expanded="true"
+                    aria-controls="sales">
                     <span class="fs-5">{{ $t('aside.sales') }}</span>
-                    <i class="bi bi-chevron-down me-2"
-                        :style="openBox.id == 3 && openBox.collapse ? 'transform: rotate(180deg)' : ''"></i>
-                </a>
+                    <i class="bi bi-chevron-down me-2"></i>
+                </button>
 
-                <transition @enter="enter('sales')" @leave="leave('sales')" id='sales'>
-                    <div v-show="openBox.collapse && openBox.id == 3" class="overflow-hidden">
+                <div class="collapse" id="sales">
+                    <div>
                         <div class=" bg-white text-dark">
                             <router-link :to="{ name: 'admin.customers' }"
                                 class="nav-link text-dark d-flex align-items-center justify-content-between">
@@ -157,18 +157,18 @@
                             </router-link>
                         </div>
                     </div>
-                </transition>
+                </div>
             </li>
             <li class="nav-item pe-2 ps-2">
-                <a class="nav-link d-flex align-items-center justify-content-between" href="#" @click="toggle(4)"
-                    :class="openBox.id == 4 && openBox.collapse ? 'bg-white text-dark' : 'text-white'">
+                <button class="nav-link w-100 text-white d-flex align-items-center justify-content-between collapsed"
+                    data-bs-toggle="collapse" data-bs-target="#purchases" aria-expanded="true"
+                    aria-controls="purchases">
                     <span class="fs-5">{{ $t('aside.purchases') }}</span>
-                    <i class="bi bi-chevron-down me-2"
-                        :style="openBox.id == 4 && openBox.collapse ? 'transform: rotate(180deg)' : ''"></i>
-                </a>
+                    <i class="bi bi-chevron-down me-2"></i>
+                </button>
 
-                <transition @enter="enter('purchases')" @leave="leave('purchases')" id='purchases'>
-                    <div v-show="openBox.collapse && openBox.id == 4" class="overflow-hidden">
+                <div class="collapse" id="purchases">
+                    <div>
                         <div class=" bg-white text-dark">
                             <router-link :to="{ name: 'admin.purchase.suppliers' }"
                                 class="nav-link text-dark d-flex align-items-center justify-content-between">
@@ -208,19 +208,18 @@
                             </router-link>
                         </div>
                     </div>
-                </transition>
+                </div>
             </li>
             <li class="nav-item pe-2 ps-2">
-                <a class="nav-link d-flex align-items-center justify-content-between" href="#" @click="toggle(5)"
-                    :class="openBox.id == 5 && openBox.collapse ? 'bg-white text-dark' : 'text-white'">
+                <button class="nav-link w-100 text-white d-flex align-items-center justify-content-between collapsed"
+                    data-bs-toggle="collapse" data-bs-target="#receipts_and_payments" aria-expanded="true"
+                    aria-controls="receipts_and_payments">
                     <span class="fs-5">{{ $t('aside.receipts_and_payments') }}</span>
-                    <i class="bi bi-chevron-down me-2"
-                        :style="openBox.id == 5 && openBox.collapse ? 'transform: rotate(180deg)' : ''"></i>
-                </a>
+                    <i class="bi bi-chevron-down me-2"></i>
+                </button>
 
-                <transition @enter="enter('receipts_and_payments')" @leave="leave('receipts_and_payments')"
-                    id='receipts_and_payments'>
-                    <div v-show="openBox.collapse && openBox.id == 5" class="overflow-hidden">
+                <div class="collapse" id="receipts_and_payments">
+                    <div>
                         <div class=" bg-white text-dark">
                             <router-link :to="{ name: 'admin.recipts-and-payments.recipts' }"
                                 class="nav-link text-dark d-flex align-items-center justify-content-between">
@@ -244,7 +243,7 @@
                             </router-link>
                         </div>
                     </div>
-                </transition>
+                </div>
             </li>
             <li class="nav-item pe-2 ps-2">
                 <router-link :to="{ name: 'admin.projects' }"
@@ -255,15 +254,15 @@
 
             </li>
             <li class="nav-item pe-2 ps-2">
-                <a class="nav-link d-flex align-items-center justify-content-between" href="#" @click="toggle(6)"
-                    :class="openBox.id == 6 && openBox.collapse ? 'bg-white text-dark' : 'text-white'">
+                <button class="nav-link w-100 text-white d-flex align-items-center justify-content-between collapsed"
+                    data-bs-toggle="collapse" data-bs-target="#cheques" aria-expanded="true"
+                    aria-controls="cheques">
                     <span class="fs-5">{{ $t('aside.cheques') }}</span>
-                    <i class="bi bi-chevron-down me-2"
-                        :style="openBox.id == 6 && openBox.collapse ? 'transform: rotate(180deg)' : ''"></i>
-                </a>
+                    <i class="bi bi-chevron-down me-2"></i>
+                </button>
 
-                <transition @enter="enter('cheques')" @leave="leave('cheques')" id='cheques'>
-                    <div v-show="openBox.collapse && openBox.id == 6" class="overflow-hidden">
+                <div class="collapse" id="cheques">
+                    <div>
                         <div class=" bg-white text-dark">
                             <router-link :to="{ name: 'admin.cheques.incoming_checks' }"
                                 class="nav-link text-dark d-flex align-items-center justify-content-between">
@@ -315,7 +314,7 @@
                             </router-link>
                         </div>
                     </div>
-                </transition>
+                </div>
             </li>
             <li class="nav-item pe-2 ps-2">
                 <button class="nav-link w-100 text-white d-flex align-items-center justify-content-between collapsed"
@@ -444,7 +443,8 @@
             </li>
             <li class="nav-item pe-2 ps-2">
                 <button class="nav-link w-100 text-white d-flex align-items-center justify-content-between collapsed"
-                    data-bs-toggle="collapse" data-bs-target="#taxes" aria-expanded="true" aria-controls="taxes">
+                    data-bs-toggle="collapse" data-bs-target="#taxes" aria-expanded="true"
+                    aria-controls="taxes">
                     <span class="fs-5">{{ $t('label.taxes') }}</span>
                     <i class="bi bi-chevron-down me-2"></i>
                 </button>
@@ -462,7 +462,8 @@
             </li>
             <li class="nav-item pe-2 ps-2">
                 <button class="nav-link w-100 text-white d-flex align-items-center justify-content-between collapsed"
-                    data-bs-toggle="collapse" data-bs-target="#reports" aria-expanded="true" aria-controls="taxes">
+                    data-bs-toggle="collapse" data-bs-target="#reports" aria-expanded="true"
+                    aria-controls="reports">
                     <span class="fs-5">{{ $t('label.reports') }}</span>
                     <i class="bi bi-chevron-down me-2"></i>
                 </button>

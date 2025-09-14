@@ -73,7 +73,7 @@
 
 export default {
 
-    name: "AccountsListComponent",
+    name: "EmployeesComponent",
     data() {
 
         return {
@@ -88,8 +88,6 @@ export default {
                     { name: this.$t('label.currency'), status: true },
                     { name: this.$t('label.sales_representative'), status: true },
                 ]
-
-
             }
         }
 
@@ -106,13 +104,11 @@ export default {
 
 <style>
 .header th {
-
-    background-color: #F4FFF0 !important;
-
+    background-color: #eee !important;
 }
 
 .btn-action {
-    background-color: #F4FFF0 !important;
+    background-color: #eee !important;
 }
 
 .actions i {

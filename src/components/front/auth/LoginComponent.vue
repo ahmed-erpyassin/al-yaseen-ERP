@@ -86,10 +86,8 @@ export default {
         this.isLoading = false;
     },
     computed: {
-        aceessToken: function () {
-
-            return this.$store.getters['auth/accessToken'];
-
+        authToken: function () {
+            return this.$store.getters['auth/authToken'];
         }
     },
     methods: {
@@ -100,11 +98,11 @@ export default {
             this.$store.dispatch('auth/login', this.form).then(res => {
                 this.isLoading = false;
 
-                if (res.data.success) {
-                    localStorage.setItem('accessToken', res.data.token); // save token
+                if (res.data.token) {
+                    // Token is already saved in the auth store
                     this.$router.push("/admin");
                 } else {
-                    alert(res.data.message);
+                    alert(res.data.message || "Login failed");
                 }
             }).catch(err => {
                 this.isLoading = false;

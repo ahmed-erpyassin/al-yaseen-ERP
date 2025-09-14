@@ -23,9 +23,14 @@ import CreateCreditNoticeComponent from "@/components/admin/purchases/creditNoti
 export default [
 
     {
-        path: "new-customer",
+        path: "customers/create",
         component: CreateCustomerComponent,
-        name: "admin.new-customer"
+        name: "admin.customers.create"
+    },
+    {
+        path: "customers/:id/edit",
+        component: () => import("@/components/admin/sales/customers/EditCustomerComponent.vue"),
+        name: "admin.customers.edit"
     },
     {
         path: "new-supplier",
@@ -72,10 +77,14 @@ export default [
         path: "new-sales-invoice",
         component: CreateSaleInvoiceComponent,
         name : "admin.new-sales-invoice"
-    },{
-        path: "new-price-offer",
+    },    {
+        path: "outgoing-offers/create",
         component: CreateOfferPriceComponent,
-        name : "admin.new-price-offer"
+        name : "admin.outgoing-offers.create"
+    },{
+        path: "outgoing-offers/:id/edit",
+        component: () => import("@/components/admin/sales/issuedQuotations/EditOfferComponent.vue"),
+        name: "admin.outgoing-offers.edit"
     },{
         path: "new-order",
         component: CreateOrderComponent,

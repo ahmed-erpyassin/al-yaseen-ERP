@@ -27,6 +27,12 @@ const baseRoutes = [
     name: "about",
     component: () => import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
   },
+  // 404 Not Found Route - must be last
+  {
+    path: "/:pathMatch(.*)*",
+    name: "not-found",
+    component: () => import(/* webpackChunkName: "not-found" */ "../views/NotFoundView.vue"),
+  },
 ];
 
 // Admin Routes with Layout
@@ -51,9 +57,31 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
 });
+// Authentication middleware function
+const requireAuth = (to, from, next) => {
+  const authStatus = localStorage.getItem('authStatus') === 'true';
+  const authToken = localStorage.getItem('authToken');
+  
+  // Check if the route is an admin route
+  const isAdminRoute = to.path.startsWith('/admin');
+  
+  if (isAdminRoute && (!authStatus || !authToken)) {
+    // Redirect to login if accessing admin routes without proper auth
+    return next({ name: "auth.login" });
+  }
+  
+  // If user is authenticated and trying to access login/register, redirect to admin dashboard
+  if (authStatus && authToken && (to.name === "auth.login" || to.name === "auth.register")) {
+    return next({ name: "admin.dashboard" });
+  }
+  
+  next();
+};
+
 router.beforeEach((to, from, next) => {
   const step = localStorage.getItem("resetStep");
 
+  // Handle password reset flow
   if (to.name === "auth.otp" && step !== "email_sent") {
     return next({ name: "auth.forget-password" });
   }
@@ -66,6 +94,7 @@ router.beforeEach((to, from, next) => {
     return next({ name: "auth.forget-password" });
   }
 
-  next();
+  // Apply authentication middleware
+  requireAuth(to, from, next);
 });
 export default router;

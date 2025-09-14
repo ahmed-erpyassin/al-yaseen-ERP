@@ -37,9 +37,32 @@ async function bootstrapApp() {
   }
 
   // إعداد axios
-  axios.defaults.baseURL = "https://api.alyaseenerp.com/public/api";
+  axios.defaults.baseURL = "https://api.alyaseenerp.com/public/api/v1";
   axios.defaults.headers.common["Accept"] = "application/json";
   axios.defaults.headers.common["Content-Type"] = "application/json";
+
+  // إضافة interceptor للتعامل مع الأخطاء
+  axios.interceptors.response.use(
+    (response) => response,
+    (error) => {
+      // التحقق من رسالة "Unauthenticated"
+      if (error.response && error.response.data && error.response.data.message === "Unauthenticated.") {
+        // مسح بيانات المصادقة من localStorage
+        localStorage.removeItem('authStatus');
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('authBranchId');
+        
+        // إعادة توجيه إلى صفحة تسجيل الدخول باستخدام Vue Router
+        if (window.$router) {
+          window.$router.push({ name: 'auth.login' });
+        } else {
+          // Fallback إذا لم يكن Vue Router متاحاً
+          window.location.href = '/auth/login';
+        }
+      }
+      return Promise.reject(error);
+    }
+  );
 
   // إنشاء التطبيق
   createApp(App)
@@ -48,6 +71,9 @@ async function bootstrapApp() {
     .use(store)
     .use(router)
     .mount("#app");
+
+  // جعل router متاحاً عالمياً للـ interceptor
+  window.$router = router;
 }
 
 

@@ -4,18 +4,36 @@ export const auth = {
     namespaced: true,
 
     state: {
-        accessToken: localStorage.getItem('accessToken') || null,
+        authStatus: localStorage.getItem('authStatus') === 'true' || false,
+        authToken: localStorage.getItem('authToken') || null,
+        authBranchId: localStorage.getItem('authBranchId') || 0,
     },
     getters: {
+        authStatus: function (state) {
+            return state.authStatus;
+        },
+        authToken: function (state) {
+            return state.authToken;
+        },
+        authBranchId: function (state) {
+            return state.authBranchId;
+        },
+        isAuthenticated: function (state) {
+            return state.authStatus && !!state.authToken;
+        },
         accessToken: function (state) {
-            return state.accessToken;
+            return state.authToken;
         }
     },
     actions: {
         login: function (context, payload) {
             return new Promise((resolve, reject) => {
                 axios.post('auth/login', payload).then((res) => {
-                    context.commit('accessToken', res.data.token);
+                    context.commit('setAuthData', {
+                        authStatus: true,
+                        authToken: res.data.token,
+                        authBranchId: res.data.branch_id || 0
+                    });
                     resolve(res);
                 }).catch((err) => {
                     reject(err);
@@ -25,7 +43,11 @@ export const auth = {
         register: function (context, payload) {
             return new Promise((resolve, reject) => {
                 axios.post('auth/register', payload).then((res) => {
-                    context.commit('accessToken', res.data.token);
+                    context.commit('setAuthData', {
+                        authStatus: true,
+                        authToken: res.data.token,
+                        authBranchId: res.data.branch_id || 0
+                    });
                     resolve(res);
                 }).catch((err) => {
                     reject(err);
@@ -64,7 +86,7 @@ export const auth = {
                 axios.post('auth/create-company', payload, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
-                        'Authorization': 'Bearer ' + auth.state.accessToken
+                        'Authorization': 'Bearer ' + context.state.authToken
                     }
                 }).then((res) => {
                     resolve(res);
@@ -72,13 +94,33 @@ export const auth = {
                     reject(err);
                 });
             });
+        },
+        logout: function (context) {
+            return new Promise((resolve) => {
+                // Clear auth data from localStorage and state
+                localStorage.removeItem('authStatus');
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('authBranchId');
+                context.commit('clearAuthData');
+                resolve();
+            });
         }
     },
     mutations: {
-        accessToken: function (state, payload) {
-
-            state.accessToken = payload;
-
+        setAuthData: function (state, payload) {
+            state.authStatus = payload.authStatus;
+            state.authToken = payload.authToken;
+            state.authBranchId = payload.authBranchId;
+            
+            // Save to localStorage
+            localStorage.setItem('authStatus', payload.authStatus);
+            localStorage.setItem('authToken', payload.authToken);
+            localStorage.setItem('authBranchId', payload.authBranchId);
+        },
+        clearAuthData: function (state) {
+            state.authStatus = false;
+            state.authToken = null;
+            state.authBranchId = 0;
         }
     },
 }

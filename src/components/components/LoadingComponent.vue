@@ -39,7 +39,7 @@ export default {
 
 .overlay {
     position: fixed;
-    z-index: 9;
+    z-index: 9999;
     background-color: #fff;
     width: 100%;
     height: 100vh;
