@@ -117,10 +117,20 @@ export default [
         path: "new-credit-notice",
         component: CreateCreditNoticeComponent,
         name : "admin.new-credit-notice"
-    },{
+    },    {
         path: "new-expense",
         component: CreateExpenseComponent,
         name : "admin.new-expense"
+    },
+    {
+        path: "payment-form",
+        component: () => import("@/components/admin/sales/payments/PaymentFormComponent.vue"),
+        name: "admin.payment-form"
+    },
+    {
+        path: "tasks",
+        component: () => import("@/components/admin/tasks/TasksComponent.vue"),
+        name: "admin.tasks"
     },
 
 

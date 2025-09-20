@@ -15,7 +15,8 @@
                     <i class="bi bi-gear-fill fs-4 me-3" data-bs-toggle="modal" data-bs-target="#settings"></i>
 
                     <!-- Checklist Icon -->
-                    <i class="bi bi-clipboard-check fs-4 me-3"></i>
+                     <router-link :to="{ name: 'admin.tasks' }" class="text-white"><i class="bi bi-clipboard-check fs-4 me-3"></i></router-link>
+                    
 
                     <!-- Bell Icon with Red Notification Dot -->
                     <div class="position-relative me-3">
@@ -180,6 +181,11 @@ export default {
             } else if (route.name === 'admin.outgoing-offers.edit') {
                 items.push({ label: 'breadcrumb.outgoing_offers', route: { name: 'admin.outgoing-offers' } });
                 items.push({ label: 'label.edit_offer', route: null });
+            } else if (route.name === 'admin.payment-form') {
+                items.push({ label: 'breadcrumb.sales', route: { name: 'admin.customers' } });
+                items.push({ label: 'breadcrumb.payment_form', route: null });
+            } else if (route.name === 'admin.tasks') {
+                items.push({ label: 'breadcrumb.tasks', route: null });
             }
             
             return items;
@@ -292,3 +298,6 @@ export default {
     display: inline-block;
 }
 </style>
+
+
+
