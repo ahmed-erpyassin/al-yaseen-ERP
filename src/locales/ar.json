@@ -35,8 +35,11 @@
     "company_undefined": "اسم الشركة غير معرف",
     "customer_information": "معلومات العميل",
     "customer_type": "نوع العميل",
+<<<<<<< HEAD
     "page": "صفحة",
     "of": "من",
+=======
+>>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
     "shipments_incoming": "الإرساليات الواردة",
     "search_account": "البحث عن حساب",
     "edit": "تعديل",
@@ -650,7 +653,10 @@
     "items": "الاصناف",
     "search_item": "البحث عن صنف",
     "item_number": "رقم الصنف",
+<<<<<<< HEAD
     "manufacturing_number": "رقم المعادلة",
+=======
+>>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
     "item_description": "بيان الصنف",
     "model": "موديل",
     "min_limit": "الحد الأدنى",
@@ -737,9 +743,12 @@
     "item": "الصنف",
     "manufacture_items_from_warehouse": "تصنيع الأصناف من المخزن",
     "raw_materials_warehouse": "مخزن المواد الخام",
+<<<<<<< HEAD
     "finished_product_warehouse": "مخزن المنتج النهائي",
     "select_warehouse": "اختر المخزن",
     "manufacturing_duration": "مدة التصنيع",
+=======
+>>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
     "cost_calculation_based_on": "إحتساب التكلفة على",
     "no_calculation": "بدون حساب",
     "warehouse_number": "رقم المخزن",
@@ -1500,10 +1509,13 @@
     "code_unique": "هذا الكود مستخدم بالفعل"
   },
   "messages": {
+<<<<<<< HEAD
     "item_deleted": "تم حذف العنصر بنجاح!",
     "item_delete_failed": "فشل في حذف العنصر. يرجى المحاولة مرة أخرى.",
     "confirm_delete": "هل أنت متأكد من أنك تريد حذف هذا العنصر؟",
 
+=======
+>>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
     "customer_created_successfully": "تم إنشاء العميل بنجاح!",
     "customer_creation_failed": "فشل في إنشاء العميل. يرجى المحاولة مرة أخرى.",
     "customer_updated_successfully": "تم تحديث العميل بنجاح!",
@@ -1513,7 +1525,10 @@
     "customer_load_failed": "فشل في تحميل بيانات العميل.",
     "customer_not_found": "العميل غير موجود.",
     "confirm_delete_customer": "هل أنت متأكد من أنك تريد حذف هذا العميل؟",
+<<<<<<< HEAD
 
+=======
+>>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
     "quotation_created_successfully": "تم إنشاء العرض بنجاح!",
     "quotation_creation_failed": "فشل في إنشاء العرض. يرجى المحاولة مرة أخرى.",
     "quotation_updated_successfully": "تم تحديث العرض بنجاح!",
@@ -1674,7 +1689,11 @@
       "button": "ابدأ التجربة المجانية"
     }
   },
+<<<<<<< HEAD
 "buttons": {
+=======
+  "buttons": {
+>>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
     "save": "حفظ",
     "cancel": "إلغاء",
     "save&email": "حفظ وإرسال",
@@ -1699,6 +1718,7 @@
     "add_record": "إضافة سجل",
     "add_document": "إضافة وثيقة",
     "previous": "السابق",
+<<<<<<< HEAD
     "next": "التالي",
     "add": "اضافة",
     "import_export": "استيراد/تصدير",
@@ -1708,6 +1728,10 @@
     "print": "طباعة"
 },
 
+=======
+    "next": "التالي"
+  },
+>>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
   "placeholder": {
     "task_name": "أدخل اسم المهمة",
     "task_notes": "أدخل ملاحظات المهمة",
@@ -1750,4 +1774,8 @@
     "goHome": "الصفحة الرئيسية",
     "help": "إذا كنت تعتقد أن هذا خطأ، يرجى الاتصال بالدعم الفني."
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
