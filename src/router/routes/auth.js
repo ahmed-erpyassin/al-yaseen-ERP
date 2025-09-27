@@ -20,7 +20,8 @@ export default [
     component: ForgetPasswordComponent,
     name: "auth.forget-password",
   }, {
-    path: "/otp/:token",
+    // path: "/otp/:token",
+    path: "/otp",
     component: OtpComponent,
     name: "auth.otp",
     props: true

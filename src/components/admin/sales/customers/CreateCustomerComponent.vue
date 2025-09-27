@@ -317,13 +317,14 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import VueSelect from 'vue-select';
+// import VueSelect from 'vue-select';
+import Vue3Select from 'vue3-select';
 import LoadingComponent from '@/components/components/LoadingComponent.vue';
 
 export default {
     name: 'CreateCustomerComponent',
     // eslint-disable-next-line vue/no-unused-components
-    components: { VueSelect, LoadingComponent },
+    components: { Vue3Select, LoadingComponent },
     data() {
         return {
             form: {

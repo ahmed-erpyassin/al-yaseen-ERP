@@ -16,11 +16,10 @@
                             <div class=" position-relative group">
 
                                 <input type="text" id="first_name" class="form-control rounded-0"
-                                    v-model="form.firstname" />
+                                    v-model="form.first_name" />
                                 <i class="bi bi-person"></i>
                             </div>
-                            <p class="form-text text-danger" v-if="errors.firstname">{{ errors.firstname[0] }}</p>
-
+                            <p class="form-text text-danger" v-if="errors.first_name">{{ errors.first_name[0] }}</p>
 
                         </div>
                     </div>
@@ -30,9 +29,9 @@
                             <div class=" position-relative group">
 
                                 <input type="text" id="second_name" class="form-control rounded-0"
-                                    v-model="form.secondname" />
+                                    v-model="form.second_name" />
                             </div>
-                            <p class="form-text text-danger" v-if="errors.secondname">{{ errors.secondname[0] }}</p>
+                            <p class="form-text text-danger" v-if="errors.second_name">{{ errors.second_name[0] }}</p>
 
                         </div>
                     </div>
@@ -56,6 +55,8 @@
                         <input type="tel" id="phone" class="form-control rounded-0 w-100" v-model="form.phone" />
                     </div>
                     <p class="form-text text-danger" v-if="errors.phone">{{ errors.phone[0] }}</p>
+                    <p class="form-text text-danger" v-if="errors.phone_country_code">{{ errors.phone_country_code[0] }}
+                    </p>
 
                 </div>
                 <div class="form-check ">
@@ -76,7 +77,7 @@
                 </div>
                 <div class="mb-3 mt-4 position-relative">
                     <label for="password_confirmtion" class="form-label">{{ $t('label.password_confirmtion')
-                        }}</label>
+                    }}</label>
                     <div class=" position-relative group">
 
                         <input type="password" id="password_confirmtion" class="form-control rounded-0"
@@ -112,16 +113,18 @@ import intlTelInput from 'intl-tel-input';
 
 export default {
     name: "RegisterComponent",
-    components: { LogoComponent },
+    components: {
+        LogoComponent
+    },
     data() {
         return {
             form: {
-                firstname: null,
-                secondname: null,
+                first_name: null,
+                second_name: null,
                 email: null,
-                country_code: null,
                 phone: null,
-                allows_emails: false,
+                phone_country_code: null,
+                // allows_emails: false,
                 password: null,
                 password_confirmation: null,
             },
@@ -138,35 +141,47 @@ export default {
             containerClass: 'w-100',
 
         });
-        this.form.country_code = this.iti.getSelectedCountryData().dialCode;
+        this.form.phone_country_code = this.iti.getSelectedCountryData().dialCode;
 
         input.addEventListener("countrychange", () => {
-            this.form.country_code = this.iti.getSelectedCountryData().dialCode;
+            this.form.phone_country_code = this.iti.getSelectedCountryData().dialCode;
         });
-
 
     },
     methods: {
         register: function () {
             this.$store.dispatch('auth/register', this.form).then(res => {
-                if (res.data.success) {
-                    localStorage.setItem('accessToken', res.data.token); // save token
-                    this.$router.push({ name: "auth.create-company" });
+
+                if (res.status === 201) {
+                    this.$router.push({
+                        name: "auth.login",
+                        query: { registered: true }
+                    });
                 } else {
                     alert(res.data.message);
                 }
+
+                // if (res.data.success) {
+                //     localStorage.setItem('accessToken', res.data.token); // save token
+                //     this.$router.push({
+                //         name: "auth.create-company"
+                //     });
+                // } else {
+                //     alert(res.data.message);
+                // }
+
             }).catch(err => {
                 if (err.response && err.response.status === 422) {
                     this.errors = err.response.data.errors;
                 } else {
                     this.errorMsg = "Something went wrong";
-
                 }
             });
         },
     },
 };
 </script>
+
 <style scoped>
 .form {
 

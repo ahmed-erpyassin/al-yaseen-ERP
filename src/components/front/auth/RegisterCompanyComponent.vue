@@ -32,9 +32,9 @@
                             <div class="item">
                                 <div class="mb-3 position-relative">
                                     <label for="company_type" class="form-label">{{ $t('label.company_field')
-                                    }}</label>
+                                        }}</label>
 
-                                    <VueSelect v-model="form.company_type" :options="companyTypes"
+                                    <Vue3Select v-model="form.company_type" :options="companyTypes"
                                         :label="locale === 'ar' ? 'title_ar' : 'title_en'"
                                         :reduce="company => company.id" placeholder="" />
                                 </div>
@@ -46,14 +46,14 @@
                             <div class="item">
                                 <div class="mb-3 position-relative">
                                     <label for="company_address" class="form-label">{{ $t('label.company_address')
-                                    }}</label>
+                                        }}</label>
                                     <input type="text" v-model="form.company_address" id="company_address"
                                         class="form-control rounded-1"
                                         :placeholder="$t('label.company_address_placeholder')" />
                                 </div>
                                 <p class='text-danger form-text' v-if="errors.company_address">{{
                                     errors.company_address[0]
-                                    }}
+                                }}
                                 </p>
 
                             </div>
@@ -91,7 +91,7 @@
                             <div class="item">
                                 <div class="mb-3 position-relative">
                                     <label for="work_type" class="form-label">{{ $t('label.work_type') }}</label>
-                                    <VueSelect v-model="form.work_type" :options="workTypes"
+                                    <Vue3Select v-model="form.work_type" :options="workTypes"
                                         :label="locale === 'ar' ? 'title_ar' : 'title_en'"
                                         :reduce="workType => workType.id" placeholder="" />
                                 </div>
@@ -130,8 +130,7 @@
                             <div class="form-check mb-3">
                                 <input type="checkbox" v-model="form.allow_emails"
                                     class="form-check-input rounded-circle" id="remember" />
-                                <label class="form-check-label" for="remember">{{ $t('label.messages_push')
-                                }}</label>
+                                <label class="form-check-label" for="remember">{{ $t('label.messages_push') }}</label>
                             </div>
                             <h4 class="mb-5">{{ $t('label.taxHeading') }}</h4>
                         </div>
@@ -139,8 +138,8 @@
                         <div class="col-md-6">
                             <div class="item">
                                 <div class="mb-3 position-relative">
-                                    <label for="income_tax_rate" class="form-label">{{ $t('label.income_tax_rate')
-                                    }}</label>
+                                    <label for="income_tax_rate" class="form-label">{{
+                                        $t('label.income_tax_rate')}}</label>
                                     <input type="text" v-model="form.income_tax_rate" id="income_tax_rate"
                                         class="form-control rounded-1" placeholder="20%" />
                                 </div>
@@ -151,8 +150,7 @@
 
                             <div class="item">
                                 <div class="mb-3 position-relative">
-                                    <label for="fiscal_year" class="form-label">{{ $t('label.fiscal_year')
-                                    }}</label>
+                                    <label for="fiscal_year" class="form-label">{{ $t('label.fiscal_year') }}</label>
                                     <input type="text" v-model="form.fiscal_year" id="fiscal_year"
                                         class="form-control rounded-1" placeholder="2026" />
                                 </div>
@@ -165,7 +163,7 @@
                                 <div class="mb-3 position-relative">
                                     <label for="currency" class="form-label">{{ $t('label.currency') }}</label>
 
-                                    <VueSelect v-model="form.currency_id" :options="currencies"
+                                    <Vue3Select v-model="form.currency_id" :options="currencies"
                                         :label="locale === 'ar' ? 'name_ar' : 'name_en'"
                                         :reduce="currency => currency.id" placeholder="" />
 
@@ -180,7 +178,7 @@
                             <div class="item">
                                 <div class="mb-3 position-relative">
                                     <label for="added_tax_rate" class="form-label">{{ $t('label.added_tax_rate')
-                                    }}</label>
+                                        }}</label>
                                     <input type="text" v-model="form.vat_rate" id="added_tax_rate"
                                         class="form-control rounded-1" placeholder="20%" />
                                 </div>
@@ -227,14 +225,21 @@ import NavbarLogoComponent from '../components/NavbarLogoComponent.vue'
 import 'intl-tel-input/build/css/intlTelInput.css'
 import intlTelInput from 'intl-tel-input'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
-import VueSelect from 'vue-select'
+// import VueSelect from 'vue-select'
+import Vue3Select from 'vue3-select'
 import LoadingComponent from '@/components/components/LoadingComponent.vue'
-import { useI18n } from 'vue-i18n'
-
+import {
+    useI18n
+} from 'vue-i18n'
 
 export default {
     name: 'RegisterCompany',
-    components: { NavbarLogoComponent, LanguageSwitcher, VueSelect, LoadingComponent },
+    components: {
+        NavbarLogoComponent,
+        LanguageSwitcher,
+        Vue3Select,
+        LoadingComponent
+    },
     data() {
         return {
             isLoading: true,
@@ -292,7 +297,9 @@ export default {
         input.addEventListener("countrychange", () => {
             this.form.country_code = this.iti.getSelectedCountryData().dialCode;
         });
-        const { locale } = useI18n();
+        const {
+            locale
+        } = useI18n();
         this.locale = locale.value;
         await this.$store.dispatch('options/getCurrencies');
         await this.$store.dispatch('options/getWorkTypes');
@@ -339,7 +346,6 @@ export default {
                     this.errors = err.response.data.errors;
                 } else {
                     this.errorMsg = "Something went wrong";
-
                 }
             });
         },

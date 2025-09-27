@@ -94,7 +94,7 @@
                                             <label for="company_type" class="form-label">{{ $t('label.company_field')
                                                 }}</label>
 
-                                            <VueSelect v-model="form.company_type" :options="companyTypes"
+                                            <Vue3Select v-model="form.company_type" :options="companyTypes"
                                                 :label="locale === 'ar' ? 'title_ar' : 'title_en'"
                                                 :reduce="company => company.id" placeholder="" />
                                         </div>
@@ -156,7 +156,7 @@
                                         <div class="mb-3 position-relative">
                                             <label for="work_type" class="form-label">{{ $t('label.work_type')
                                             }}</label>
-                                            <VueSelect v-model="form.work_type" :options="workTypes"
+                                            <Vue3Select v-model="form.work_type" :options="workTypes"
                                                 :label="locale === 'ar' ? 'title_ar' : 'title_en'"
                                                 :reduce="workType => workType.id" placeholder="" />
                                         </div>
@@ -232,7 +232,7 @@
                                         <div class="mb-3 position-relative">
                                             <label for="currency" class="form-label">{{ $t('label.currency') }}</label>
 
-                                            <VueSelect v-model="form.currency_id" :options="currencies"
+                                            <Vue3Select v-model="form.currency_id" :options="currencies"
                                                 :label="locale === 'ar' ? 'name_ar' : 'name_en'"
                                                 :reduce="currency => currency.id" placeholder="" />
 
@@ -951,11 +951,12 @@
 <script>
 import 'intl-tel-input/build/css/intlTelInput.css'
 import intlTelInput from 'intl-tel-input'
-import VueSelect from 'vue-select'
+// import VueSelect from 'vue-select'
+import Vue3Select from 'vue3-select'
 import { useI18n } from 'vue-i18n'
 export default {
     name: "GroupDataComponent",
-    components: { VueSelect },
+    components: { Vue3Select },
 
     data() {
         return {

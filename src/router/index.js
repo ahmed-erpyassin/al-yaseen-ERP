@@ -61,20 +61,20 @@ const router = createRouter({
 const requireAuth = (to, from, next) => {
   const authStatus = localStorage.getItem('authStatus') === 'true';
   const authToken = localStorage.getItem('authToken');
-  
+
   // Check if the route is an admin route
   const isAdminRoute = to.path.startsWith('/admin');
-  
+
   if (isAdminRoute && (!authStatus || !authToken)) {
     // Redirect to login if accessing admin routes without proper auth
     return next({ name: "auth.login" });
   }
-  
+
   // If user is authenticated and trying to access login/register, redirect to admin dashboard
   if (authStatus && authToken && (to.name === "auth.login" || to.name === "auth.register")) {
     return next({ name: "admin.dashboard" });
   }
-  
+
   next();
 };
 
@@ -82,9 +82,9 @@ router.beforeEach((to, from, next) => {
   const step = localStorage.getItem("resetStep");
 
   // Handle password reset flow
-  if (to.name === "auth.otp" && step !== "email_sent") {
-    return next({ name: "auth.forget-password" });
-  }
+  // if (to.name === "auth.otp" && step !== "email_sent") {
+  //   return next({ name: "auth.forget-password" });
+  // }
 
   if (to.name === "auth.password-reset" && step !== "otp_verified") {
     return next({ name: "auth.forget-password" });
