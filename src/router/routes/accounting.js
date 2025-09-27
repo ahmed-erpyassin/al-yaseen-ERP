@@ -14,8 +14,6 @@ import CreateEntryComponent from "@/components/admin/accounting/journalEntries/C
 import JournalEntriesComponent from "@/components/admin/accounting/journalEntries/JournalEntriesComponent.vue";
 
 export default [
-
-
     {
         path: 'accounting',
         children: [

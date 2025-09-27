@@ -83,6 +83,7 @@
     </div>
 </template>
 
+<<<<<<< HEAD
 <script setup>
 import { ref, reactive } from 'vue';
 import Swal from 'sweetalert2';
@@ -129,6 +130,142 @@ const successMsg = ref(null);
 const handleFileUpload = (event) => {
     const files = Array.from(event.target.files);
     form.attachments.push(...files);
+=======
+<script>
+import { mapActions, mapGetters } from 'vuex';
+<<<<<<< HEAD
+// import VueSelect from 'vue-select';
+import Vue3Select from 'vue3-select';
+=======
+<<<<<<< HEAD
+import Select from 'vue3-select';
+import 'vue3-select/dist/vue3-select.css';
+=======
+import VueSelect from 'vue-select';
+>>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
+>>>>>>> 993524366d9251d18f8ed0bd241476c8902bea33
+import LoadingComponent from '@/components/components/LoadingComponent.vue';
+
+export default {
+    name: 'CreateCustomerComponent',
+    // eslint-disable-next-line vue/no-unused-components
+<<<<<<< HEAD
+    components: { Vue3Select, LoadingComponent },
+=======
+<<<<<<< HEAD
+    components: { Select, LoadingComponent },
+=======
+    components: { VueSelect, LoadingComponent },
+>>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
+>>>>>>> 993524366d9251d18f8ed0bd241476c8902bea33
+    data() {
+        return {
+            form: {
+                company_id: 1,
+                branch_id: 1,
+                currency_id: 1,
+                employee_id: 1,
+                country_id: 1,
+                region_id: 1,
+                city_id: 1,
+                customer_number: '',
+                company_name: '',
+                first_name: '',
+                second_name: '',
+                contact_name: '',
+                email: '',
+                phone: '',
+                mobile: '',
+                address_one: '',
+                address_two: '',
+                postal_code: '',
+                licensed_operator: '',
+                tax_number: '',
+                notes: '',
+                status: 'active',
+                code: '',
+                invoice_type: '',
+                category: '',
+                attachments: []
+            },
+            errors: {},
+            errorMsg: null,
+            successMsg: null,
+            isLoading: false,
+            currencies: [
+                { id: 1, name_en: 'USD', name_ar: 'دولار أمريكي' },
+                { id: 2, name_en: 'EUR', name_ar: 'يورو' },
+                { id: 3, name_en: 'SAR', name_ar: 'ريال سعودي' },
+                { id: 4, name_en: 'AED', name_ar: 'درهم إماراتي' },
+                { id: 5, name_en: 'EGP', name_ar: 'جنيه مصري' }
+            ]
+        };
+    },
+    computed: {
+        ...mapGetters('customer', [
+            'loading',
+            'error'
+        ]),
+        locale() {
+            return this.$i18n.locale;
+        }
+    },
+    methods: {
+        ...mapActions('customer', [
+            'createCustomer'
+        ]),
+        
+        async handleSubmit() {
+            this.errors = {};
+            this.errorMsg = null;
+            this.successMsg = null; // Clear previous success message
+            this.isLoading = true; // Start loading
+            
+            try {
+                await this.createCustomer(this.form);
+                // Show success message in div
+                this.successMsg = this.$t('messages.customer_created_successfully');
+                
+                // Redirect to customers list after showing success message for 2 seconds
+                setTimeout(() => {
+                    this.$router.push({ name: 'admin.customers' });
+                }, 2000);
+            } catch (error) {
+                console.error('Failed to create customer:', error);
+                
+                // Handle API validation errors like LoginComponent
+                if (error.response && error.response.status === 422) {
+                    // Validation errors - show field-specific errors
+                    this.errors = error.response.data.errors;
+                } else if (error.response && error.response.status === 401) {
+                    // Unauthorized - show general error message
+                    this.errorMsg = error.response.data.message;
+                } else if (error.response && error.response.data && error.response.data.message) {
+                    // Other API errors with message
+                    this.errorMsg = error.response.data.message;
+                } else {
+                    // Generic error
+                    this.errorMsg = this.$t('messages.customer_creation_failed') || 'Failed to create customer. Please try again.';
+                }
+            } finally {
+                this.isLoading = false; // Stop loading
+            }
+        },
+        
+        handleFileUpload(event) {
+            const files = Array.from(event.target.files);
+            this.form.attachments = [...this.form.attachments, ...files];
+        },
+        
+        removeAttachment(index) {
+            this.form.attachments.splice(index, 1);
+        },
+        
+        handleCancel() {
+            this.$router.push({ name: 'admin.customers' });
+        }
+    }
+>>>>>>> ebdf308c2aa2efebfd0b93f3642b12b029ce45a6
 };
 
 // حفظ النموذج مع رسالة نجاح

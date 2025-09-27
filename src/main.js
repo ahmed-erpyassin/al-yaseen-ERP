@@ -37,7 +37,7 @@ async function bootstrapApp() {
   }
 
   // إعداد axios
-  axios.defaults.baseURL = "https://api.alyaseenerp.com/public/api/v1";
+  axios.defaults.baseURL = "https://alyaseenerp.com/api/v1";
   axios.defaults.headers.common["Accept"] = "application/json";
   axios.defaults.headers.common["Content-Type"] = "application/json";
 

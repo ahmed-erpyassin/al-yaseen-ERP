@@ -98,6 +98,16 @@
                                                 :label="locale === 'ar' ? 'title_ar' : 'title_en'"
                                                 :reduce="company => company.id" placeholder="" />
 
+<<<<<<< HEAD
+=======
+=======
+                                                }}</label>
+
+                                            <Vue3Select v-model="form.company_type" :options="companyTypes"
+                                                :label="locale === 'ar' ? 'title_ar' : 'title_en'"
+                                                :reduce="company => company.id" placeholder="" />
+>>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
+>>>>>>> ebdf308c2aa2efebfd0b93f3642b12b029ce45a6
                                         </div>
                                         <p class='text-danger form-text' v-if="errors.company_type">{{
                                             errors.company_type[0] }}
@@ -157,7 +167,17 @@
                                         <div class="mb-3 position-relative">
                                             <label for="work_type" class="form-label">{{ $t('label.work_type')
                                                 }}</label>
+<<<<<<< HEAD
+=======
+=======
+                                            }}</label>
+<<<<<<< HEAD
+                                            <Vue3Select v-model="form.work_type" :options="workTypes"
+=======
+>>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
+>>>>>>> ebdf308c2aa2efebfd0b93f3642b12b029ce45a6
                                             <VueSelect v-model="form.work_type" :options="workTypes"
+>>>>>>> 993524366d9251d18f8ed0bd241476c8902bea33
                                                 :label="locale === 'ar' ? 'title_ar' : 'title_en'"
                                                 :reduce="workType => workType.id" placeholder="" />
                                         </div>
@@ -233,7 +253,7 @@
                                         <div class="mb-3 position-relative">
                                             <label for="currency" class="form-label">{{ $t('label.currency') }}</label>
 
-                                            <VueSelect v-model="form.currency_id" :options="currencies"
+                                            <Vue3Select v-model="form.currency_id" :options="currencies"
                                                 :label="locale === 'ar' ? 'name_ar' : 'name_en'"
                                                 :reduce="currency => currency.id" placeholder="" />
 
@@ -953,12 +973,35 @@
 <script>
 import 'intl-tel-input/build/css/intlTelInput.css'
 import intlTelInput from 'intl-tel-input'
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+// import VueSelect from 'vue-select'
+import Vue3Select from 'vue3-select'
+import { useI18n } from 'vue-i18n'
+export default {
+    name: "GroupDataComponent",
+    components: { Vue3Select },
+=======
+<<<<<<< HEAD
+>>>>>>> ebdf308c2aa2efebfd0b93f3642b12b029ce45a6
 import Select from "vue3-select";
 import "vue3-select/dist/vue3-select.css";
 import { useI18n } from 'vue-i18n'
 export default {
     name: "GroupDataComponent",
     components: { Select },
+<<<<<<< HEAD
+=======
+=======
+import VueSelect from 'vue-select'
+import { useI18n } from 'vue-i18n'
+export default {
+    name: "GroupDataComponent",
+    components: { VueSelect },
+>>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
+>>>>>>> 993524366d9251d18f8ed0bd241476c8902bea33
+>>>>>>> ebdf308c2aa2efebfd0b93f3642b12b029ce45a6
 
     data() {
         return {

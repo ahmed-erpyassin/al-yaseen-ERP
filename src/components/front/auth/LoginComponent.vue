@@ -7,41 +7,46 @@
                     <LogoComponent />
                     <p class="text-center fs-5 fw-bold mt-3 mb-5">{{ $t('label.login_now') }}</p>
                 </div>
+
+                <!-- ✅ رسالة نجاح عند التسجيل -->
+                <div class="alert alert-success" v-if="successMsg">{{ successMsg }}</div>
+
+                <!-- ❌ رسالة خطأ عامة -->
                 <div class="alert alert-danger" v-if="errorMsg">{{ errorMsg }}</div>
+
                 <div class="mb-3 position-relative">
                     <label for="email" class="form-label">{{ $t('label.email') }}</label>
                     <div class=" position-relative group">
-
                         <input type="email" id="email" class="form-control rounded-0" v-model="form.email"
                             placeholder="yassin2029@gmail.com" />
                         <i class="bi bi-envelope"></i>
                     </div>
                     <p class="form-text text-danger" v-if="errors.email">{{ errors.email[0] }}</p>
-
                 </div>
 
                 <div class="mb-3 mt-4 position-relative">
                     <label for="password" class="form-label">{{ $t('label.password') }}</label>
                     <div class=" position-relative group">
-
                         <input type="password" id="password" class="form-control rounded-0" v-model="form.password"
                             placeholder="******" />
                         <i class="bi bi-lock"></i>
                     </div>
                     <p class="form-text text-danger" v-if="errors.password">{{ errors.password[0] }}</p>
-
                 </div>
+
                 <div class="d-flex align-items-center justify-content-between mb-3">
                     <div class="form-check ">
                         <input type="checkbox" class="form-check-input rounded-circle" id="remember"
                             v-model="form.remember" />
                         <label class="form-check-label" for="remember">{{ $t('label.rememberMe') }}</label>
                     </div>
-                    <router-link :to="{ name: 'auth.forget-password' }" class="small d-block  forget-password">{{
-                        $t('label.forgetYourPassword') }}</router-link>
+                    <router-link :to="{ name: 'auth.forget-password' }" class="small d-block  forget-password">
+                        {{ $t('label.forgetYourPassword') }}
+                    </router-link>
                 </div>
 
                 <button class="btn btn-main w-100 rounded-0 text-white">{{ $t('label.login') }}</button>
+
                 <div class="or_cont position-relative">
                     <div class="text-center my-3 or">{{ $t('label.or') }}</div>
                     <div class='border border-solid or-border'></div>
@@ -52,21 +57,22 @@
                     <img src="@/assets/icons/socials/google.png" alt="Google" width="30" style="cursor: pointer" />
                     <img src="@/assets/icons/socials/apple.png" alt="Apple" width="30" style="cursor: pointer" />
                 </div>
-
             </form>
+
             <div class="d-flex align-items-center justify-content-center mt-5">
                 <p class="mb-0">{{ $t('label.not_have_account') }}</p>
-                <router-link :to="{ name: 'auth.register' }" class="text-decoration-none sign-up-action">{{
-                    $t('label.register') }}</router-link>
+                <router-link :to="{ name: 'auth.register' }" class="text-decoration-none sign-up-action">
+                    {{ $t('label.register') }}
+                </router-link>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-
 import LogoComponent from '../components/LogoComponent.vue';
 import LoadingComponent from '@/components/components/LoadingComponent.vue';
+
 export default {
     name: "LoginComponent",
     components: { LogoComponent, LoadingComponent },
@@ -80,10 +86,16 @@ export default {
             },
             errors: [],
             errorMsg: null,
+            successMsg: null, // ✅ لإظهار رسالة نجاح بعد التسجيل
         };
     },
     mounted() {
         this.isLoading = false;
+
+        // ✅ إذا جاي من التسجيل
+        if (this.$route.query.registered) {
+            this.successMsg = "تم التسجيل بنجاح، الرجاء التحقق من بريدك الإلكتروني.";
+        }
     },
     computed: {
         authToken: function () {
@@ -94,38 +106,54 @@ export default {
         login: function () {
             this.errors = [];
             this.errorMsg = null;
+            this.successMsg = null;
             this.isLoading = true;
+
             this.$store.dispatch('auth/login', this.form).then(res => {
                 this.isLoading = false;
 
-                if (res.data.token) {
-                    // Token is already saved in the auth store
-                    this.$router.push("/admin");
+                if (res.data.token && res.data.user) {
+                    const user = res.data.user;
+
+                    // ✅ تحقق إذا المستخدم لسا مش مفعل OTP
+                    if (user.otp_expires_at) {
+                        this.$router.push({
+                            name: "auth.otp",
+                            params: { token: res.data.token }
+                        });
+                    } else {
+                        // ✅ المستخدم مفعل خلاص → دخله على لوحة التحكم
+                        this.$router.push("/admin");
+                    }
                 } else {
                     alert(res.data.message || "Login failed");
                 }
             }).catch(err => {
                 this.isLoading = false;
 
+
                 if (err.response && err.response.status === 422) {
                     this.errors = err.response.data.errors;
                 } else if (err.response && err.response.status === 401) {
                     this.errorMsg = err.response.data.message;
+                } else if (err.response && err.response.status === 403) {
+                    this.errorMsg = err.response.data.message || "Please verify your phone before logging in.";
+                    this.$router.push({
+                        name: "auth.otp",
+                    });
                 } else {
                     this.errorMsg = "Something went wrong";
-
                 }
             });
         },
     },
 };
 </script>
+
 <style scoped>
 .form {
-
     max-width: 500px;
     margin: auto;
-
 }
 
 .form label,

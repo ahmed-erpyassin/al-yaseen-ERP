@@ -31,7 +31,7 @@ export const auth = {
                 axios.post('auth/login', payload).then((res) => {
                     context.commit('setAuthData', {
                         authStatus: true,
-                        authToken: res.data.token,
+                        authToken: res.data.user.token,
                         authBranchId: res.data.branch_id || 0
                     });
                     resolve(res);
@@ -44,8 +44,8 @@ export const auth = {
             return new Promise((resolve, reject) => {
                 axios.post('auth/register', payload).then((res) => {
                     context.commit('setAuthData', {
-                        authStatus: true,
-                        authToken: res.data.token,
+                        authStatus: false,
+                        authToken: "",
                         authBranchId: res.data.branch_id || 0
                     });
                     resolve(res);
