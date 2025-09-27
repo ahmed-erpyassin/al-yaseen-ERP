@@ -74,6 +74,10 @@ const requireAuth = (to, from, next) => {
   // if (authStatus && authToken && (to.name === "auth.login" || to.name === "auth.register")) {
   //   return next({ name: "admin.dashboard" });
   // }
+<<<<<<< HEAD
+
+  
+=======
   const authStatus = localStorage.getItem('authStatus') === 'true';
   const authToken = localStorage.getItem('authToken');
 
@@ -90,6 +94,7 @@ const requireAuth = (to, from, next) => {
     return next({ name: "admin.dashboard" });
   }
 
+>>>>>>> ebdf308c2aa2efebfd0b93f3642b12b029ce45a6
   next();
 };
 

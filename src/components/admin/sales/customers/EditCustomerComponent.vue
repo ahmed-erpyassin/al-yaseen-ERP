@@ -294,14 +294,49 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
+<<<<<<< HEAD
 // import VueSelect from 'vue-select';
 import Vue3Select from 'vue3-select';
+=======
+<<<<<<< HEAD
+import Select from "vue3-select";
+import "vue3-select/dist/vue3-select.css";
+=======
+<<<<<<< HEAD
+// import VueSelect from 'vue-select';
+import Vue3Select from 'vue3-select';
+=======
+<<<<<<< HEAD
+import Select from "vue3-select";
+import "vue3-select/dist/vue3-select.css";
+=======
+import VueSelect from 'vue-select';
+>>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
+>>>>>>> 993524366d9251d18f8ed0bd241476c8902bea33
+>>>>>>> ebdf308c2aa2efebfd0b93f3642b12b029ce45a6
+>>>>>>> a178603e0020e54dbb9e51af640313bf6318008f
 import LoadingComponent from '@/components/components/LoadingComponent.vue';
 
 export default {
     name: 'EditCustomerComponent',
     // eslint-disable-next-line vue/no-unused-components
+<<<<<<< HEAD
     components: { Vue3Select, LoadingComponent },
+=======
+<<<<<<< HEAD
+    components: { Select, LoadingComponent },
+=======
+<<<<<<< HEAD
+    components: { Vue3Select, LoadingComponent },
+=======
+<<<<<<< HEAD
+    components: { Select, LoadingComponent },
+=======
+    components: { VueSelect, LoadingComponent },
+>>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
+>>>>>>> 993524366d9251d18f8ed0bd241476c8902bea33
+>>>>>>> ebdf308c2aa2efebfd0b93f3642b12b029ce45a6
+>>>>>>> a178603e0020e54dbb9e51af640313bf6318008f
     data() {
         return {
             form: {

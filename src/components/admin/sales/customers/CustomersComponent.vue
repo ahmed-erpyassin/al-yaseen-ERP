@@ -2,165 +2,303 @@
     <LoadingComponent :isLoading="isLoading" />
     <div class="container pe-5 ps-5">
         <h1><i class="bi bi-image"></i> {{ $t('label.company_undefined') }}</h1>
-        <div class="d-flex align-items-center justify-content-end">
-            <router-link :to="{ name: 'admin.customers.create' }" class="btn btn-lg btn-main">{{ $t('buttons.create') }}</router-link>
+
+        <div class="d-flex align-items-center justify-content-end mb-3">
+            <!-- Add Button -->
+            <router-link :to="{ name: 'admin.customers.create' }" class="btn btn-lg btn-main me-3">
+                {{ $t('buttons.add') }}
+            </router-link>
+
+            <!-- Import/Export Dropdown -->
+            <div class="dropdown">
+                <button class="btn btn-lg btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    {{ $t('buttons.import_export') }}
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end p-2">
+                    <li>
+                        <label class="dropdown-item mb-0" style="cursor: pointer;">
+                            {{ $t('buttons.import_excel') }}
+                            <input type="file" @change="importExcel" accept=".xlsx, .xls" class="d-none" />
+                        </label>
+                    </li>
+                    <li><button class="dropdown-item" @click="exportExcel">{{ $t('buttons.export_excel') }}</button>
+                    </li>
+                    <li><button class="dropdown-item" @click="exportPDF">{{ $t('buttons.export_pdf') }}</button></li>
+                    <li><button class="dropdown-item" @click="printTable">{{ $t('buttons.print') }}</button></li>
+                </ul>
+            </div>
         </div>
-        <div class="row">
+
+        <div class="row mb-4">
             <div class="col-12">
-                <h3 class="mb-5">{{ $t('label.customers') }}</h3>
+                <h3>{{ $t('label.customers') }}</h3>
             </div>
         </div>
-        <div class="d-flex align-items-center actions mb-3">
-            <div class='search me-2 mb-3'>
+
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <!-- Search Bar (col-9) -->
+            <div class="search-bar d-flex align-items-center flex-grow-1 me-3">
                 <i class="bi bi-search me-2"></i>
-                <span class="text-main">{{ $t('label.search_account') }}</span>
+                <input type="text" class="form-control" :placeholder="$t('label.search')" v-model="searchQuery" />
             </div>
-            <div class='edit me-4 mb-3'>
-                <i class="bi bi-pencil me-2"></i>
-                <span class="text-main">{{ $t('label.edit') }}</span>
-            </div>
-            <div class="dropdown mb-3">
-                <i class="bi bi-gear" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                </i>
+
+            <!-- Column Toggle Dropdown (col-3) -->
+            <div class="dropdown">
+                <i class="bi bi-gear" type="button" data-bs-toggle="dropdown" aria-expanded="false"
+                    style="font-size:1.5rem;cursor:pointer;"></i>
                 <ul class="dropdown-menu align-center rounded-0 p-2" style="width: 250px;">
-                    <li v-for="(visible, column) in tableColumns" :key="column">
+                    <li v-for="(field, index) in table.fields" :key="field.key">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" :checked="visible" 
-                                   :id="'col-' + column" @change="handleToggleColumn(column)">
-                            <label class="form-check-label" :for="'col-' + column">
-                                {{ $t('label.' + column) }}
-                            </label>
+                            <input class="form-check-input" type="checkbox" v-model="field.status"
+                                :id="'col-' + index" />
+                            <label class="form-check-label" :for="'col-' + index">{{ field.name }}</label>
                         </div>
                     </li>
                 </ul>
             </div>
         </div>
-        <div class="d-flex align-items-center justify-content-end">
-            <div class="pages">
 
-                <p class="text-main mb-0">{{ $t('label.customers') }}</p>
-                <p class="text-main mb-0">{{ $t('label.customer_financial_movement') }}</p>
-                <p class="text-main mb-0">{{ $t('label.store_customer_movement') }}</p>
-            </div>
-        </div>
         <div class="table-responsive">
             <table class="table table-bordered text-center align-middle">
                 <thead>
                     <tr class="header">
-                        <th v-if="tableColumns.customer_number">{{ $t('label.customer_number') }}</th>
-                        <th v-if="tableColumns.customer_name">{{ $t('label.customer_name') }}</th>
-                        <th v-if="tableColumns.balance">{{ $t('label.balance') }}</th>
-                        <th v-if="tableColumns.currency">{{ $t('label.currency') }}</th>
-                        <th v-if="tableColumns.branch">{{ $t('label.branch') }}</th>
-                        <th v-if="tableColumns.date_of_last_movement">{{ $t('label.date_of_last_movement') }}</th>
-                        <th v-if="tableColumns.mobile">{{ $t('label.mobile') }}</th>
-                        <th v-if="tableColumns.sales_representative">{{ $t('label.sales_representative') }}</th>
+                        <th v-for="field in visibleFields" :key="field.key">{{ field.name }}</th>
                         <th>{{ $t('label.actions') }}</th>
                     </tr>
                 </thead>
                 <tbody class="table-body form">
                     <tr v-if="loading">
-                        <td :colspan="Object.keys(tableColumns).filter(col => tableColumns[col]).length + 1" class="text-center">
+                        <td :colspan="visibleFields.length + 1" class="text-center">
                             <div class="spinner-border" role="status">
                                 <span class="visually-hidden">Loading...</span>
                             </div>
                         </td>
                     </tr>
-                    <tr v-else-if="filteredCustomers.length === 0">
-                        <td :colspan="Object.keys(tableColumns).filter(col => tableColumns[col]).length + 1" class="text-center">
-                            No customers found
-                        </td>
+                    <tr v-else-if="paginatedItems.length === 0">
+                        <td :colspan="visibleFields.length + 1" class="text-center">No items found</td>
                     </tr>
-                    <tr v-else v-for="customer in filteredCustomers" :key="customer.id">
-                        <td v-if="tableColumns.customer_number">{{ customer.customer_number || customer.id }}</td>
-                        <td v-if="tableColumns.customer_name">{{ customer.contact_name || customer.first_name + ' ' + customer.second_name }}</td>
-                        <td v-if="tableColumns.balance">{{ customer.balance || '0.00' }}</td>
-                        <td v-if="tableColumns.currency">{{ customer.currency_name || 'USD' }}</td>
-                        <td v-if="tableColumns.branch">{{ customer.branch_name || 'Main' }}</td>
-                        <td v-if="tableColumns.date_of_last_movement">{{ customer.updated_at ? new Date(customer.updated_at).toLocaleDateString() : '-' }}</td>
-                        <td v-if="tableColumns.mobile">{{ customer.mobile || '-' }}</td>
-                        <td v-if="tableColumns.sales_representative">{{ customer.employee_name || '-' }}</td>
-                        <td>
-                            <div class="d-flex gap-2 justify-content-center">
-                                <button type="button" class="btn btn-sm btn-main text-white" @click="handleEdit(customer.id)">
-                                    <i class="bi bi-pencil me-1"></i>{{ $t('buttons.edit') }}
-                                </button>
-                                <button type="button" class="btn btn-sm btn-outline-danger" @click="handleDelete(customer.id)">
-                                    <i class="bi bi-trash me-1"></i>{{ $t('buttons.delete') }}
-                                </button>
-                            </div>
+                    <tr v-else v-for="item in paginatedItems" :key="item.id">
+                        <td v-for="field in visibleFields" :key="field.key">{{ item[field.key] }}</td>
+                        <td class="text-center">
+                            <i class="bi bi-eye action-icon me-2" :title="$t('buttons.check')"
+                                @click="viewItem(item)"></i>
+                            <i class="bi bi-pencil action-icon me-2" :title="$t('buttons.edit')"
+                                @click="editItem(item)"></i>
+                            <i class="bi bi-trash action-icon" :title="$t('buttons.delete')"
+                                @click="deleteItem(item)"></i>
                         </td>
                     </tr>
                 </tbody>
             </table>
-
         </div>
+
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <button class="btn btn-secondary" @click="prevPage" :disabled="currentPage === 1">
+                {{ $t('buttons.previous') }}
+            </button>
+            <span>{{ $t('label.page') }} {{ currentPage }} {{ $t('label.of') }} {{ totalPages }}</span>
+            <button class="btn btn-secondary" @click="nextPage" :disabled="currentPage === totalPages">
+                {{ $t('buttons.next') }}
+            </button>
+        </div>
+
+        <!-- View Customer Modal -->
+        <div class="modal fade" id="viewItemModal" tabindex="-1" aria-labelledby="viewItemModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title" id="viewItemModalLabel">
+                            {{ selectedItem?.customer_name || 'تفاصيل الزبون' }}
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" @click="closeModal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table table-borderless">
+                            <tbody>
+                                <tr>
+                                    <th>رقم العميل:</th>
+                                    <td>{{ selectedItem?.customer_number }}</td>
+                                    <th>الرصيد:</th>
+                                    <td>{{ selectedItem?.balance }} {{ selectedItem?.currency }}</td>
+                                </tr>
+                                <tr>
+                                    <th>الفرع:</th>
+                                    <td>{{ selectedItem?.branch }}</td>
+                                    <th>تاريخ آخر حركة:</th>
+                                    <td>{{ selectedItem?.date_of_last_movement }}</td>
+                                </tr>
+                                <tr>
+                                    <th>الجوال:</th>
+                                    <td>{{ selectedItem?.mobile }}</td>
+                                    <th>مندوب المبيعات:</th>
+                                    <td>{{ selectedItem?.sales_representative }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" @click="closeModal">{{$t('buttons.close')}}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
     </div>
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
 import LoadingComponent from '@/components/components/LoadingComponent.vue';
+import Swal from "sweetalert2";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import * as bootstrap from 'bootstrap';
 
 export default {
-    name: 'CustomersComponent',
+    name: 'ItemsComponent',
     components: { LoadingComponent },
     data() {
         return {
-            isLoading: false
+            isLoading: false,
+            searchQuery: "",
+            currentPage: 1,
+            perPage: 10,
+            loading: false,
+            showModal: false,
+            selectedItem: null,
+            items: Array.from({ length: 20 }, (_, i) => ({
+                id: i + 1,
+                customer_number: `CUST-${1000 + i}`,
+                customer_name: `الزبون ${i + 1}`,
+                balance: (Math.random() * 1000).toFixed(2),
+                currency: ["USD", "ILS", "EUR"][i % 3],
+                branch: ["الرئيسي", "فرع غزة", "فرع رام الله"][i % 3],
+                date_of_last_movement: new Date(2025, i % 12, (i + 1) * 2).toISOString().split('T')[0],
+                mobile: `059${1000000 + i}`,
+                sales_representative: `مندوب ${i + 1}`
+            })),
+            table: {
+                fields: [
+                    { name: 'رقم العميل', key: 'customer_number', status: true },
+                    { name: 'اسم الزبون', key: 'customer_name', status: true },
+                    { name: 'الرصيد', key: 'balance', status: true },
+                    { name: 'العملة', key: 'currency', status: true },
+                    { name: 'الفرع', key: 'branch', status: true },
+                    { name: 'تاريخ آخر حركة', key: 'date_of_last_movement', status: true },
+                    { name: 'الجوال', key: 'mobile', status: true },
+                    { name: 'مندوب المبيعات', key: 'sales_representative', status: true }
+                ]
+            }
         };
     },
     computed: {
-        ...mapGetters('customer', [
-            'customers',
-            'loading',
-            'error',
-            'filteredCustomers',
-            'tableColumns'
-        ])
-    },
-    mounted() {
-        this.loadCustomers();
+        visibleFields() { return this.table.fields.filter(f => f.status); },
+        filteredItems() {
+            if (!this.searchQuery) return this.items;
+            const query = this.searchQuery.toLowerCase();
+            return this.items.filter(item =>
+                (item.customer_number?.toLowerCase().includes(query)) ||
+                (item.customer_name?.toLowerCase().includes(query)) ||
+                (item.mobile?.includes(query))
+            );
+        },
+        paginatedItems() {
+            const start = (this.currentPage - 1) * this.perPage;
+            return this.filteredItems.slice(start, start + this.perPage);
+        },
+        totalPages() {
+            return Math.ceil(this.filteredItems.length / this.perPage);
+        }
     },
     methods: {
-        ...mapActions('customer', [
-            'fetchCustomers',
-            'deleteCustomer',
-            'toggleColumn'
-        ]),
-        
-        async loadCustomers() {
-            try {
-                await this.fetchCustomers();
-            } catch (error) {
-                console.error('Failed to load customers:', error);
-            }
+        viewItem(item) {
+            this.selectedItem = item;
+            const modalEl = document.getElementById('viewItemModal');
+            const modal = new bootstrap.Modal(modalEl);
+            modal.show();
         },
-        
-        async handleDelete(customerId) {
-            if (confirm(this.$t('messages.confirm_delete_customer'))) {
-                this.isLoading = true; // Start loading
-                try {
-                    await this.deleteCustomer(customerId);
-                    this.loadCustomers();
-                } catch (error) {
-                    console.error('Failed to delete customer:', error);
-                } finally {
-                    this.isLoading = false; // Stop loading
+        closeModal() {
+            const modalEl = document.getElementById('viewItemModal');
+            const modal = bootstrap.Modal.getInstance(modalEl);
+            if (modal) modal.hide();
+            this.selectedItem = null;
+        },
+        editItem(item) { console.log('Edit', item); },
+        deleteItem(item) {
+            Swal.fire({
+                title: 'هل أنت متأكد من الحذف؟',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'حذف',
+                cancelButtonText: 'إلغاء'
+            }).then(result => {
+                if (result.isConfirmed) {
+                    this.items = this.items.filter(i => i.id !== item.id);
                 }
-            }
+            });
         },
-        
-        handleEdit(customerId) {
-            // Navigate to edit customer page
-            this.$router.push({ name: 'admin.customers.edit', params: { id: customerId } });
+        prevPage() { if (this.currentPage > 1) this.currentPage--; },
+        nextPage() { if (this.currentPage < this.totalPages) this.currentPage++; },
+
+        // --- Import/Export/Print ---
+        importExcel(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: "array" });
+                const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+                const jsonData = XLSX.utils.sheet_to_json(worksheet);
+                jsonData.forEach(item => {
+                    this.items.push({
+                        id: this.items.length + 1,
+                        customer_number: item.customer_number || `CUST-${this.items.length + 1}`,
+                        customer_name: item.customer_name || "No Name",
+                        balance: item.balance || 0,
+                        currency: item.currency || "USD",
+                        branch: item.branch || "Main",
+                        date_of_last_movement: item.date_of_last_movement || null,
+                        mobile: item.mobile || "-",
+                        sales_representative: item.sales_representative || "-"
+                    });
+                });
+            };
+            reader.readAsArrayBuffer(file);
         },
-        
-        handleToggleColumn(columnName) {
-            this.toggleColumn(columnName);
+        exportExcel() {
+            const ws = XLSX.utils.json_to_sheet(this.items);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Customers");
+            const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+            saveAs(new Blob([wbout], { type: "application/octet-stream" }), "Customers.xlsx");
+        },
+        exportPDF() {
+            const doc = new jsPDF();
+            const columns = this.visibleFields.map(f => ({ header: f.name, dataKey: f.key }));
+            const rows = this.items.map(item =>
+                this.visibleFields.reduce((acc, field) => { acc[field.key] = item[field.key]; return acc; }, {})
+            );
+            autoTable(doc, { columns, body: rows, startY: 20, styles: { fontSize: 8 }, headStyles: { fillColor: [29, 115, 66] } });
+            doc.save("customers.pdf");
+        },
+        printTable() {
+            const printContent = this.$el.querySelector('.table-responsive').innerHTML;
+            const WinPrint = window.open('', '', 'width=900,height=650');
+            WinPrint.document.write('<html><head><title>Print</title></head><body>');
+            WinPrint.document.write(printContent);
+            WinPrint.document.write('</body></html>');
+            WinPrint.document.close();
+            WinPrint.focus();
+            WinPrint.print();
+            WinPrint.close();
         }
     }
+
 };
 </script>
 
@@ -169,7 +307,6 @@ export default {
     background-color: #F4FFF0 !important;
 }
 
-/* Action buttons styling */
 .btn-main {
     background-color: #28a745;
     border-color: #28a745;
@@ -184,49 +321,47 @@ export default {
     transform: translateY(-1px);
 }
 
-.btn-outline-danger {
+.table-image {
+    max-width: 50px;
+    height: 50px;
+    object-fit: cover;
     border-radius: 4px;
-    font-weight: 500;
-    transition: all 0.2s ease;
+    transition: transform 0.2s;
 }
 
-.btn-outline-danger:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
+.table-image:hover {
+    transform: scale(1.1);
 }
 
-/* Button icons */
-.btn i {
-    font-size: 0.875rem;
+.action-icon {
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: transform 0.2s, color 0.3s, opacity 0.3s;
 }
 
-/* Table action column */
-.table td:last-child {
-    vertical-align: middle;
-    text-align: center;
+.action-icon.bi-eye {
+    color: #0d6efd;
 }
 
-.btn-action {
-    background-color: #F4FFF0 !important;
+.action-icon.bi-pencil {
+    color: #ffc107;
 }
 
-.actions i {
-    font-size: 30px;
+.action-icon.bi-trash {
+    color: #dc3545;
 }
 
-.actions span {
-    font-size: 24px;
+.action-icon:hover {
+    transform: scale(1.2);
+    opacity: 0.8;
 }
 
-.dropdown .show {
-    color: #1D7342
+.modal {
+    display: block;
+    background: rgba(0, 0, 0, 0.5);
 }
 
-.form-check-input:checked[type=checkbox] {
-    border-radius: 50%;
-    background-color: #1D7342 !important;
-}
-.pages p {
-    font-size: 25px;
+.modal-dialog {
+    margin-top: 10%;
 }
 </style>

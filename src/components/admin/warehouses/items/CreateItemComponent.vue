@@ -1,13 +1,13 @@
 <template>
     <div class="container pe-5 ps-5">
         <h1><i class="bi bi-image"></i> {{ $t('label.company_undefined') }}</h1>
-        <div class="d-flex align-items-center justify-content-end">
-            <button class="btn btn-lg btn-outline-secondary me-3">{{ $t('buttons.cancel') }}</button>
-<<<<<<< HEAD
-            <button class="btn btn-lg btn-success">
+        <div class="d-flex align-items-center justify-content-end mb-4">
+            <button type="button" class="btn btn-lg btn-outline-secondary me-3" @click="cancelForm">
+                {{ $t('buttons.cancel') }}
+            </button>
+            <button type="button" class="btn btn-lg btn-success" @click="saveForm">
                 {{ $t('buttons.save') }}
             </button>
-
         </div>
         <form class="form">
             <div class="row">
@@ -67,18 +67,8 @@
                         </div>
                     </form>
                 </div>
-
-=======
-            <div class="dropdown">
-                <button class="btn btn-lg btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                    aria-expanded="false">
-                    {{ $t('buttons.save') }}
-                </button>
-                <ul class="dropdown-menu bg-main text-light">
-                    <li><a class="dropdown-item" href="#">{{ $t('buttons.save&print') }}</a></li>
-                </ul>
             </div>
-        </div>
+        </form>
         <form class="form">
             <div class="row">
                 <div class="col-12">
@@ -146,7 +136,6 @@
                         </div>
                     </div>
                 </div>
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
                 <div class="col-12">
                     <h3 class="mb-5">{{ $t('label.units') }}</h3>
                 </div>
@@ -239,12 +228,8 @@
                 <div class="col-md-4">
                     <div class="item mb-4">
                         <div class="mb-3 position-relative">
-<<<<<<< HEAD
                             <label for="buy_account" class="form-label">{{ $t('label.second_unit_item_number')
                                 }}</label>
-=======
-                            <label for="buy_account" class="form-label">{{ $t('label.second_unit_item_number') }}</label>
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
 
                             <input type="text" id="buy_account" class="form-control rounded-1" />
 
@@ -355,12 +340,8 @@
                 <div class="col-md-4">
                     <div class="item mb-4">
                         <div class="mb-3 position-relative">
-<<<<<<< HEAD
                             <label for="buy_account" class="form-label">{{ $t('label.selling_discount_percentage')
                                 }}</label>
-=======
-                            <label for="buy_account" class="form-label">{{ $t('label.selling_discount_percentage') }}</label>
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
 
                             <input type="text" id="buy_account" class="form-control rounded-1" />
 
@@ -370,12 +351,8 @@
                 <div class="col-md-4">
                     <div class="item mb-4">
                         <div class="mb-3 position-relative">
-<<<<<<< HEAD
                             <label for="buy_account" class="form-label">{{ $t('label.max_discount_percentage')
                                 }}</label>
-=======
-                            <label for="buy_account" class="form-label">{{ $t('label.max_discount_percentage') }}</label>
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
 
                             <input type="text" id="buy_account" class="form-control rounded-1" />
 
@@ -431,12 +408,8 @@
                 <div class="col-md-4">
                     <div class="item mb-4">
                         <div class="mb-3 position-relative">
-<<<<<<< HEAD
                             <label for="buy_account" class="form-label">{{ $t('label.purchase_discount_percentage')
                                 }}</label>
-=======
-                            <label for="buy_account" class="form-label">{{ $t('label.purchase_discount_percentage') }}</label>
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
 
                             <input type="text" id="buy_account" class="form-control rounded-1" />
 
@@ -462,7 +435,7 @@
                 <div class="col-12">
                     <h3 class="mb-4">{{ $t('label.other_info') }}</h3>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <div class="item mb-4">
                         <div class="mb-3 position-relative group">
                             <label for="buy_account" class="form-label">{{ $t('label.barcode') }}</label>
@@ -472,27 +445,40 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
+                    <div class="item mb-4">
+                        <div class="mb-3 position-relative">
+                            <label for="barcode_type" class="form-label">{{ $t('label.barcode_type') }}</label>
+                            <select id="barcode_type" class="form-control">
+                                <option value="">{{ $t('label.select_barcode_type') }}</option>
+                                <option value="code128">Code 128</option>
+                                <option value="ean13">EAN-13</option>
+                                <option value="qr">QR Code</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
                     <div class="item mb-4">
                         <div class="mb-3 position-relative ">
                             <label for="buy_account" class="form-label">{{ $t('label.expire_date') }}</label>
 
-                            <input type="text" id="buy_account" class="form-control rounded-1" />
+                            <input type="date" id="buy_account" class="form-control rounded-1" />
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4"></div>
-                <div class="col-md-4">
-                    <div class="item mb-5">
+                <div class="col-md-6">
+                    <div class="item mb-4" for="add_image">
                         <div class="mb-3 position-relative group">
-                            <label for="buy_account" class="form-label">{{ $t('label.add_image') }}</label>
-
-                            <input type="text" id="buy_account" class="form-control rounded-1" />
+                            <label for="add_image" class="form-label">{{ $t('label.add_image') }}</label>
+                            <input type="file" id="add_image" class="form-control rounded-1" />
                             <i class="bi bi-image"></i>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
+
+                <div class="col-md-6">
                     <div class="item mb-5">
                         <div class="mb-3 position-relative">
                             <label for="buy_account" class="form-label">{{ $t('label.category_type') }}</label>
@@ -512,3 +498,39 @@
         </form>
     </div>
 </template>
+
+<script setup>
+import Swal from 'sweetalert2'          // Import SweetAlert2 for nice alert popups
+import { useRouter } from 'vue-router'  // Import Vue Router to navigate between pages
+import { useI18n } from 'vue-i18n'      // Import i18n for translations
+
+const router = useRouter()              // Initialize router instance
+const { t } = useI18n()                // Initialize translation function
+
+// Function to handle saving the form
+const saveForm = () => {
+    Swal.fire({
+        icon: 'success',               // Display success icon
+        title: t('messages.saved_title'),  // Use translation for title
+        text: t('messages.saved_text'),    // Use translation for text
+        timer: 2000,                    // Auto-close after 2 seconds
+        showConfirmButton: false        // Do not show confirmation button
+    })
+}
+
+// Function to handle cancelling the form
+const cancelForm = () => {
+    Swal.fire({
+        title: t('messages.cancel_title'),      // Translated title for cancel confirmation
+        text: t('messages.cancel_text'),        // Translated text explaining consequences
+        icon: 'warning',                        // Warning icon
+        showCancelButton: true,                 // Show cancel button
+        confirmButtonText: t('buttons.yes_cancel'), // Translated confirm button text
+        cancelButtonText: t('buttons.no')          // Translated cancel button text
+    }).then((result) => {
+        if (result.isConfirmed) {              // If user confirms cancel
+            router.push('/admin/warehouses/items') // Navigate to ItemsComponent page
+        }
+    })
+}
+</script>
