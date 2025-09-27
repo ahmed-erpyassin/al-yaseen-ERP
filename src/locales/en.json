@@ -33,6 +33,11 @@
   },
   "label": {
     "company_undefined": "Undefined Company name",
+<<<<<<< HEAD
+    "page": "Page",
+    "of": "of",
+=======
+>>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
     "customer_information": "Customer Information",
     "customer_type": "Customer Type",
     "shipments_incoming": "Incoming shipments",
@@ -641,6 +646,10 @@
     "warehouses": "Warehouses",
     "search_item": "Search Item",
     "item_number": "Item Number",
+<<<<<<< HEAD
+    "manufacturing_number": "Manufacturing Number",
+=======
+>>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
     "item_description": "Item Description",
     "model": "Model",
     "min_limit": "Minimum Limit",
@@ -701,6 +710,10 @@
     "category_minium": "Minium",
     "item_tree": "Item tree",
     "chart_of_items": "Chart Of Items",
+<<<<<<< HEAD
+    "manufacturing_duration": "Manufacturing Duration",
+=======
+>>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
     "item_notes": "Item notes",
     "add_new_item": "Add new item",
     "manufacturing_formula": "Manufacturing formula",
@@ -735,6 +748,11 @@
     "warehouse_keeper": "Warehouse Keeper",
     "fax_number": "Fax Number",
     "warehouse_balances": "Warehouse Balances",
+<<<<<<< HEAD
+    "finished_product_warehouse": "Finished Product Warehouse",
+    "select_warehouse": "Select Warehouse",
+=======
+>>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
     "search_warehouse": "Search for Warehouse",
     "warehouse_movements": "Warehouse Movements",
     "transaction_type": "Transaction Type",
@@ -1487,6 +1505,13 @@
     "code_unique": "This code is already taken"
   },
   "messages": {
+<<<<<<< HEAD
+    "item_deleted": "Item deleted successfully!",
+    "item_delete_failed": "Failed to delete item. Please try again.",
+    "confirm_delete": "Are you sure you want to delete this item?",
+
+=======
+>>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
     "customer_created_successfully": "Customer created successfully!",
     "customer_creation_failed": "Failed to create customer. Please try again.",
     "customer_updated_successfully": "Customer updated successfully!",
@@ -1496,6 +1521,10 @@
     "customer_load_failed": "Failed to load customer data.",
     "customer_not_found": "Customer not found.",
     "confirm_delete_customer": "Are you sure you want to delete this customer?",
+<<<<<<< HEAD
+
+=======
+>>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
     "quotation_created_successfully": "Offer created successfully!",
     "quotation_creation_failed": "Failed to create offer. Please try again.",
     "quotation_updated_successfully": "Offer updated successfully!",
@@ -1681,7 +1710,17 @@
     "add_record": "Add Record",
     "add_document": "Add Document",
     "previous": "Previous",
+<<<<<<< HEAD
+    "next": "Next",
+    "add": "Add",
+    "import_export": "Import / Export",
+    "import_excel": "Import Excel",
+    "export_excel": "Export Excel",
+    "export_pdf": "Export PDF",
+    "print": "Print"
+=======
     "next": "Next"
+>>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
   },
   "placeholder": {
     "task_name": "Enter task name",
@@ -1725,4 +1764,8 @@
     "goHome": "Go Home",
     "help": "If you believe this is an error, please contact support."
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 5e25639469de159d12b434d70cc5162e896419f7

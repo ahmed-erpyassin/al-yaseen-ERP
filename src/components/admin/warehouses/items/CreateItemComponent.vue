@@ -3,6 +3,72 @@
         <h1><i class="bi bi-image"></i> {{ $t('label.company_undefined') }}</h1>
         <div class="d-flex align-items-center justify-content-end">
             <button class="btn btn-lg btn-outline-secondary me-3">{{ $t('buttons.cancel') }}</button>
+<<<<<<< HEAD
+            <button class="btn btn-lg btn-success">
+                {{ $t('buttons.save') }}
+            </button>
+
+        </div>
+        <form class="form">
+            <div class="row">
+                <div class="container pe-5 ps-5">
+
+                    <!-- Form -->
+                    <form class="form">
+                        <div class="row">
+                            <!-- Item Information Section -->
+                            <div class="col-12">
+                                <h3 class="mb-5">{{ $t('label.item_information') }}</h3>
+                            </div>
+
+                            <!-- Row: Item Number - Item Name - Manufacturing Duration -->
+                            <div class="col-md-4 mb-4">
+                                <label for="item_number" class="form-label">{{ $t('label.item_no') }}</label>
+                                <input type="text" id="item_number" class="form-control rounded-1" />
+                            </div>
+
+                            <div class="col-md-4 mb-4">
+                                <label for="item_name" class="form-label">{{ $t('label.item_name') }}</label>
+                                <input type="text" id="item_name" class="form-control rounded-1" />
+                            </div>
+
+                            <div class="col-md-4 mb-4">
+                                <label for="manufacturing_duration" class="form-label">{{
+                                    $t('label.manufacturing_duration') }}</label>
+                                <input type="text" id="manufacturing_duration" class="form-control rounded-1" />
+                            </div>
+
+                            <!-- Row: Quantity -->
+                            <div class="col-md-4 mb-4">
+                                <label for="quantity" class="form-label">{{ $t('label.quantity') }}</label>
+                                <input type="number" id="quantity" class="form-control rounded-1" />
+                            </div>
+
+                            <!-- Warehouses Section -->
+                            <div class="col-12 mt-4 mb-3">
+                                <h5>{{ $t('label.warehouses') }}</h5>
+                            </div>
+
+                            <div class="col-md-4 mb-4">
+                                <label for="raw_materials_warehouse" class="form-label">{{
+                                    $t('label.raw_materials_warehouse') }}</label>
+                                <select id="raw_materials_warehouse" class="form-control rounded-1">
+                                    <option value="">{{ $t('label.select_warehouse') }}</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-4 mb-4">
+                                <label for="finished_product_warehouse" class="form-label">{{
+                                    $t('label.finished_product_warehouse') }}</label>
+                                <select id="finished_product_warehouse" class="form-control rounded-1">
+                                    <option value="">{{ $t('label.select_warehouse') }}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+=======
             <div class="dropdown">
                 <button class="btn btn-lg btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown"
                     aria-expanded="false">
@@ -80,6 +146,7 @@
                         </div>
                     </div>
                 </div>
+>>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
                 <div class="col-12">
                     <h3 class="mb-5">{{ $t('label.units') }}</h3>
                 </div>
@@ -172,7 +239,12 @@
                 <div class="col-md-4">
                     <div class="item mb-4">
                         <div class="mb-3 position-relative">
+<<<<<<< HEAD
+                            <label for="buy_account" class="form-label">{{ $t('label.second_unit_item_number')
+                                }}</label>
+=======
                             <label for="buy_account" class="form-label">{{ $t('label.second_unit_item_number') }}</label>
+>>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
 
                             <input type="text" id="buy_account" class="form-control rounded-1" />
 
@@ -283,7 +355,12 @@
                 <div class="col-md-4">
                     <div class="item mb-4">
                         <div class="mb-3 position-relative">
+<<<<<<< HEAD
+                            <label for="buy_account" class="form-label">{{ $t('label.selling_discount_percentage')
+                                }}</label>
+=======
                             <label for="buy_account" class="form-label">{{ $t('label.selling_discount_percentage') }}</label>
+>>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
 
                             <input type="text" id="buy_account" class="form-control rounded-1" />
 
@@ -293,7 +370,12 @@
                 <div class="col-md-4">
                     <div class="item mb-4">
                         <div class="mb-3 position-relative">
+<<<<<<< HEAD
+                            <label for="buy_account" class="form-label">{{ $t('label.max_discount_percentage')
+                                }}</label>
+=======
                             <label for="buy_account" class="form-label">{{ $t('label.max_discount_percentage') }}</label>
+>>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
 
                             <input type="text" id="buy_account" class="form-control rounded-1" />
 
@@ -349,7 +431,12 @@
                 <div class="col-md-4">
                     <div class="item mb-4">
                         <div class="mb-3 position-relative">
+<<<<<<< HEAD
+                            <label for="buy_account" class="form-label">{{ $t('label.purchase_discount_percentage')
+                                }}</label>
+=======
                             <label for="buy_account" class="form-label">{{ $t('label.purchase_discount_percentage') }}</label>
+>>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
 
                             <input type="text" id="buy_account" class="form-control rounded-1" />
 

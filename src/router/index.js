@@ -59,6 +59,23 @@ const router = createRouter({
 });
 // Authentication middleware function
 const requireAuth = (to, from, next) => {
+<<<<<<< HEAD
+  // const authStatus = localStorage.getItem('authStatus') === 'true';
+  // const authToken = localStorage.getItem('authToken');
+  
+  // // Check if the route is an admin route
+  // const isAdminRoute = to.path.startsWith('/admin');
+  
+  // if (isAdminRoute && (!authStatus || !authToken)) {
+  //   // Redirect to login if accessing admin routes without proper auth
+  //   return next({ name: "auth.login" });
+  // }
+  
+  // // If user is authenticated and trying to access login/register, redirect to admin dashboard
+  // if (authStatus && authToken && (to.name === "auth.login" || to.name === "auth.register")) {
+  //   return next({ name: "admin.dashboard" });
+  // }
+=======
   const authStatus = localStorage.getItem('authStatus') === 'true';
   const authToken = localStorage.getItem('authToken');
 
@@ -74,7 +91,12 @@ const requireAuth = (to, from, next) => {
   if (authStatus && authToken && (to.name === "auth.login" || to.name === "auth.register")) {
     return next({ name: "admin.dashboard" });
   }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
+  
+>>>>>>> 993524366d9251d18f8ed0bd241476c8902bea33
   next();
 };
 
