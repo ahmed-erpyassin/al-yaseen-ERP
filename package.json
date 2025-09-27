@@ -13,56 +13,29 @@
     "axios": "^1.11.0",
     "bootstrap": "^5.3.7",
     "bootstrap-icons": "^1.13.1",
-<<<<<<< HEAD
-    "bootstrap-vue-3": "^0.3.12",
-    "core-js": "^3.8.3",
-    "event-pubsub": "^5.0.3",
-    "file-saver": "^2.0.5",
-    "intl-tel-input": "^25.3.1",
-    "jspdf": "^3.0.3",
-    "jspdf-autotable": "^5.0.2",
-    "pdfmake": "^0.2.20",
-    "sweetalert2": "^11.23.0",
-=======
     "bootstrap-vue-3": "^0.5.1",
     "core-js": "^3.8.3",
     "event-pubsub": "^5.0.3",
     "intl-tel-input": "^25.3.1",
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
     "vue": "^3.5.17",
     "vue-chartjs": "^5.3.2",
     "vue-i18n": "^9.14.4",
     "vue-router": "^4.0.3",
-<<<<<<< HEAD
     "vue3-select": "^0.1.2",
     "vuesax": "^4.0.1-alpha.25",
-    "vuex": "^4.0.0",
-    "xlsx": "^0.18.5"
-=======
-    "vuesax": "^4.0.1-alpha.25",
     "vuex": "^4.0.0"
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
     "@babel/eslint-parser": "^7.12.16",
     "@intlify/vue-i18n-loader": "^3.0.0",
-<<<<<<< HEAD
-    "@vue/cli-plugin-babel": "^3.12.1",
-    "@vue/cli-plugin-eslint": "^3.12.1",
-=======
     "@vue/cli-plugin-babel": "~5.0.0",
     "@vue/cli-plugin-eslint": "~5.0.0",
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
     "@vue/cli-plugin-router": "~5.0.0",
     "@vue/cli-plugin-vuex": "~5.0.0",
     "@vue/cli-service": "~5.0.0",
     "eslint": "^7.32.0",
     "eslint-plugin-vue": "^8.0.3",
-<<<<<<< HEAD
-    "vue-cli-plugin-i18n": "^0.3.1"
-=======
     "vue-cli-plugin-i18n": "~2.3.2"
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
   }
 }

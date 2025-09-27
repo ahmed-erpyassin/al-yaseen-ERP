@@ -3,7 +3,6 @@
         <h1><i class="bi bi-image"></i> {{ $t('label.company_undefined') }}</h1>
         <div class="d-flex align-items-center justify-content-end">
             <button class="btn btn-lg btn-outline-secondary me-3">{{ $t('buttons.cancel') }}</button>
-<<<<<<< HEAD
             <button class="btn btn-lg btn-success">
                 {{ $t('buttons.save') }}
             </button>
@@ -68,7 +67,6 @@
                     </form>
                 </div>
 
-=======
             <div class="dropdown">
                 <button class="btn btn-lg btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown"
                     aria-expanded="false">
@@ -146,7 +144,6 @@
                         </div>
                     </div>
                 </div>
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
                 <div class="col-12">
                     <h3 class="mb-5">{{ $t('label.units') }}</h3>
                 </div>
