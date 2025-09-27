@@ -48,7 +48,7 @@
             <!-- Search -->
             <div class="search-bar d-flex align-items-center">
                 <i class="bi bi-search me-2"></i>
-                <input type="text" class="form-control" placeholder="بحث عن عنصر..." v-model="searchQuery" />
+                <input type="text" class="form-control" :placeholder="$t('label.search')" v-model="searchQuery" />
             </div>
 
             <!-- Column Toggle -->
@@ -64,8 +64,6 @@
                 </ul>
             </div>
         </div>
-
-
 
         <!-- Table -->
         <div class="table-responsive">
@@ -96,6 +94,9 @@
                                 @click="deleteItem(item)"></i>
                         </td>
                     </tr>
+                    <tr v-if="paginatedItems.length === 0">
+                        <td :colspan="visibleFields.length + 1">{{ $t('label.no_data') }}</td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -115,10 +116,12 @@
 
 <script>
 import Swal from "sweetalert2";
+import axios from "axios";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+const baseUrl = "http://localhost:3000";
 
 export default {
     name: "AccountsListComponent",
@@ -127,23 +130,7 @@ export default {
             searchQuery: "",
             currentPage: 1,
             perPage: 10,
-            items: Array.from({ length: 50 }, (_, i) => ({
-                id: i + 1,
-                item_number: i + 1,
-                item_name: `Item ${i + 1}`,
-                description: `Description for item ${i + 1}`,
-                model: `Model ${i + 1}`,
-                unit: `Unit ${i + 1}`,
-                balance: Math.floor(Math.random() * 100),
-                min_limit: 10,
-                max_limit: 100,
-                reorder_limit: 20,
-                exceed_reorder_limit: Math.random() > 0.5,
-                first_sale_price: (Math.random() * 100).toFixed(2),
-                first_purchase_price: (Math.random() * 80).toFixed(2),
-                color: ["Red", "Blue", "Green", "Yellow"][i % 4],
-                image: `https://api.dicebear.com/9.x/icons/svg?seed=product-${i + 1}`
-            })),
+            items: [],
             table: {
                 fields: [
                     { name: this.$t("label.item_number"), key: "item_number", status: true },
@@ -181,10 +168,53 @@ export default {
             return this.filteredItems.slice(start, start + this.perPage);
         },
         totalPages() {
-            return Math.ceil(this.filteredItems.length / this.perPage);
+            return Math.ceil(this.filteredItems.length / this.perPage) || 1;
         }
     },
     methods: {
+        async fetchItems() {
+            try {
+                const response = await axios.get(`${baseUrl}/items`, {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                        // إذا كان هناك توكن: "Authorization": `Bearer ${token}`
+                    }
+                });
+
+                this.items = response.data.map((item, index) => ({
+                    id: index + 1,
+                    item_number: item.item_number || index + 1,
+                    item_name: item.item_name || "No Name",
+                    description: item.description || "",
+                    model: item.model || "",
+                    unit: item.unit || "",
+                    balance: item.balance ?? 0,
+                    min_limit: item.min_limit ?? 0,
+                    max_limit: item.max_limit ?? 0,
+                    reorder_limit: item.reorder_limit ?? 0,
+                    exceed_reorder_limit: item.exceed_reorder_limit ?? false,
+                    first_sale_price: item.first_sale_price ?? 0,
+                    first_purchase_price: item.first_purchase_price ?? 0,
+                    color: item.color || "N/A",
+                    image: item.image || `https://api.dicebear.com/9.x/icons/svg?seed=product-${index + 1}`
+                }));
+            } catch (error) {
+                console.error("Failed to fetch items:", error);
+                Swal.fire({
+                    title: "Error",
+                    text: "Failed to load items from API",
+                    icon: "error"
+                });
+            }
+        },
+        // async fetchItems() {
+        //     this.items = [
+        //         { id: 1, item_number: '001', item_name: 'صنف A', description: 'وصف A', balance: 10, image: '' },
+        //         { id: 2, item_number: '002', item_name: 'صنف B', description: 'وصف B', balance: 5, image: '' }
+        //     ];
+        // },
+
         viewItem(item) { console.log("Viewing item:", item); },
         editItem(item) { console.log("Editing item:", item); },
         deleteItem(item) {
@@ -196,7 +226,7 @@ export default {
                 cancelButtonColor: "#6c757d",
                 confirmButtonText: this.$t("buttons.delete"),
                 cancelButtonText: this.$t("buttons.cancel")
-            }).then((result) => {
+            }).then(result => {
                 if (result.isConfirmed) {
                     this.items = this.items.filter(i => i.id !== item.id);
                     Swal.fire({
@@ -211,7 +241,7 @@ export default {
         prevPage() { if (this.currentPage > 1) this.currentPage--; },
         nextPage() { if (this.currentPage < this.totalPages) this.currentPage++; },
 
-        // --- Import/Export/Print Methods ---
+        // --- Import/Export/Print ---
         importExcel(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -224,7 +254,6 @@ export default {
                 const worksheet = workbook.Sheets[firstSheetName];
                 const jsonData = XLSX.utils.sheet_to_json(worksheet);
 
-                // دمج البيانات المستوردة مع العناصر الحالية
                 jsonData.forEach((item) => {
                     this.items.push({
                         id: this.items.length + 1,
@@ -247,7 +276,6 @@ export default {
             };
             reader.readAsArrayBuffer(file);
         },
-
         exportExcel() {
             const ws = XLSX.utils.json_to_sheet(this.items);
             const wb = XLSX.utils.book_new();
@@ -255,15 +283,9 @@ export default {
             const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
             saveAs(new Blob([wbout], { type: "application/octet-stream" }), "items.xlsx");
         },
-
-
         exportPDF() {
             const doc = new jsPDF();
-
-            // الأعمدة
             const columns = this.visibleFields.map(f => ({ header: f.name, dataKey: f.key }));
-
-            // الصفوف
             const rows = this.filteredItems.map(item =>
                 this.visibleFields.reduce((acc, field) => {
                     acc[field.key] = item[field.key];
@@ -271,9 +293,8 @@ export default {
                 }, {})
             );
 
-            // انشاء الجدول
             autoTable(doc, {
-                columns: columns,
+                columns,
                 body: rows,
                 startY: 20,
                 styles: { fontSize: 8 },
@@ -282,7 +303,6 @@ export default {
 
             doc.save("items.pdf");
         },
-
         printTable() {
             const printContent = this.$el.querySelector('.table-responsive').innerHTML;
             const WinPrint = window.open('', '', 'width=900,height=650');
@@ -294,18 +314,20 @@ export default {
             WinPrint.print();
             WinPrint.close();
         }
+    },
+    mounted() {
+        this.fetchItems();
     }
 };
 </script>
+
 <style>
-/* Table Header */
 .header th {
     background-color: #f4fff0 !important;
     text-align: center;
     vertical-align: middle;
 }
 
-/* Action Icons */
 .action-icon {
     font-size: 1.3rem;
     cursor: pointer;
@@ -330,12 +352,10 @@ export default {
     opacity: 0.8;
 }
 
-/* Import/Export Button */
 .btn-secondary.dropdown-toggle {
     transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
 }
 
-/* منع تغير اللون عند الضغط على زر Import/Export */
 .btn-secondary.dropdown-toggle:active,
 .btn-secondary.dropdown-toggle:focus,
 .btn-secondary.dropdown-toggle:focus-visible {
@@ -344,7 +364,6 @@ export default {
     box-shadow: none !important;
 }
 
-
 .btn-secondary.dropdown-toggle:hover {
     background-color: #1d7342;
     color: #fff;
@@ -352,27 +371,10 @@ export default {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Column Toggle */
-.dropdown .show {
-    color: #1d7342;
-}
-
 .search-bar {
-    flex: auto;
-    /* يسمح للبحث أن يأخذ المساحة المتبقية */
+    flex: 1;
 }
 
-.dropdown.ms-5 {
-    margin-left: 3rem;
-    /* نفس المسافة بين البحث وgear كما في المثال */
-}
-
-.form-check-input:checked[type="checkbox"] {
-    border-radius: 50%;
-    background-color: #1d7342 !important;
-}
-
-/* Table Cells */
 .table th,
 .table td {
     min-width: 120px;
@@ -381,7 +383,6 @@ export default {
     vertical-align: middle;
 }
 
-/* Table Images */
 .table-image {
     max-width: 50px;
     height: 50px;
@@ -392,27 +393,5 @@ export default {
 
 .table-image:hover {
     transform: scale(1.1);
-}
-
-/* Animation for Table Rows */
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.search-bar {
-    flex: 1;
-}
-
-.dropdown.ms-auto {
-    margin-left: auto !important;
-    /* pushes it to the right */
 }
 </style>

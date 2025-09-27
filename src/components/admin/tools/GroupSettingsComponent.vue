@@ -80,11 +80,7 @@
                                     <div class="item mb-4">
                                         <div class="mb-3 position-relative">
                                             <label for="company_name" class="form-label">{{ $t('label.company_name')
-<<<<<<< HEAD
                                             }}</label>
-=======
-                                                }}</label>
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
                                             <input type="text" v-model="form.company_name" id="company_name"
                                                 class="form-control rounded-1" />
                                         </div>
@@ -96,20 +92,12 @@
                                     <div class="item mb-4">
                                         <div class="mb-3 position-relative">
                                             <label for="company_type" class="form-label">{{ $t('label.company_field')
-<<<<<<< HEAD
                                             }}</label>
 
                                             <Select v-model="form.company_type" :options="companyTypes"
                                                 :label="locale === 'ar' ? 'title_ar' : 'title_en'"
                                                 :reduce="company => company.id" placeholder="" />
 
-=======
-                                                }}</label>
-
-                                            <VueSelect v-model="form.company_type" :options="companyTypes"
-                                                :label="locale === 'ar' ? 'title_ar' : 'title_en'"
-                                                :reduce="company => company.id" placeholder="" />
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
                                         </div>
                                         <p class='text-danger form-text' v-if="errors.company_type">{{
                                             errors.company_type[0] }}
@@ -121,22 +109,14 @@
                                         <div class="mb-3 position-relative">
                                             <label for="company_address" class="form-label">{{
                                                 $t('label.company_address')
-<<<<<<< HEAD
                                                 }}</label>
-=======
-                                            }}</label>
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
                                             <input type="text" v-model="form.company_address" id="company_address"
                                                 class="form-control rounded-1"
                                                 :placeholder="$t('label.company_address_placeholder')" />
                                         </div>
                                         <p class='text-danger form-text' v-if="errors.company_address">{{
                                             errors.company_address[0]
-<<<<<<< HEAD
                                         }}
-=======
-                                            }}
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
                                         </p>
 
                                     </div>
@@ -176,11 +156,7 @@
                                     <div class="item mb-4">
                                         <div class="mb-3 position-relative">
                                             <label for="work_type" class="form-label">{{ $t('label.work_type')
-<<<<<<< HEAD
                                                 }}</label>
-=======
-                                            }}</label>
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
                                             <VueSelect v-model="form.work_type" :options="workTypes"
                                                 :label="locale === 'ar' ? 'title_ar' : 'title_en'"
                                                 :reduce="workType => workType.id" placeholder="" />
@@ -193,11 +169,7 @@
                                     <div class="item mb-4">
                                         <div class="mb-3 position-relative">
                                             <label for="company_logo" class="form-label">{{ $t('label.company_logo')
-<<<<<<< HEAD
                                             }}</label>
-=======
-                                                }}</label>
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
                                             <div class="position-relative ">
                                                 <input type="file" @change="handleLogo" id="company_logo"
                                                     class="form-control rounded-0 w-100" />
@@ -226,11 +198,7 @@
                                         <input type="checkbox" v-model="form.allow_emails"
                                             class="form-check-input rounded-circle" id="remember" />
                                         <label class="form-check-label" for="remember">{{ $t('label.messages_push')
-<<<<<<< HEAD
                                         }}</label>
-=======
-                                            }}</label>
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
                                     </div>
                                     <h4 class="mb-5">{{ $t('label.taxHeading') }}</h4>
                                 </div>
@@ -240,11 +208,7 @@
                                         <div class="mb-3 position-relative">
                                             <label for="income_tax_rate" class="form-label">{{
                                                 $t('label.income_tax_rate')
-<<<<<<< HEAD
                                                 }}</label>
-=======
-                                            }}</label>
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
                                             <input type="text" v-model="form.income_tax_rate" id="income_tax_rate"
                                                 class="form-control rounded-1" placeholder="20%" />
                                         </div>
@@ -256,11 +220,7 @@
                                     <div class="item mb-4">
                                         <div class="mb-3 position-relative">
                                             <label for="fiscal_year" class="form-label">{{ $t('label.fiscal_year')
-<<<<<<< HEAD
                                             }}</label>
-=======
-                                                }}</label>
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
                                             <input type="text" v-model="form.fiscal_year" id="fiscal_year"
                                                 class="form-control rounded-1" placeholder="2026" />
                                         </div>
@@ -288,11 +248,7 @@
                                     <div class="item mb-4">
                                         <div class="mb-3 position-relative">
                                             <label for="added_tax_rate" class="form-label">{{ $t('label.added_tax_rate')
-<<<<<<< HEAD
                                             }}</label>
-=======
-                                                }}</label>
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
                                             <input type="text" v-model="form.vat_rate" id="added_tax_rate"
                                                 class="form-control rounded-1" placeholder="20%" />
                                         </div>
@@ -389,11 +345,7 @@
                                         <li class="list-group-item">
                                             <strong class='text-primary'>{{
                                                 $t('label.accounting_entries_setup')
-<<<<<<< HEAD
                                                 }}:</strong>
-=======
-                                            }}:</strong>
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" id="detailed_entries" />
                                                 <label class="form-check-label" for="detailed_entries">{{
@@ -440,31 +392,19 @@
                                                     id="entries_in_english" />
                                                 <label class="form-check-label" for="entries_in_english">{{
                                                     $t('label.entries_in_english')
-<<<<<<< HEAD
                                                     }}</label>
-=======
-                                                }}</label>
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
                                             </div>
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                     id="create_reverse_entry" />
                                                 <label class="form-check-label" for="create_reverse_entry">{{
                                                     $t('label.create_reverse_entry')
-<<<<<<< HEAD
                                                     }}</label>
-=======
-                                                }}</label>
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
                                             </div>
                                         </li>
                                         <li class="list-group-item">
                                             <strong class="text-primary">{{ $t('label.currency_usage')
-<<<<<<< HEAD
                                                 }}:</strong>
-=======
-                                            }}:</strong>
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                     id="entry_amount_group_currency_doc_currency" />
@@ -507,11 +447,7 @@
                                     <ul class="list-group-item">
                                         <li class="list-group-item">
                                             <strong class="text-primary">{{ $t('label.add_edit_entries')
-<<<<<<< HEAD
                                                 }}:</strong>
-=======
-                                            }}:</strong>
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                     id="check_account_amount_equals_group_amount" />
@@ -857,12 +793,8 @@
                                 <div class="tab-pane fade " id="customers_suppliers_accounts" role="tabpanel"
                                     aria-labelledby="accounts-tab">
                                     <div class="row mt-5">
-<<<<<<< HEAD
                                         <h4 class="mb-3 text-primary fw-bold">{{ $t('label.misc_customers_accounts') }}
                                         </h4>
-=======
-                                        <h4 class = "mb-3 text-primary fw-bold">{{ $t('label.misc_customers_accounts') }}</h4>
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
                                         <div class="col-md-6 mb-3">
                                             <div class="mb-3 position-relative">
                                                 <label for="from" class="form-label">{{
@@ -1021,20 +953,12 @@
 <script>
 import 'intl-tel-input/build/css/intlTelInput.css'
 import intlTelInput from 'intl-tel-input'
-<<<<<<< HEAD
 import Select from "vue3-select";
 import "vue3-select/dist/vue3-select.css";
 import { useI18n } from 'vue-i18n'
 export default {
     name: "GroupDataComponent",
     components: { Select },
-=======
-import VueSelect from 'vue-select'
-import { useI18n } from 'vue-i18n'
-export default {
-    name: "GroupDataComponent",
-    components: { VueSelect },
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
 
     data() {
         return {

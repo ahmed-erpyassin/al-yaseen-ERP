@@ -32,20 +32,12 @@
                             <div class="item">
                                 <div class="mb-3 position-relative">
                                     <label for="company_type" class="form-label">{{ $t('label.company_field')
-<<<<<<< HEAD
                                         }}</label>
 
                                     <Select v-model="form.company_type" :options="companyTypes"
                                         :label="locale === 'ar' ? 'title_ar' : 'title_en'"
                                         :reduce="company => company.id" placeholder="" />
 
-=======
-                                    }}</label>
-
-                                    <VueSelect v-model="form.company_type" :options="companyTypes"
-                                        :label="locale === 'ar' ? 'title_ar' : 'title_en'"
-                                        :reduce="company => company.id" placeholder="" />
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
                                 </div>
                                 <p class='text-danger form-text' v-if="errors.company_type">{{ errors.company_type[0] }}
                                 </p>
@@ -55,22 +47,14 @@
                             <div class="item">
                                 <div class="mb-3 position-relative">
                                     <label for="company_address" class="form-label">{{ $t('label.company_address')
-<<<<<<< HEAD
                                         }}</label>
-=======
-                                    }}</label>
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
                                     <input type="text" v-model="form.company_address" id="company_address"
                                         class="form-control rounded-1"
                                         :placeholder="$t('label.company_address_placeholder')" />
                                 </div>
                                 <p class='text-danger form-text' v-if="errors.company_address">{{
                                     errors.company_address[0]
-<<<<<<< HEAD
                                 }}
-=======
-                                    }}
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
                                 </p>
 
                             </div>
@@ -148,11 +132,7 @@
                                 <input type="checkbox" v-model="form.allow_emails"
                                     class="form-check-input rounded-circle" id="remember" />
                                 <label class="form-check-label" for="remember">{{ $t('label.messages_push')
-<<<<<<< HEAD
                                     }}</label>
-=======
-                                }}</label>
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
                             </div>
                             <h4 class="mb-5">{{ $t('label.taxHeading') }}</h4>
                         </div>
@@ -161,11 +141,7 @@
                             <div class="item">
                                 <div class="mb-3 position-relative">
                                     <label for="income_tax_rate" class="form-label">{{ $t('label.income_tax_rate')
-<<<<<<< HEAD
                                         }}</label>
-=======
-                                    }}</label>
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
                                     <input type="text" v-model="form.income_tax_rate" id="income_tax_rate"
                                         class="form-control rounded-1" placeholder="20%" />
                                 </div>
@@ -177,11 +153,7 @@
                             <div class="item">
                                 <div class="mb-3 position-relative">
                                     <label for="fiscal_year" class="form-label">{{ $t('label.fiscal_year')
-<<<<<<< HEAD
                                         }}</label>
-=======
-                                    }}</label>
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
                                     <input type="text" v-model="form.fiscal_year" id="fiscal_year"
                                         class="form-control rounded-1" placeholder="2026" />
                                 </div>
@@ -209,11 +181,7 @@
                             <div class="item">
                                 <div class="mb-3 position-relative">
                                     <label for="added_tax_rate" class="form-label">{{ $t('label.added_tax_rate')
-<<<<<<< HEAD
                                         }}</label>
-=======
-                                    }}</label>
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
                                     <input type="text" v-model="form.vat_rate" id="added_tax_rate"
                                         class="form-control rounded-1" placeholder="20%" />
                                 </div>
@@ -260,23 +228,15 @@ import NavbarLogoComponent from '../components/NavbarLogoComponent.vue'
 import 'intl-tel-input/build/css/intlTelInput.css'
 import intlTelInput from 'intl-tel-input'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
-<<<<<<< HEAD
 import Select from "vue3-select";
 import "vue3-select/dist/vue3-select.css";
-=======
-import VueSelect from 'vue-select'
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
 import LoadingComponent from '@/components/components/LoadingComponent.vue'
 import { useI18n } from 'vue-i18n'
 
 
 export default {
     name: 'RegisterCompany',
-<<<<<<< HEAD
     components: { NavbarLogoComponent, LanguageSwitcher, Select, LoadingComponent },
-=======
-    components: { NavbarLogoComponent, LanguageSwitcher, VueSelect, LoadingComponent },
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
     data() {
         return {
             isLoading: true,

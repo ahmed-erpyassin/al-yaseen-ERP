@@ -33,14 +33,49 @@
   },
   "label": {
     "company_undefined": "اسم الشركة غير معرف",
+    "purchase_invoice": "فاتورة شراء",
+    "new_purchase_invoice": "فاتورة شراء جديدة",
     "customer_information": "معلومات العميل",
     "customer_type": "نوع العميل",
-
+    "barcode_type": "نوع الباركود",
+    "select_barcode_type": "اختر نوع الباركود",
+    "invoice_no": "رقم الفاتورة",
+    "no_data": "لا يوجد بيانات",
+    "date": "التاريخ",
+    "hour": "الساعة",
+    "supplier_information": "معلومات المورد",
+    "supplier_type": "نوع المورد",
+    "exchange_rates_online": "أسعار العملات من الإنترنت",
+    "loading_rates": "جاري تحميل أسعار العملات...",
+    "currency": "العملة",
+    "rate_vs_usd": "السعر مقابل الدولار",
+    "due_date": "تاريخ الاستحقاق",
+    "invoice_items": "بنود الفاتورة",
+    "item_no": "رقم الصنف",
+    "item_information": "معلومات الصنف",
+    "unit": "الوحدة",
+    "quantity": "الكمية",
+    "price": "السعر",
+    "total": "الإجمالي",
+    "customer_no": "رقم العميل",
+    "licensed_operator": "المشغل المرخص",
+    "currency": "العملة",
+    "currency_price": "سعر العملة",
+    "cash": "نقدي",
+    "check_payments": "شيكات الدفع",
+    "currency_payment": "عملة النقد والشيك",
+    "allowed_discount": "الخصم المسموح",
+    "total_without_tax": "إجمالي بدون ضريبة",
+    "ratio": "النسبة %",
+    "vat_amount": "ضريبة القيمة المضافة",
+    "total_invoice": "إجمالي الفاتورة",
+    "remaining_amount": "الرصيد المتبقي",
+    "invoice": "الفواتير ودورة التحصيل",
     "page": "صفحة",
     "of": "من",
-
     "shipments_incoming": "الإرساليات الواردة",
     "search_account": "البحث عن حساب",
+    "search": "بحث...",
     "edit": "تعديل",
     "notebook": "دفتر الملاحظات",
     "invoice_no": "رقم الفاتورة",
@@ -1506,12 +1541,22 @@
     "code_unique": "هذا الكود مستخدم بالفعل"
   },
   "messages": {
-
     "item_deleted": "تم حذف العنصر بنجاح!",
     "item_delete_failed": "فشل في حذف العنصر. يرجى المحاولة مرة أخرى.",
+    "receipt_created_successfully": "تم إنشاء الإيصال بنجاح",
     "confirm_delete": "هل أنت متأكد من أنك تريد حذف هذا العنصر؟",
-
-
+    "invoice_created_successfully": "تم انشاء الفاتورة بنجاح",
+    "employee_saved_successfully": "تم حفظ الموظف بنجاح",
+    "exchange_rates_online": "أسعار العملات من الإنترنت",
+    "loading_rates": "جاري تحميل أسعار العملات...",
+    "error_fetching_rates": "حدث خطأ أثناء جلب أسعار العملات",
+    "invalid_api_response": "استجابة غير صالحة من API",
+    "network_error": "خطأ في الشبكة",
+    "currency": "العملة",
+    "rate_vs_usd": "السعر مقابل الدولار",
+    "refresh_rates": "تحديث الأسعار",
+    "invalid_api_response": "استجابة غير صالحة من API",
+    "network_error": "خطأ في الشبكة",
     "customer_created_successfully": "تم إنشاء العميل بنجاح!",
     "customer_creation_failed": "فشل في إنشاء العميل. يرجى المحاولة مرة أخرى.",
     "customer_updated_successfully": "تم تحديث العميل بنجاح!",
@@ -1521,9 +1566,10 @@
     "customer_load_failed": "فشل في تحميل بيانات العميل.",
     "customer_not_found": "العميل غير موجود.",
     "confirm_delete_customer": "هل أنت متأكد من أنك تريد حذف هذا العميل؟",
-
-
-
+    "saved_title": "تم الحفظ!",
+    "saved_text": "تم حفظ بيانات الصنف بنجاح.",
+    "cancel_title": "هل أنت متأكد؟",
+    "cancel_text": "سيتم فقدان التغييرات التي أجريتها!",
     "quotation_created_successfully": "تم إنشاء العرض بنجاح!",
     "quotation_creation_failed": "فشل في إنشاء العرض. يرجى المحاولة مرة أخرى.",
     "quotation_updated_successfully": "تم تحديث العرض بنجاح!",
@@ -1685,17 +1731,21 @@
     }
   },
 
-"buttons": {
-
   "buttons": {
     "save": "حفظ",
     "cancel": "إلغاء",
+    "yes_cancel": "نعم، إلغاء",
+    "no": "لا",
+    "remove_row": "حذف صف",
+    "add_row": "إضافة صف",
     "save&email": "حفظ وإرسال",
     "save&print": "حفظ وطباعة",
+    "refresh_rates": "تحديث الأسعار",
     "create": "اضافة",
     "edit": "تعديل",
     "delete": "حذف",
     "update": "تحديث",
+    "close": "اغلاق",
     "save_as_draft": "حفظ كمسودة",
     "calculation": "احتساب",
     "copy": "نسخ",
@@ -1719,12 +1769,10 @@
     "import_excel": "استيراد Excel",
     "export_excel": "تصدير Excel",
     "export_pdf": "تصدير PDF",
-    "print": "طباعة"
-},
-
-
+    "print": "طباعة",
     "next": "التالي"
   },
+
   "placeholder": {
     "task_name": "أدخل اسم المهمة",
     "task_notes": "أدخل ملاحظات المهمة",
@@ -1767,5 +1815,4 @@
     "goHome": "الصفحة الرئيسية",
     "help": "إذا كنت تعتقد أن هذا خطأ، يرجى الاتصال بالدعم الفني."
   }
-
 }
