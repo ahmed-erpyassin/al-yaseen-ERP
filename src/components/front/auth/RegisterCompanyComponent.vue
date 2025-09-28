@@ -226,8 +226,6 @@ import intlTelInput from 'intl-tel-input'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
 import Vue3Select from 'vue3-select';
 import "vue3-select/dist/vue3-select.css";
-
-import Vue3Select from 'vue3-select'
 import LoadingComponent from '@/components/components/LoadingComponent.vue'
 import {
     useI18n

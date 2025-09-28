@@ -93,27 +93,9 @@
                                         <div class="mb-3 position-relative">
                                             <label for="company_type" class="form-label">{{ $t('label.company_field')
                                             }}</label>
-
-<<<<<<< HEAD
                                             <Vue3Select v-model="form.company_type" :options="companyTypes"
                                                 :label="locale === 'ar' ? 'title_ar' : 'title_en'"
                                                 :reduce="company => company.id" placeholder="" />
-=======
-                                            <Select v-model="form.company_type" :options="companyTypes"
-                                                :label="locale === 'ar' ? 'title_ar' : 'title_en'"
-                                                :reduce="company => company.id" placeholder="" />
-
-<<<<<<< HEAD
-=======
-=======
-                                                }}</label>
-
-                                            <Vue3Select v-model="form.company_type" :options="companyTypes"
-                                                :label="locale === 'ar' ? 'title_ar' : 'title_en'"
-                                                :reduce="company => company.id" placeholder="" />
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
->>>>>>> ebdf308c2aa2efebfd0b93f3642b12b029ce45a6
->>>>>>> a178603e0020e54dbb9e51af640313bf6318008f
                                         </div>
                                         <p class='text-danger form-text' v-if="errors.company_type">{{
                                             errors.company_type[0] }}
@@ -172,26 +154,20 @@
                                     <div class="item mb-4">
                                         <div class="mb-3 position-relative">
                                             <label for="work_type" class="form-label">{{ $t('label.work_type')
-<<<<<<< HEAD
-=======
                                                 }}</label>
-<<<<<<< HEAD
-=======
-=======
->>>>>>> a178603e0020e54dbb9e51af640313bf6318008f
-                                            }}</label>
 
                                             <Vue3Select v-model="form.work_type" :options="workTypes"
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
->>>>>>> ebdf308c2aa2efebfd0b93f3642b12b029ce45a6
-                                            <VueSelect v-model="form.work_type" :options="workTypes"
->>>>>>> 993524366d9251d18f8ed0bd241476c8902bea33
->>>>>>> a178603e0020e54dbb9e51af640313bf6318008f
-                                                :label="locale === 'ar' ? 'title_ar' : 'title_en'"
-                                                :reduce="workType => workType.id" placeholder="" />
+                                                :label="locale === 'ar' ? 'title_ar' : 'title_en'">
+                                                <template #option="{ option }">
+                                                    <div class="d-flex align-items-center">
+                                                        <img :src="option.image" alt="" class="rounded-circle me-2"
+                                                            style="width: 30px; height: 30px;" />
+                                                        <span>{{ option[locale === 'ar' ? 'title_ar' : 'title_en']
+                                                        }}</span>
+                                                    </div>
+                                                </template>
+                                            </Vue3Select>
+
                                         </div>
                                         <p class='text-danger form-text' v-if="errors.workType">
                                             {{ errors.workType[0] }}
@@ -983,46 +959,13 @@
 </template>
 
 <script>
-import 'intl-tel-input/build/css/intlTelInput.css'
-import intlTelInput from 'intl-tel-input'
-<<<<<<< HEAD
-// import VueSelect from 'vue-select';
-import Vue3Select from 'vue3-select';
-=======
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-// import VueSelect from 'vue-select'
-import Vue3Select from 'vue3-select'
->>>>>>> a178603e0020e54dbb9e51af640313bf6318008f
-import { useI18n } from 'vue-i18n'
-export default {
-    name: "GroupDataComponent",
-    components: { Vue3Select },
-<<<<<<< HEAD
-=======
-=======
-<<<<<<< HEAD
->>>>>>> ebdf308c2aa2efebfd0b93f3642b12b029ce45a6
-import Select from "vue3-select";
-import "vue3-select/dist/vue3-select.css";
-import { useI18n } from 'vue-i18n'
-export default {
-    name: "GroupDataComponent",
-    components: { Select },
-<<<<<<< HEAD
-=======
-=======
-import VueSelect from 'vue-select'
-import { useI18n } from 'vue-i18n'
-export default {
-    name: "GroupDataComponent",
-    components: { VueSelect },
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
->>>>>>> 993524366d9251d18f8ed0bd241476c8902bea33
->>>>>>> ebdf308c2aa2efebfd0b93f3642b12b029ce45a6
 
->>>>>>> a178603e0020e54dbb9e51af640313bf6318008f
+import 'intl-tel-input/build/css/intlTelInput.css';
+import intlTelInput from 'intl-tel-input';
+import { useI18n } from 'vue-i18n';
+
+export default {
+    name: "GroupDataComponent",
     data() {
         return {
             locale: null,

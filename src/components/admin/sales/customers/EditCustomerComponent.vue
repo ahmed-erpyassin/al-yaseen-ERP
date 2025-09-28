@@ -117,7 +117,7 @@
                     <div class="item mb-4">
                         <div class="mb-3 position-relative">
                             <label for="email" class="form-label">{{ $t('label.email')
-                                }}</label>
+                            }}</label>
                             <div class=" position-relative group">
                                 <input type="email" id="email" class="form-control rounded-1"
                                     placeholder="yassin2029@gmail.com" v-model="form.email" maxlength="150"
@@ -199,13 +199,13 @@
                     <div class="item mb-4">
                         <div class="mb-3 position-relative">
                             <label for="licensed_operator" class="form-label">{{ $t('label.licensed_operator')
-                                }}</label>
+                            }}</label>
 
                             <input type="text" id="licensed_operator" class="form-control rounded-1"
                                 v-model="form.licensed_operator" maxlength="255"
                                 :class="{ 'is-invalid': errors.licensed_operator }" />
                             <div v-if="errors.licensed_operator" class="invalid-feedback">{{ errors.licensed_operator[0]
-                                }}</div>
+                            }}</div>
 
                         </div>
                     </div>
@@ -294,49 +294,12 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-<<<<<<< HEAD
-// import VueSelect from 'vue-select';
-import Vue3Select from 'vue3-select';
-=======
-<<<<<<< HEAD
-import Select from "vue3-select";
-import "vue3-select/dist/vue3-select.css";
-=======
-<<<<<<< HEAD
-// import VueSelect from 'vue-select';
-import Vue3Select from 'vue3-select';
-=======
-<<<<<<< HEAD
-import Select from "vue3-select";
-import "vue3-select/dist/vue3-select.css";
-=======
-import VueSelect from 'vue-select';
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
->>>>>>> 993524366d9251d18f8ed0bd241476c8902bea33
->>>>>>> ebdf308c2aa2efebfd0b93f3642b12b029ce45a6
->>>>>>> a178603e0020e54dbb9e51af640313bf6318008f
+// import Vue3Select from 'vue3-select';
 import LoadingComponent from '@/components/components/LoadingComponent.vue';
 
 export default {
     name: 'EditCustomerComponent',
-    // eslint-disable-next-line vue/no-unused-components
-<<<<<<< HEAD
-    components: { Vue3Select, LoadingComponent },
-=======
-<<<<<<< HEAD
-    components: { Select, LoadingComponent },
-=======
-<<<<<<< HEAD
-    components: { Vue3Select, LoadingComponent },
-=======
-<<<<<<< HEAD
-    components: { Select, LoadingComponent },
-=======
-    components: { VueSelect, LoadingComponent },
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
->>>>>>> 993524366d9251d18f8ed0bd241476c8902bea33
->>>>>>> ebdf308c2aa2efebfd0b93f3642b12b029ce45a6
->>>>>>> a178603e0020e54dbb9e51af640313bf6318008f
+    components: { LoadingComponent },
     data() {
         return {
             form: {
