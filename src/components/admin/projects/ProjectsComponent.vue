@@ -66,7 +66,7 @@
                     </tr>
                 </thead>
                 <tbody class="table-body form">
-                    <tr v-if="loading">
+                    <tr v-if="isLoading">
                         <td :colspan="visibleFields.length + 1" class="text-center">
                             <div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span>
                             </div>
@@ -92,7 +92,7 @@
 
         <div class="d-flex justify-content-between align-items-center mt-3">
             <button class="btn btn-secondary" @click="prevPage" :disabled="currentPage === 1">{{ $t('buttons.previous')
-                }}</button>
+            }}</button>
             <span>{{ $t('label.page') }} {{ currentPage }} {{ $t('label.of') }} {{ totalPages }}</span>
             <button class="btn btn-secondary" @click="nextPage" :disabled="currentPage === totalPages">{{
                 $t('buttons.next') }}</button>
@@ -130,7 +130,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" @click="closeModal">{{ $t('buttons.close')
-                            }}</button>
+                        }}</button>
                     </div>
                 </div>
             </div>
@@ -146,23 +146,19 @@ import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import * as bootstrap from 'bootstrap';
+import axios from 'axios';
 
 export default {
     name: 'ProjectsComponent',
     components: { LoadingComponent },
     data() {
         return {
-            isLoading: false,
+            isLoading: true,
             searchQuery: '',
             currentPage: 1,
             perPage: 10,
-            loading: false,
             selectedProject: null,
-            projects: [
-                { id: 1, number: 'PRJ-001', customer_name: 'عميل 1', project_name: 'مشروع أ', date: '2025-09-27', status: 'نشط', project_manager_name: 'مدير أ' },
-                { id: 2, number: 'PRJ-002', customer_name: 'عميل 2', project_name: 'مشروع ب', date: '2025-09-26', status: 'مكتمل', project_manager_name: 'مدير ب' },
-                { id: 3, number: 'PRJ-003', customer_name: 'عميل 3', project_name: 'مشروع ج', date: '2025-09-25', status: 'معلق', project_manager_name: 'مدير ج' },
-            ],
+            projects: [],  // سيتم جلبها من API
             table: {
                 fields: [
                     { name: 'الرقم', key: 'number', status: true },
@@ -195,6 +191,18 @@ export default {
         }
     },
     methods: {
+        async fetchProjects() {
+            this.isLoading = true;
+            try {
+                const response = await axios.get('/api/projects'); // ضع رابط API الصحيح
+                this.projects = response.data;
+            } catch (err) {
+                console.error(err);
+                Swal.fire('خطأ', 'تعذر جلب المشاريع من السيرفر', 'error');
+            } finally {
+                this.isLoading = false;
+            }
+        },
         viewItem(project) {
             this.selectedProject = project;
             const modalEl = document.getElementById('viewProjectModal');
@@ -207,17 +215,27 @@ export default {
             if (modal) modal.hide();
             this.selectedProject = null;
         },
-        editItem(project) { console.log('Edit', project); },
-        deleteItem(project) {
+        editItem(project) {
+            // توجيه لصفحة التعديل أو فتح مودال للتعديل
+            this.$router.push({ name: 'admin.projects.edit', params: { id: project.id } });
+        },
+        async deleteItem(project) {
             Swal.fire({
                 title: 'هل أنت متأكد من الحذف؟',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'حذف',
                 cancelButtonText: 'إلغاء'
-            }).then(result => {
+            }).then(async (result) => {
                 if (result.isConfirmed) {
-                    this.projects = this.projects.filter(p => p.id !== project.id);
+                    try {
+                        await axios.delete(`/api/projects/${project.id}`);
+                        this.projects = this.projects.filter(p => p.id !== project.id);
+                        Swal.fire('تم الحذف', 'تم حذف المشروع بنجاح', 'success');
+                    } catch (err) {
+                        console.error(err);
+                        Swal.fire('خطأ', 'تعذر حذف المشروع', 'error');
+                    }
                 }
             });
         },
@@ -232,16 +250,13 @@ export default {
                 const workbook = XLSX.read(data, { type: "array" });
                 const worksheet = workbook.Sheets[workbook.SheetNames[0]];
                 const jsonData = XLSX.utils.sheet_to_json(worksheet);
-                jsonData.forEach(item => {
-                    this.projects.push({
-                        id: this.projects.length + 1,
-                        number: item.number || `PRJ-${this.projects.length + 1}`,
-                        customer_name: item.customer_name || "No Name",
-                        project_name: item.project_name || "No Name",
-                        date: item.date || null,
-                        status: item.status || "نشط",
-                        project_manager_name: item.project_manager_name || "-"
-                    });
+                jsonData.forEach(async item => {
+                    try {
+                        const res = await axios.post('/api/projects', item); // حفظ كل مشروع جديد في السيرفر
+                        this.projects.push(res.data);
+                    } catch (err) {
+                        console.error(err);
+                    }
                 });
             };
             reader.readAsArrayBuffer(file);
@@ -273,6 +288,9 @@ export default {
             WinPrint.print();
             WinPrint.close();
         }
+    },
+    mounted() {
+        this.fetchProjects();
     }
 };
 </script>

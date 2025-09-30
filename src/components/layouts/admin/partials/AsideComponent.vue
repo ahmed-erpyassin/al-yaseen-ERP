@@ -15,8 +15,7 @@
         <ul class="nav flex-column">
             <li class="nav-item pe-2 ps-2">
                 <button class="nav-link w-100 text-white d-flex align-items-center justify-content-between collapsed"
-                    data-bs-toggle="collapse" data-bs-target="#new" aria-expanded="true"
-                    aria-controls="new">
+                    data-bs-toggle="collapse" data-bs-target="#new" aria-expanded="true" aria-controls="new">
                     <span class="fs-5">{{ $t('aside.New') }}</span>
                     <i class="bi bi-chevron-down me-2"></i>
                 </button>
@@ -110,8 +109,7 @@
             </li>
             <li class="nav-item pe-2 ps-2">
                 <button class="nav-link w-100 text-white d-flex align-items-center justify-content-between collapsed"
-                    data-bs-toggle="collapse" data-bs-target="#sales" aria-expanded="true"
-                    aria-controls="sales">
+                    data-bs-toggle="collapse" data-bs-target="#sales" aria-expanded="true" aria-controls="sales">
                     <span class="fs-5">{{ $t('aside.sales') }}</span>
                     <i class="bi bi-chevron-down me-2"></i>
                 </button>
@@ -245,18 +243,39 @@
                     </div>
                 </div>
             </li>
-            <li class="nav-item pe-2 ps-2">
+            <!-- <li class="nav-item pe-2 ps-2">
                 <router-link :to="{ name: 'admin.projects' }"
                     class="nav-link d-flex align-items-center justify-content-between text-white">
                     <span class="fs-5">{{ $t('aside.projects') }}</span>
 
                 </router-link>
 
+            </li> -->
+            <li class="nav-item pe-2 ps-2">
+                <button class="nav-link w-100 text-white d-flex align-items-center justify-content-between collapsed"
+                    data-bs-toggle="collapse" data-bs-target="#projects" aria-expanded="true" aria-controls="projects">
+                    <span class="fs-5">{{ $t('aside.projects') }}</span>
+                    <i class="bi bi-chevron-down me-2"></i>
+                </button>
+
+                <div class="collapse" id="projects">
+                    <div>
+                        <div class=" bg-white text-dark">
+                            <router-link :to="{ name: 'admin.projects' }"
+                                class="nav-link text-dark d-flex align-items-center justify-content-between">
+                                <span>{{ $t('aside.projects') }}</span>
+                            </router-link>
+                            <router-link :to="{ name: 'admin.tasks' }"
+                                class="nav-link text-dark d-flex align-items-center justify-content-between">
+                                <span>{{ $t('breadcrumb.tasks') }}</span>
+                            </router-link>
+                        </div>
+                    </div>
+                </div>
             </li>
             <li class="nav-item pe-2 ps-2">
                 <button class="nav-link w-100 text-white d-flex align-items-center justify-content-between collapsed"
-                    data-bs-toggle="collapse" data-bs-target="#cheques" aria-expanded="true"
-                    aria-controls="cheques">
+                    data-bs-toggle="collapse" data-bs-target="#cheques" aria-expanded="true" aria-controls="cheques">
                     <span class="fs-5">{{ $t('aside.cheques') }}</span>
                     <i class="bi bi-chevron-down me-2"></i>
                 </button>
@@ -443,8 +462,7 @@
             </li>
             <li class="nav-item pe-2 ps-2">
                 <button class="nav-link w-100 text-white d-flex align-items-center justify-content-between collapsed"
-                    data-bs-toggle="collapse" data-bs-target="#taxes" aria-expanded="true"
-                    aria-controls="taxes">
+                    data-bs-toggle="collapse" data-bs-target="#taxes" aria-expanded="true" aria-controls="taxes">
                     <span class="fs-5">{{ $t('label.taxes') }}</span>
                     <i class="bi bi-chevron-down me-2"></i>
                 </button>
@@ -462,8 +480,7 @@
             </li>
             <li class="nav-item pe-2 ps-2">
                 <button class="nav-link w-100 text-white d-flex align-items-center justify-content-between collapsed"
-                    data-bs-toggle="collapse" data-bs-target="#reports" aria-expanded="true"
-                    aria-controls="reports">
+                    data-bs-toggle="collapse" data-bs-target="#reports" aria-expanded="true" aria-controls="reports">
                     <span class="fs-5">{{ $t('label.reports') }}</span>
                     <i class="bi bi-chevron-down me-2"></i>
                 </button>
@@ -518,26 +535,72 @@ export default {
 
 <style>
 aside {
-
     background-color: #1D263B;
-    min-height: 100vh !important;
-    overflow-y: scroll;
+    height: 100vh;
+    overflow-y: auto;
     padding-bottom: 30px;
-
+    position: sticky;
+    top: 0;
+    width: 250px;
+    scroll-behavior: smooth;
 }
 
+/* scrollbar */
+aside::-webkit-scrollbar {
+    width: 6px;
+}
+
+aside::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+}
+
+aside::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.6);
+}
+
+aside {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+}
+
+/* logo */
 aside .logo {
-
     background-color: #FFF6F6;
-
 }
 
-button:not(.collapsed) {
-    background-color: #FFF;
-    color: #333 !important
-}
-
-button:not(.collapsed) i {
+/* rotation for icon */
+button i.rotate {
     transform: rotate(180deg);
+    transition: transform 0.3s ease;
+}
+
+/* responsive */
+@media (max-width: 992px) {
+    aside {
+        position: fixed;
+        left: -260px;
+        top: 0;
+        width: 250px;
+        z-index: 1050;
+        transition: left 0.3s ease;
+    }
+
+    aside.open {
+        left: 0;
+    }
+}
+
+/* على الموبايل الصغير */
+@media (max-width: 576px) {
+    aside {
+        width: 100%;
+        /* يغطي الشاشة */
+        left: -100%;
+    }
+
+    aside.open {
+        left: 0;
+    }
 }
 </style>

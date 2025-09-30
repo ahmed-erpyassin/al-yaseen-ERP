@@ -5,7 +5,7 @@
 
         <!-- Actions: Add Item & Import/Export -->
         <div class="d-flex align-items-center justify-content-end mb-3">
-            <router-link :to="{ name: 'admin.warehouses.items.create' }" class="btn btn-lg btn-main me-3">
+            <router-link :to="{ name: 'admin.warehouses.create' }" class="btn btn-lg btn-main me-3">
                 {{ $t('buttons.add') }}
             </router-link>
 
@@ -43,11 +43,13 @@
 
         <!-- Actions: Search & Column Toggle -->
         <div class="d-flex align-items-center justify-content-between mb-3">
+            <!-- Search Input -->
             <div class="search-bar d-flex align-items-center">
                 <i class="bi bi-search me-2"></i>
                 <input type="text" class="form-control" :placeholder="$t('label.search')" v-model="searchQuery" />
             </div>
 
+            <!-- Column Toggle -->
             <div class="dropdown ms-5">
                 <i class="bi bi-gear" type="button" data-bs-toggle="dropdown" aria-expanded="false"></i>
                 <ul class="dropdown-menu align-center rounded-0 p-2" style="width: 250px;">
@@ -61,8 +63,13 @@
             </div>
         </div>
 
+        <!-- Loading Indicator -->
+        <div v-if="loading" class="text-center py-5">
+            {{ $t('label.loading') }}...
+        </div>
+
         <!-- Table -->
-        <div class="table-responsive">
+        <div class="table-responsive" v-else>
             <table class="table table-bordered text-center align-middle">
                 <thead>
                     <tr class="header">
@@ -80,7 +87,6 @@
                                 {{ item[field.key] || "No Data" }}
                             </template>
                         </td>
-
                         <td class="text-center">
                             <i class="bi bi-eye action-icon me-2" :title="$t('buttons.check')"
                                 @click="viewItem(item)"></i>
@@ -91,7 +97,7 @@
                         </td>
                     </tr>
                     <tr v-if="paginatedItems.length === 0">
-                        <td :colspan="visibleFields.length + 1">No Data Available</td>
+                        <td :colspan="visibleFields.length + 1">{{ $t('label.no_data') }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -118,6 +124,8 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import axios from "axios";
 
+const API_BASE = "https://yourdomain.com/api"; // API base URL, change on deployment
+
 export default {
     name: "AccountsListComponent",
     data() {
@@ -126,6 +134,7 @@ export default {
             currentPage: 1,
             perPage: 10,
             items: [],
+            loading: false, // Flag for loading indicator
             defaultImage: "https://via.placeholder.com/50?text=No+Image",
             table: {
                 fields: [
@@ -144,9 +153,11 @@ export default {
         };
     },
     computed: {
+        // Return only visible fields for table display
         visibleFields() {
             return this.table.fields.filter(field => field.status);
         },
+        // Filter items based on search query
         filteredItems() {
             if (!this.searchQuery) return this.items;
             const query = this.searchQuery.toLowerCase();
@@ -155,6 +166,7 @@ export default {
                 (item.item_name?.toLowerCase() || "").includes(query)
             );
         },
+        // Slice items for pagination
         paginatedItems() {
             const start = (this.currentPage - 1) * this.perPage;
             return this.filteredItems.slice(start, start + this.perPage);
@@ -164,9 +176,13 @@ export default {
         }
     },
     methods: {
-
+        // View item action
         viewItem(item) { console.log("Viewing:", item); },
+
+        // Edit item action
         editItem(item) { console.log("Editing:", item); },
+
+        // Delete item with SweetAlert confirmation
         deleteItem(item) {
             Swal.fire({
                 title: this.$t("messages.confirm_delete"),
@@ -188,18 +204,22 @@ export default {
                 }
             });
         },
+
         prevPage() { if (this.currentPage > 1) this.currentPage--; },
         nextPage() { if (this.currentPage < this.totalPages) this.currentPage++; },
+
+        // Import Excel file
         importExcel(event) {
             const file = event.target.files[0];
             if (!file) return;
+
             const reader = new FileReader();
-            reader.onload = (e) => {
+            reader.onload = e => {
                 const data = new Uint8Array(e.target.result);
                 const workbook = XLSX.read(data, { type: "array" });
-                const firstSheetName = workbook.SheetNames[0];
-                const worksheet = workbook.Sheets[firstSheetName];
+                const worksheet = workbook.Sheets[workbook.SheetNames[0]];
                 const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
                 jsonData.forEach(item => {
                     this.items.push({
                         id: this.items.length + 1,
@@ -212,12 +232,14 @@ export default {
                         first_sale_price: item.first_sale_price || 0,
                         first_purchase_price: item.first_purchase_price || 0,
                         color: item.color || "N/A",
-                        image: item.image || `https://api.dicebear.com/9.x/icons/svg?seed=product-${this.items.length + 1}`
+                        image: item.image || this.defaultImage
                     });
                 });
             };
             reader.readAsArrayBuffer(file);
         },
+
+        // Export items to Excel
         exportExcel() {
             const ws = XLSX.utils.json_to_sheet(this.items);
             const wb = XLSX.utils.book_new();
@@ -225,6 +247,8 @@ export default {
             const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
             saveAs(new Blob([wbout], { type: "application/octet-stream" }), "Warehouses.xlsx");
         },
+
+        // Export items to PDF
         exportPDF() {
             const doc = new jsPDF();
             const columns = this.visibleFields.map(f => ({ header: f.name, dataKey: f.key }));
@@ -234,9 +258,17 @@ export default {
                     return acc;
                 }, {})
             );
-            autoTable(doc, { columns, body: rows, startY: 20, styles: { fontSize: 8 }, headStyles: { fillColor: [29, 115, 66] } });
+            autoTable(doc, {
+                columns,
+                body: rows,
+                startY: 20,
+                styles: { fontSize: 8 },
+                headStyles: { fillColor: [29, 115, 66] }
+            });
             doc.save("items.pdf");
         },
+
+        // Print table
         printTable() {
             const printContent = this.$el.querySelector('.table-responsive').innerHTML;
             const WinPrint = window.open('', '', 'width=900,height=650');
@@ -248,48 +280,56 @@ export default {
             WinPrint.print();
             WinPrint.close();
         },
+
+        // Fetch items from API
         async fetchItems() {
+            this.loading = true; // show loading
             try {
-                const response = await axios.get('/api/items'); // استبدل بالرابط الصحيح للـ API
-                this.items = response.data;
+                const response = await axios.get(`${API_BASE}/items`);
+                this.items = response.data.map((item, i) => ({
+                    id: i + 1,
+                    item_number: item.item_number || "No Data",
+                    item_name: item.item_name || "No Data",
+                    description: item.description || "No Data",
+                    model: item.model || "No Data",
+                    unit: item.unit || "No Data",
+                    balance: item.balance ?? "No Data",
+                    first_sale_price: item.first_sale_price ?? "No Data",
+                    first_purchase_price: item.first_purchase_price ?? "No Data",
+                    color: item.color || "No Data",
+                    image: item.image || this.defaultImage
+                }));
             } catch (err) {
-                console.error("Failed to fetch API data:", err);
+                console.error("API fetch error:", err);
+                Swal.fire({
+                    title: "خطأ في جلب البيانات / Failed to fetch data",
+                    text: err.message,
+                    icon: "error",
+                    timer: 3000,
+                    showConfirmButton: false
+                });
+            } finally {
+                this.loading = false; // hide loading
             }
         }
     },
+
+    // Fetch data on mount
     async mounted() {
-        try {
-            // هنا نضع مسار الملف في public
-            const response = await axios.get('/api/AlYaseen.json');
-            this.items = response.data.map((item, i) => ({
-                id: i + 1,
-                item_number: item.item_number || "No Data",
-                item_name: item.item_name || "No Data",
-                description: item.description || "No Data",
-                model: item.model || "No Data",
-                unit: item.unit || "No Data",
-                balance: item.balance ?? "No Data",
-                first_sale_price: item.first_sale_price ?? "No Data",
-                first_purchase_price: item.first_purchase_price ?? "No Data",
-                color: item.color || "No Data",
-                image: item.image || this.defaultImage
-            }));
-        } catch (err) {
-            console.error("Failed to load JSON:", err);
-        }
+        await this.fetchItems();
     }
-
-
 };
 </script>
 
 <style>
+/* Table header */
 .header th {
     background-color: #f4fff0 !important;
     text-align: center;
     vertical-align: middle;
 }
 
+/* Action icons */
 .action-icon {
     font-size: 1.3rem;
     cursor: pointer;
@@ -314,6 +354,7 @@ export default {
     opacity: 0.8;
 }
 
+/* Dropdown hover */
 .btn-secondary.dropdown-toggle:hover {
     background-color: #1d7342;
     color: #fff;
@@ -324,15 +365,18 @@ export default {
     color: #1d7342;
 }
 
+/* Search bar */
 .search-bar {
     flex: 1;
 }
 
+/* Checkbox style */
 .form-check-input:checked[type="checkbox"] {
     border-radius: 50%;
     background-color: #1d7342 !important;
 }
 
+/* Table layout */
 .table th,
 .table td {
     min-width: 120px;
@@ -341,6 +385,7 @@ export default {
     vertical-align: middle;
 }
 
+/* Table images */
 .table-image {
     max-width: 50px;
     height: 50px;

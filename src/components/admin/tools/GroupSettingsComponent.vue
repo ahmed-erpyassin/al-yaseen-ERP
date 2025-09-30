@@ -91,29 +91,20 @@
 
                                     <div class="item mb-4">
                                         <div class="mb-3 position-relative">
-                                            <label for="company_type" class="form-label">{{ $t('label.company_field')
-                                            }}</label>
+                                            <label for="company_type" class="form-label">
+                                                {{ $t('label.company_field') }}
+                                            </label>
 
                                             <Select v-model="form.company_type" :options="companyTypes"
-                                                :label="locale === 'ar' ? 'title_ar' : 'title_en'"
-                                                :reduce="company => company.id" placeholder="" />
-
-<<<<<<< HEAD
-=======
-=======
-                                                }}</label>
-
-                                            <Vue3Select v-model="form.company_type" :options="companyTypes"
-                                                :label="locale === 'ar' ? 'title_ar' : 'title_en'"
-                                                :reduce="company => company.id" placeholder="" />
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
->>>>>>> ebdf308c2aa2efebfd0b93f3642b12b029ce45a6
+                                                :label-by="locale === 'ar' ? 'title_ar' : 'title_en'" value-by="id"
+                                                placeholder="" />
                                         </div>
-                                        <p class='text-danger form-text' v-if="errors.company_type">{{
-                                            errors.company_type[0] }}
-                                        </p>
 
+                                        <p class='text-danger form-text' v-if="errors.company_type">
+                                            {{ errors.company_type[0] }}
+                                        </p>
                                     </div>
+
 
                                     <div class="item mb-4">
                                         <div class="mb-3 position-relative">
@@ -165,26 +156,20 @@
 
                                     <div class="item mb-4">
                                         <div class="mb-3 position-relative">
-                                            <label for="work_type" class="form-label">{{ $t('label.work_type')
-                                                }}</label>
-<<<<<<< HEAD
-=======
-=======
-                                            }}</label>
-<<<<<<< HEAD
-                                            <Vue3Select v-model="form.work_type" :options="workTypes"
-=======
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
->>>>>>> ebdf308c2aa2efebfd0b93f3642b12b029ce45a6
-                                            <VueSelect v-model="form.work_type" :options="workTypes"
->>>>>>> 993524366d9251d18f8ed0bd241476c8902bea33
-                                                :label="locale === 'ar' ? 'title_ar' : 'title_en'"
-                                                :reduce="workType => workType.id" placeholder="" />
+                                            <label for="work_type" class="form-label">
+                                                {{ $t('label.work_type') }}
+                                            </label>
+
+                                            <Select v-model="form.work_type" :options="workTypes"
+                                                :label-by="locale === 'ar' ? 'title_ar' : 'title_en'" value-by="id"
+                                                placeholder="" />
                                         </div>
-                                        <p class='text-danger form-text' v-if="errors.workType">
-                                            {{ errors.workType[0] }}
+
+                                        <p class='text-danger form-text' v-if="errors.work_type">
+                                            {{ errors.work_type[0] }}
                                         </p>
                                     </div>
+
 
                                     <div class="item mb-4">
                                         <div class="mb-3 position-relative">
@@ -969,39 +954,16 @@
         </form>
     </div>
 </template>
-
 <script>
 import 'intl-tel-input/build/css/intlTelInput.css'
 import intlTelInput from 'intl-tel-input'
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-// import VueSelect from 'vue-select'
-import Vue3Select from 'vue3-select'
-import { useI18n } from 'vue-i18n'
-export default {
-    name: "GroupDataComponent",
-    components: { Vue3Select },
-=======
-<<<<<<< HEAD
->>>>>>> ebdf308c2aa2efebfd0b93f3642b12b029ce45a6
 import Select from "vue3-select";
 import "vue3-select/dist/vue3-select.css";
 import { useI18n } from 'vue-i18n'
+
 export default {
     name: "GroupDataComponent",
     components: { Select },
-<<<<<<< HEAD
-=======
-=======
-import VueSelect from 'vue-select'
-import { useI18n } from 'vue-i18n'
-export default {
-    name: "GroupDataComponent",
-    components: { VueSelect },
->>>>>>> 5e25639469de159d12b434d70cc5162e896419f7
->>>>>>> 993524366d9251d18f8ed0bd241476c8902bea33
->>>>>>> ebdf308c2aa2efebfd0b93f3642b12b029ce45a6
 
     data() {
         return {
@@ -1023,29 +985,21 @@ export default {
                 from: '2026-01-01',
                 to: '2026-12-31',
                 currency_id: null,
-
             },
             iti: null,
             errors: []
         };
     },
     computed: {
-        currencies: function () {
-
+        currencies() {
             return this.$store.getters['options/currencies'];
-
         },
-        workTypes: function () {
-
+        workTypes() {
             return this.$store.getters['options/workTypes'];
-
         },
-        companyTypes: function () {
-
+        companyTypes() {
             return this.$store.getters['options/companyTypes'];
-
         },
-
     },
     async mounted() {
         const input = document.querySelector("#phone")
@@ -1059,11 +1013,14 @@ export default {
         input.addEventListener("countrychange", () => {
             this.form.country_code = this.iti.getSelectedCountryData().dialCode;
         });
+
         const { locale } = useI18n();
         this.locale = locale.value;
+
         await this.$store.dispatch('options/getCurrencies');
         await this.$store.dispatch('options/getWorkTypes');
         await this.$store.dispatch('options/getCompanyTypes');
+
         this.isLoading = false;
     },
     methods: {
@@ -1092,27 +1049,28 @@ export default {
             formData.append('to', this.form.to)
             formData.append('currency_id', this.form.currency_id)
 
-            this.$store.dispatch('auth/registerCompany', formData).then(res => {
-                this.isLoading = false;
-                if (res.data.success) {
-                    this.$router.push("/admin");
-                } else {
-                    alert(res.data.message);
-                }
-            }).catch(err => {
-                this.isLoading = false;
-
-                if (err.response && err.response.status === 422) {
-                    this.errors = err.response.data.errors;
-                } else {
-                    this.errorMsg = "Something went wrong";
-
-                }
-            });
+            this.$store.dispatch('auth/registerCompany', formData)
+                .then(res => {
+                    this.isLoading = false;
+                    if (res.data.success) {
+                        this.$router.push("/admin");
+                    } else {
+                        alert(res.data.message);
+                    }
+                })
+                .catch(err => {
+                    this.isLoading = false;
+                    if (err.response && err.response.status === 422) {
+                        this.errors = err.response.data.errors;
+                    } else {
+                        this.errorMsg = "Something went wrong";
+                    }
+                });
         },
     }
 };
 </script>
+
 
 <style scoped>
 .tabs {
