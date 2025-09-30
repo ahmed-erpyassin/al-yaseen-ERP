@@ -6,7 +6,8 @@
         <!-- Actions: Add Item & Import/Export -->
         <div class="d-flex align-items-center justify-content-end mb-3">
             <!-- Add Button -->
-            <router-link :to="{ name: 'admin.warehouses.items.create' }" class="btn btn-lg btn-main me-3">
+            <router-link :to="{ name: 'admin.warehouses.manufacturing-formula.create' }"
+                class="btn btn-lg btn-main me-3">
                 {{ $t('buttons.add') }}
             </router-link>
 
@@ -75,6 +76,11 @@
                     </tr>
                 </thead>
                 <tbody>
+                    <tr v-if="paginatedItems.length === 0">
+                        <td :colspan="visibleFields.length + 1">
+                            {{ $t('label.no_data') }}
+                        </td>
+                    </tr>
                     <tr v-for="item in paginatedItems" :key="item.id">
                         <td v-for="(field, index) in visibleFields" :key="index">
                             <template v-if="field.key === 'image'">
@@ -116,6 +122,7 @@ import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import axios from "axios";
 
 export default {
     name: "ItemsComponent",
@@ -124,24 +131,7 @@ export default {
             searchQuery: "",
             currentPage: 1,
             perPage: 10,
-            items: Array.from({ length: 50 }, (_, i) => ({
-                manufacturing_number: i + 1,
-                item_number: 1000 + i,
-                item_name: `معادلة ${i + 1}`,
-                unit: `وحدة ${i + 1}`,
-                balance: Math.floor(Math.random() * 100),
-                min_limit: Math.floor(Math.random() * 10),
-                max_limit: Math.floor(Math.random() * 200) + 50,
-                reorder_limit: Math.floor(Math.random() * 50),
-                sale_price: (Math.random() * 500).toFixed(2),
-                purchase_price: (Math.random() * 400).toFixed(2),
-                color: ["أحمر", "أزرق", "أخضر", "أصفر"][i % 4],
-                length: (Math.random() * 200).toFixed(1),
-                width: (Math.random() * 100).toFixed(1),
-                height: (Math.random() * 50).toFixed(1),
-                date: `2025-09-${(i % 30) + 1}`,
-                time: `${(i % 24).toString().padStart(2, '0')}:00`
-            })),
+            items: [], // سيتم ملؤها من API
             table: {
                 fields: [
                     { name: this.$t('label.manufacturing_number'), key: "manufacturing_number", status: true },
@@ -184,10 +174,34 @@ export default {
             return Math.ceil(this.filteredItems.length / this.perPage);
         }
     },
+    mounted() {
+        this.fetchItems();
+    },
     methods: {
+        // -----------------------------------
+        // Fetch items from API
+        // -----------------------------------
+        async fetchItems() {
+            try {
+                const response = await axios.get("/api/manufacturing-formulas");
+                this.items = response.data;
+            } catch (err) {
+                console.error("Error fetching items:", err);
+                Swal.fire({
+                    title: this.$t("messages.error_title"),
+                    text: this.$t("messages.error_fetch"),
+                    icon: "error"
+                });
+            }
+        },
+
         viewItem(item) { console.log("Viewing item:", item); },
         editItem(item) { console.log("Editing item:", item); },
-        deleteItem(item) {
+
+        // -----------------------------------
+        // Delete item via API
+        // -----------------------------------
+        async deleteItem(item) {
             Swal.fire({
                 title: this.$t("messages.confirm_delete"),
                 icon: "warning",
@@ -196,18 +210,29 @@ export default {
                 cancelButtonColor: "#6c757d",
                 confirmButtonText: this.$t("buttons.delete"),
                 cancelButtonText: this.$t("buttons.cancel")
-            }).then((result) => {
+            }).then(async (result) => {
                 if (result.isConfirmed) {
-                    this.items = this.items.filter(i => i.id !== item.id);
-                    Swal.fire({
-                        title: this.$t("messages.item_deleted"),
-                        icon: "success",
-                        timer: 2000,
-                        showConfirmButton: false
-                    });
+                    try {
+                        await axios.delete(`/api/manufacturing-formulas/${item.id}`);
+                        this.items = this.items.filter(i => i.id !== item.id);
+                        Swal.fire({
+                            title: this.$t("messages.item_deleted"),
+                            icon: "success",
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                    } catch (err) {
+                        console.error(err);
+                        Swal.fire({
+                            title: this.$t("messages.error_title"),
+                            text: this.$t("messages.error_delete"),
+                            icon: "error"
+                        });
+                    }
                 }
             });
         },
+
         prevPage() { if (this.currentPage > 1) this.currentPage--; },
         nextPage() { if (this.currentPage < this.totalPages) this.currentPage++; },
         importExcel(event) {
@@ -291,6 +316,7 @@ export default {
     }
 };
 </script>
+
 
 <style>
 .header th {

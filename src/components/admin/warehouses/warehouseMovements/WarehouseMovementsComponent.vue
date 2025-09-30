@@ -5,12 +5,9 @@
 
         <!-- Actions: Add Movement & Import/Export -->
         <div class="d-flex align-items-center justify-content-end mb-3">
-            <!-- Add Button -->
             <router-link :to="{ name: 'admin.warehouses.warehouse_movements.create' }" class="btn btn-lg btn-main me-3">
                 {{ $t('buttons.create') }}
             </router-link>
-
-            <!-- Import/Export Dropdown -->
             <div class="dropdown">
                 <button class="btn btn-lg btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
                     aria-expanded="false">
@@ -43,15 +40,12 @@
             </div>
         </div>
 
-        <!-- Actions: Search & Column Toggle -->
+        <!-- Search & Column Toggle -->
         <div class="d-flex align-items-center justify-content-between mb-3">
-            <!-- Search -->
             <div class="search-bar d-flex align-items-center">
                 <i class="bi bi-search me-2"></i>
                 <input type="text" class="form-control" :placeholder="$t('label.search')" v-model="searchQuery" />
             </div>
-
-            <!-- Column Toggle -->
             <div class="dropdown ms-5">
                 <i class="bi bi-gear" type="button" data-bs-toggle="dropdown" aria-expanded="false"></i>
                 <ul class="dropdown-menu align-center rounded-0 p-2" style="width: 250px;">
@@ -65,8 +59,11 @@
             </div>
         </div>
 
+        <!-- Loading Indicator -->
+        <div v-if="loading" class="text-center py-5">{{ $t('label.loading') }}...</div>
+
         <!-- Table -->
-        <div class="table-responsive">
+        <div class="table-responsive" v-else>
             <table class="table table-bordered text-center align-middle">
                 <thead>
                     <tr class="header">
@@ -76,17 +73,18 @@
                 </thead>
                 <tbody>
                     <tr v-for="item in paginatedItems" :key="item.id">
-                        <td v-for="(field, index) in visibleFields" :key="index">
-                            {{ item[field.key] }}
-                        </td>
+                        <td v-for="(field, index) in visibleFields" :key="index">{{ item[field.key] }}</td>
                         <td class="text-center">
                             <i class="bi bi-eye action-icon me-2" :title="$t('buttons.check')"
-                                @click="viewItem(item)"></i>
+                                @click="openViewModal(item)"></i>
                             <i class="bi bi-pencil action-icon me-2" :title="$t('buttons.edit')"
-                                @click="editItem(item)"></i>
+                                @click="openEditModal(item)"></i>
                             <i class="bi bi-trash action-icon" :title="$t('buttons.delete')"
                                 @click="deleteItem(item)"></i>
                         </td>
+                    </tr>
+                    <tr v-if="paginatedItems.length === 0">
+                        <td :colspan="visibleFields.length + 1">{{ $t('label.no_data') }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -102,6 +100,55 @@
                 {{ $t('buttons.next') }}
             </button>
         </div>
+
+        <!-- View Modal -->
+        <div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true"
+            ref="viewModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{{ $t('label.view_movement') }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div v-for="(value, key) in selectedItem" :key="key">
+                            <strong>{{ key }}:</strong> {{ value }}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ $t('buttons.close')
+                        }}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Modal -->
+        <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true"
+            ref="editModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{{ $t('label.edit_movement') }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form @submit.prevent="saveEdit">
+                            <div v-for="field in table.fields" :key="field.key" class="mb-2">
+                                <label class="form-label">{{ field.name }}</label>
+                                <input type="text" class="form-control" v-model="selectedItem[field.key]" />
+                            </div>
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-success">{{ $t('buttons.save') }}</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{
+                                    $t('buttons.cancel') }}</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </template>
 
@@ -111,6 +158,11 @@ import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import axios from "axios";
+import * as bootstrap from 'bootstrap';
+
+
+const API_BASE = "https://yourdomain.com/api";
 
 export default {
     name: "WarehouseMovementsComponent",
@@ -119,70 +171,63 @@ export default {
             searchQuery: "",
             currentPage: 1,
             perPage: 10,
-            items: Array.from({ length: 50 }, (_, i) => ({
-                id: i + 1,
-                transaction_type: ["In", "Out"][i % 2],
-                date: `2025-09-${(i % 30) + 1}`,
-                time: `${(8 + i % 10).toString().padStart(2, "0")}:00`,
-                vendor_or_customer: `Vendor ${i + 1}`,
-                description: `Description ${i + 1}`,
-                in_or_out: ["In", "Out"][i % 2],
-                user: `User ${i + 1}`
-            })),
+            items: [],
+            loading: false,
+            selectedItem: {}, // currently selected item for view/edit
             table: {
                 fields: [
-                    { name: this.$t('label.transaction_type'), key: 'transaction_type', status: true },
-                    { name: this.$t('label.date'), key: 'date', status: true },
-                    { name: this.$t('label.time'), key: 'time', status: true },
-                    { name: this.$t('label.vendor_or_customer'), key: 'vendor_or_customer', status: true },
-                    { name: this.$t('label.description'), key: 'description', status: true },
-                    { name: this.$t('label.in_or_out'), key: 'in_or_out', status: true },
-                    { name: this.$t('label.user'), key: 'user', status: true }
+                    { name: 'Transaction Type', key: 'transaction_type', status: true },
+                    { name: 'Date', key: 'date', status: true },
+                    { name: 'Time', key: 'time', status: true },
+                    { name: 'Vendor/Customer', key: 'vendor_or_customer', status: true },
+                    { name: 'Description', key: 'description', status: true },
+                    { name: 'In/Out', key: 'in_or_out', status: true },
+                    { name: 'User', key: 'user', status: true }
                 ]
             }
         };
     },
     computed: {
-        visibleFields() {
-            return this.table.fields.filter(field => field.status);
-        },
+        visibleFields() { return this.table.fields.filter(f => f.status); },
         filteredItems() {
             if (!this.searchQuery) return this.items;
-            const query = this.searchQuery.toLowerCase();
-            return this.items.filter(item =>
-                item.transaction_type.toLowerCase().includes(query) ||
-                item.vendor_or_customer.toLowerCase().includes(query)
-            );
+            const q = this.searchQuery.toLowerCase();
+            return this.items.filter(item => item.transaction_type.toLowerCase().includes(q) || item.vendor_or_customer.toLowerCase().includes(q));
         },
         paginatedItems() {
             const start = (this.currentPage - 1) * this.perPage;
             return this.filteredItems.slice(start, start + this.perPage);
         },
-        totalPages() {
-            return Math.ceil(this.filteredItems.length / this.perPage);
-        }
+        totalPages() { return Math.ceil(this.filteredItems.length / this.perPage) || 1; }
     },
     methods: {
-        viewItem(item) { console.log("Viewing item:", item); },
-        editItem(item) { console.log("Editing item:", item); },
+        openViewModal(item) {
+            this.selectedItem = { ...item };
+            new bootstrap.Modal(this.$refs.viewModal).show();
+        },
+        openEditModal(item) {
+            this.selectedItem = { ...item };
+            new bootstrap.Modal(this.$refs.editModal).show();
+        },
+        saveEdit() {
+            const index = this.items.findIndex(i => i.id === this.selectedItem.id);
+            if (index !== -1) this.items.splice(index, 1, { ...this.selectedItem });
+            Swal.fire({ title: "Saved", icon: "success", timer: 1500, showConfirmButton: false });
+            bootstrap.Modal.getInstance(this.$refs.editModal).hide();
+        },
         deleteItem(item) {
             Swal.fire({
-                title: this.$t("messages.confirm_delete"),
+                title: "Are you sure?",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#dc3545",
                 cancelButtonColor: "#6c757d",
-                confirmButtonText: this.$t("buttons.delete"),
-                cancelButtonText: this.$t("buttons.cancel")
-            }).then((result) => {
+                confirmButtonText: "Delete",
+                cancelButtonText: "Cancel"
+            }).then(result => {
                 if (result.isConfirmed) {
                     this.items = this.items.filter(i => i.id !== item.id);
-                    Swal.fire({
-                        title: this.$t("messages.item_deleted"),
-                        icon: "success",
-                        timer: 2000,
-                        showConfirmButton: false
-                    });
+                    Swal.fire({ title: "Deleted", icon: "success", timer: 1500, showConfirmButton: false });
                 }
             });
         },
@@ -194,24 +239,11 @@ export default {
             const file = event.target.files[0];
             if (!file) return;
             const reader = new FileReader();
-            reader.onload = (e) => {
+            reader.onload = e => {
                 const data = new Uint8Array(e.target.result);
-                const workbook = XLSX.read(data, { type: "array" });
-                const firstSheetName = workbook.SheetNames[0];
-                const worksheet = workbook.Sheets[firstSheetName];
-                const jsonData = XLSX.utils.sheet_to_json(worksheet);
-                jsonData.forEach(item => {
-                    this.items.push({
-                        id: this.items.length + 1,
-                        transaction_type: item.transaction_type || "",
-                        date: item.date || "",
-                        time: item.time || "",
-                        vendor_or_customer: item.vendor_or_customer || "",
-                        description: item.description || "",
-                        in_or_out: item.in_or_out || "",
-                        user: item.user || ""
-                    });
-                });
+                const wb = XLSX.read(data, { type: "array" });
+                const ws = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+                ws.forEach(item => this.items.push({ id: this.items.length + 1, ...item }));
             };
             reader.readAsArrayBuffer(file);
         },
@@ -219,31 +251,18 @@ export default {
             const ws = XLSX.utils.json_to_sheet(this.items);
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, "Movements");
-
             const date = new Date();
             const dateStr = `${date.getFullYear()}${(date.getMonth() + 1).toString().padStart(2, '0')}${date.getDate().toString().padStart(2, '0')}`;
-            const fileName = `WarehouseMovements_${dateStr}.xlsx`;
-
-            const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-            saveAs(new Blob([wbout], { type: "application/octet-stream" }), fileName);
+            saveAs(new Blob([XLSX.write(wb, { bookType: "xlsx", type: "array" })], { type: "application/octet-stream" }), `WarehouseMovements_${dateStr}.xlsx`);
         },
         exportPDF() {
             const doc = new jsPDF();
             const columns = this.visibleFields.map(f => ({ header: f.name, dataKey: f.key }));
-            const rows = this.filteredItems.map(item =>
-                this.visibleFields.reduce((acc, field) => {
-                    acc[field.key] = item[field.key];
-                    return acc;
-                }, {})
-            );
-
+            const rows = this.filteredItems.map(item => this.visibleFields.reduce((acc, f) => { acc[f.key] = item[f.key]; return acc; }, {}));
             autoTable(doc, { columns, body: rows, startY: 20, styles: { fontSize: 8 }, headStyles: { fillColor: [29, 115, 66] } });
-
             const date = new Date();
             const dateStr = `${date.getFullYear()}${(date.getMonth() + 1).toString().padStart(2, '0')}${date.getDate().toString().padStart(2, '0')}`;
-            const fileName = `WarehouseMovements_${dateStr}.pdf`;
-
-            doc.save(fileName);
+            doc.save(`WarehouseMovements_${dateStr}.pdf`);
         },
         printTable() {
             const printContent = this.$el.querySelector('.table-responsive').innerHTML;
@@ -255,66 +274,25 @@ export default {
             WinPrint.focus();
             WinPrint.print();
             WinPrint.close();
+        },
+        async fetchItems() {
+            this.loading = true;
+            try {
+                const res = await axios.get(`${API_BASE}/warehouse-movements`);
+                this.items = res.data.map((item, i) => ({ id: i + 1, ...item }));
+            } catch (e) {
+                console.error(e);
+                Swal.fire({
+                    title: this.$t('messages.error_fetch'), // يمكن إضافة ترجمة مناسبة
+                    text: "Failed to fetch warehouse movements",
+                    icon: 'error'
+                });
+            } finally {
+                this.loading = false;
+            }
         }
-    }
+
+    },
+    mounted() { this.fetchItems(); }
 };
 </script>
-
-<style>
-.header th {
-    background-color: #f4fff0 !important;
-    text-align: center;
-    vertical-align: middle;
-}
-
-.action-icon {
-    font-size: 1.3rem;
-    cursor: pointer;
-    transition: transform 0.2s, color 0.3s, opacity 0.3s;
-    margin-right: 10px;
-}
-
-.action-icon.bi-eye {
-    color: #0d6efd;
-}
-
-.action-icon.bi-pencil {
-    color: #ffc107;
-}
-
-.action-icon.bi-trash {
-    color: #dc3545;
-}
-
-.action-icon:hover {
-    transform: scale(1.2);
-    opacity: 0.8;
-}
-
-.btn-secondary.dropdown-toggle:hover {
-    background-color: #1d7342;
-    color: #fff;
-    transform: scale(1.05);
-}
-
-.dropdown .show {
-    color: #1d7342;
-}
-
-.search-bar {
-    flex: 1;
-}
-
-.form-check-input:checked[type="checkbox"] {
-    border-radius: 50%;
-    background-color: #1d7342 !important;
-}
-
-.table th,
-.table td {
-    min-width: 120px;
-    white-space: nowrap;
-    text-align: center;
-    vertical-align: middle;
-}
-</style>

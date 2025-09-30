@@ -1,116 +1,83 @@
 <template>
     <li class="tree-item">
-        <!-- Tree label (clickable to toggle children) -->
-        <div @click="toggle" class="tree-label">
+        <div class="item-wrapper">
+            <!-- أيقونة المجلد: للتحكم بفتح/إغلاق الأبناء -->
+            <i class="bi" :class="isOpen ? 'bi-folder2-open' : 'bi-folder-fill'"
+                :style="{ color: isOpen ? 'gold' : 'green' }" @click.stop="toggleOpen"></i>
 
-            <!-- Folder icon using Bootstrap Icons -->
-            <!-- Blue when closed, yellow when open -->
-            <i v-if="hasChildren" :class="open ? 'bi bi-folder2-open folder-icon open' : 'bi bi-folder folder-icon'">
-            </i>
-
-            <!-- Item ID -->
-            <span class="item-number">{{ item.id }}</span>
-
-            <!-- Item name -->
-            <span class="item-name">{{ item.name }}</span>
+            <!-- رقم الصنف واسم الصنف -->
+            <span class="item-name" @click="goToAddItem(item)">
+                {{ item.id }} - {{ item.item_name }}
+            </span>
         </div>
 
-        <!-- Children items -->
-        <ul v-show="open" v-if="hasChildren" class="tree-children">
-            <TreeItem v-for="child in item.children" :key="child.id" :item="child" ref="treeItems" />
+        <!-- عرض الأبناء بشكل متكرر عند فتح المجلد -->
+        <ul v-if="item.children && item.children.length && isOpen">
+            <tree-item v-for="child in item.children" :key="child.id" :item="child" />
         </ul>
     </li>
 </template>
 
 <script>
 export default {
-    name: 'TreeItem',
+    name: "TreeItem",
     props: {
-        item: { type: Object, required: true }
-    },
-    components: {
-        TreeItem: () => import('./TreeItem.vue')
+        item: {
+            type: Object,
+            required: true,
+        },
     },
     data() {
-        return { open: false };
-    },
-    computed: {
-        // Check if the item has children
-        hasChildren() {
-            return this.item?.children?.length > 0;
-        }
+        return {
+            isOpen: false, // حالة فتح/إغلاق الأبناء
+        };
     },
     methods: {
-        // Toggle open state
-        toggle() {
-            if (this.hasChildren) this.open = !this.open;
+        toggleOpen() {
+            this.isOpen = !this.isOpen;
         },
-        // Recursively open/close all children
-        setOpen(value) {
-            this.open = value;
-            if (this.hasChildren && this.$refs.treeItems)
-                this.$refs.treeItems.forEach(child => child.setOpen(value));
-        }
-    }
-}
+        goToAddItem(item) {
+            this.$router.push({
+                path: "/admin/warehouses/items/create",
+                query: {
+                    parentName: item.item_name,
+                    parentId: item.id,
+                },
+            });
+        },
+    },
+};
 </script>
 
 <style scoped>
 .tree-item {
-    margin-bottom: 0.25rem;
-    position: relative;
+    list-style: none;
+    margin-bottom: 0.5rem;
 }
 
-.tree-children {
-    padding-left: 1.5rem;
-    border-left: 2px dashed #e5e7eb;
-    margin-left: 0.5rem;
-}
-
-.tree-label {
+.item-wrapper {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.4rem 0.6rem;
-    border-radius: 0.375rem;
     cursor: pointer;
-    transition: all 0.2s;
+    padding: 4px 8px;
+    border-radius: 4px;
 }
 
-.tree-label:hover {
-    background-color: #f0f9ff;
-    transform: scale(1.02);
-}
-
-/* Folder icon styling */
-.folder-icon {
-    font-size: 2rem;
-    /* Large icon */
-    color: green;
-    /* Default green */
-    transition: color 0.2s;
-    /* Smooth color transition */
-}
-
-/* Folder icon color when open */
-.folder-icon.open {
-    color: #facc15;
-    /* Yellow when open */
-}
-
-/* Item ID */
-.item-number {
-    font-size: 0.8rem;
-    color: #6b7280;
-    width: 45px;
-    text-align: right;
+/* أيقونة المجلد */
+.item-wrapper .bi {
+    font-size: 1.2rem;
+    margin-right: 8px;
     flex-shrink: 0;
 }
 
-/* Item name */
+/* النص */
 .item-name {
-    font-size: 1rem;
-    color: #111827;
-    white-space: nowrap;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+/* تأثير hover على الاسم */
+.item-name:hover {
+    text-decoration: underline;
 }
 </style>

@@ -97,11 +97,12 @@
                                                 :label="locale === 'ar' ? 'title_ar' : 'title_en'"
                                                 :reduce="company => company.id" placeholder="" />
                                         </div>
-                                        <p class='text-danger form-text' v-if="errors.company_type">{{
-                                            errors.company_type[0] }}
-                                        </p>
 
+                                        <p class='text-danger form-text' v-if="errors.company_type">
+                                            {{ errors.company_type[0] }}
+                                        </p>
                                     </div>
+
 
                                     <div class="item mb-4">
                                         <div class="mb-3 position-relative">
@@ -169,10 +170,12 @@
                                             </Vue3Select>
 
                                         </div>
-                                        <p class='text-danger form-text' v-if="errors.workType">
-                                            {{ errors.workType[0] }}
+
+                                        <p class='text-danger form-text' v-if="errors.work_type">
+                                            {{ errors.work_type[0] }}
                                         </p>
                                     </div>
+
 
                                     <div class="item mb-4">
                                         <div class="mb-3 position-relative">
@@ -957,7 +960,6 @@
         </form>
     </div>
 </template>
-
 <script>
 
 import 'intl-tel-input/build/css/intlTelInput.css';
@@ -986,29 +988,21 @@ export default {
                 from: '2026-01-01',
                 to: '2026-12-31',
                 currency_id: null,
-
             },
             iti: null,
             errors: []
         };
     },
     computed: {
-        currencies: function () {
-
+        currencies() {
             return this.$store.getters['options/currencies'];
-
         },
-        workTypes: function () {
-
+        workTypes() {
             return this.$store.getters['options/workTypes'];
-
         },
-        companyTypes: function () {
-
+        companyTypes() {
             return this.$store.getters['options/companyTypes'];
-
         },
-
     },
     async mounted() {
         const input = document.querySelector("#phone")
@@ -1022,11 +1016,14 @@ export default {
         input.addEventListener("countrychange", () => {
             this.form.country_code = this.iti.getSelectedCountryData().dialCode;
         });
+
         const { locale } = useI18n();
         this.locale = locale.value;
+
         await this.$store.dispatch('options/getCurrencies');
         await this.$store.dispatch('options/getWorkTypes');
         await this.$store.dispatch('options/getCompanyTypes');
+
         this.isLoading = false;
     },
     methods: {
@@ -1055,27 +1052,28 @@ export default {
             formData.append('to', this.form.to)
             formData.append('currency_id', this.form.currency_id)
 
-            this.$store.dispatch('auth/registerCompany', formData).then(res => {
-                this.isLoading = false;
-                if (res.data.success) {
-                    this.$router.push("/admin");
-                } else {
-                    alert(res.data.message);
-                }
-            }).catch(err => {
-                this.isLoading = false;
-
-                if (err.response && err.response.status === 422) {
-                    this.errors = err.response.data.errors;
-                } else {
-                    this.errorMsg = "Something went wrong";
-
-                }
-            });
+            this.$store.dispatch('auth/registerCompany', formData)
+                .then(res => {
+                    this.isLoading = false;
+                    if (res.data.success) {
+                        this.$router.push("/admin");
+                    } else {
+                        alert(res.data.message);
+                    }
+                })
+                .catch(err => {
+                    this.isLoading = false;
+                    if (err.response && err.response.status === 422) {
+                        this.errors = err.response.data.errors;
+                    } else {
+                        this.errorMsg = "Something went wrong";
+                    }
+                });
         },
     }
 };
 </script>
+
 
 <style scoped>
 .tabs {

@@ -167,19 +167,15 @@ const errors = reactive({});
 const errorMsg = ref(null);
 const successMsg = ref(null);
 
-// حقل الملفات
 const handleFileUpload = (event) => {
     const files = Array.from(event.target.files);
     form.attachments.push(...files);
 };
 
-// حفظ النموذج مع رسالة نجاح
 const saveForm = () => {
-    errors.value = {};
     errorMsg.value = null;
     successMsg.value = null;
 
-    // هنا عادةً ترسل البيانات إلى API
     Swal.fire({
         icon: 'success',
         title: t('messages.saved_title'),
@@ -191,7 +187,6 @@ const saveForm = () => {
     });
 };
 
-// إلغاء النموذج مع تأكيد
 const cancelForm = () => {
     Swal.fire({
         title: t('messages.cancel_title'),
@@ -207,7 +202,6 @@ const cancelForm = () => {
     });
 };
 
-// تعريف الحقول لاستخدامها في حلقة v-for
 const fields = [
     { id: 'customer_number', label: 'label.customer_number', model: 'customer_number', type: 'text', maxlength: 50 },
     { id: 'company_name', label: 'label.company_name', model: 'company_name', type: 'text', maxlength: 255 },
@@ -230,6 +224,7 @@ const fields = [
     { id: 'attachments', label: 'label.attachments', model: 'attachments', type: 'file', ref: 'attachmentsInput' }
 ];
 </script>
+
 
 <style>
 .box-attachments {
