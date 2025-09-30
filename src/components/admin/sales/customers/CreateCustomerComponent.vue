@@ -65,16 +65,58 @@
                 <div class="col-12">
                     <div class="item mb-4">
                         <div class="mb-3 position-relative">
-                            <label class="form-label">{{ t('label.attachments') }}</label>
+                            <label for="email" class="form-label">{{ $t('label.email')
+                                }}</label>
+                            <div class=" position-relative group">
+                                <input type="email" id="email" class="form-control rounded-1"
+                                    placeholder="yassin2029@gmail.com" v-model="form.email" maxlength="150"
+                                    :class="{ 'is-invalid': errors.email }" />
+                                <i class="bi bi-envelope"></i>
+                            </div>
+                            <div v-if="errors.email" class="invalid-feedback">{{ errors.email[0] }}</div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="item mb-4">
+                        <div class="mb-3 position-relative">
+                            <label for="category" class="form-label">{{ $t('label.category') }}</label>
+
+                            <input type="text" id="category" class="form-control rounded-1" v-model="form.category"
+                                maxlength="100" :class="{ 'is-invalid': errors.category }" />
+                            <div v-if="errors.category" class="invalid-feedback">{{ errors.category[0] }}</div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="item mb-4">
+                        <div class="mb-3 position-relative">
+                            <label for="notes" class="form-label">{{ $t('label.notes') }}</label>
+
+                            <textarea name="notes" id="notes" rows="3" class="form-control" v-model="form.notes"
+                                maxlength="500" :class="{ 'is-invalid': errors.notes }"></textarea>
+                            <div v-if="errors.notes" class="invalid-feedback">{{ errors.notes[0] }}</div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="item mb-4">
+                        <div class="mb-3 position-relative">
+                            <label for="attachments" class="form-label">{{ $t('label.attachments') }}</label>
+
                             <div class="box-attachments d-flex align-items-center justify-content-center"
-                                @click="$refs.attachmentsInput.click()" style="cursor:pointer;">
+                                @click="$refs.fileInput.click()" style="cursor: pointer;">
                                 <div class="text-center">
                                     <i class="bi bi-image"></i>
                                     <p class="small">{{ t('label.drop_file_here') }}</p>
                                 </div>
                             </div>
-                            <input type="file" ref="attachmentsInput" @change="handleFileUpload" multiple
-                                style="display:none;">
+                            <input type="file" ref="fileInput" @change="handleFileUpload" multiple
+                                style="display: none;">
+
                         </div>
                     </div>
                 </div>

@@ -8,7 +8,8 @@
                     <h4 class="text-center fs-5 fw-bold mt-3">{{ $t('alerts.reset_password_success') }}</h4>
                     <p class="text-center text-secondary mb-5">{{ $t('label.reset_password_success_text') }}</p>
                 </div>
-                <router-link :to="{ name: 'auth.login' }" class = "btn btn-main w-100 rounded-0">{{ $t('label.login') }}</router-link>
+                <router-link :to="{ name: 'auth.login' }" class="btn btn-main w-100 rounded-0">{{ $t('label.login')
+                    }}</router-link>
             </form>
         </div>
     </div>
