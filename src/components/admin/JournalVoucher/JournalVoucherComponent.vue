@@ -1,14 +1,9 @@
 <template>
     <div class="container pe-5 ps-5">
-        <!-- Title -->
         <h1><i class="bi bi-currency-dollar"></i> {{ $t('label.journal_entries') }}</h1>
 
         <!-- Action Buttons -->
         <div class="d-flex align-items-center justify-content-end mb-4">
-            <router-link :to="{ name: 'admin.accounting.journal_entries.create' }" class="btn btn-success text-white">
-                <i class="bi bi-plus me-2"></i>{{ $t('buttons.create') }}
-            </router-link>
-
             <button class="btn btn-primary ms-2" @click="exportOptions">
                 <i class="bi bi-file-earmark-arrow-down me-2"></i>تصدير
             </button>
@@ -16,7 +11,7 @@
 
         <!-- Search & Filter -->
         <div class="d-flex align-items-center actions mb-3 flex-wrap">
-            <div class="search me-2 mb-3 d-flex align-items-center">
+            <div class="search me-2 mb-3">
                 <i class="bi bi-search me-2"></i>
                 <input type="text" class="form-control d-inline-block w-auto" v-model="searchQuery"
                     :placeholder="$t('label.search_journal_entry')" />
@@ -45,7 +40,7 @@
                 </thead>
                 <tbody>
                     <tr v-for="entry in filteredEntries" :key="entry.id">
-                        <td v-for="field in visibleFields" :key="field.key">{{ entry[field.key] }}</td>
+                        <td v-for="field in visibleFields" :key="field.name">{{ entry[field.key] }}</td>
                         <td>
                             <i class="bi bi-pencil action-icon text-warning me-2" @click="editEntry(entry)"
                                 title="تعديل"></i>
@@ -119,7 +114,7 @@ export default {
     name: "JournalEntriesComponent",
     data() {
         return {
-            useApi: true, // غيرها ل true لو عندك API جاهز
+            useApi: true,
             searchQuery: "",
             entries: [],
             modalEntry: {},
@@ -164,6 +159,7 @@ export default {
                     const res = await axios.get("/api/journal-entries");
                     this.entries = res.data;
                 } catch (e) {
+                    console.error(e);
                     Swal.fire("خطأ", "فشل في جلب البيانات من السيرفر", "error");
                 }
             } else {
@@ -198,6 +194,7 @@ export default {
                     }
                     Swal.fire("نجاح", "تم حفظ القيد بنجاح", "success");
                 } catch (e) {
+                    console.error(e);
                     Swal.fire("خطأ", "فشل في حفظ البيانات", "error");
                 }
             } else {
@@ -222,11 +219,13 @@ export default {
             if (!result.isConfirmed) return;
 
             if (this.useApi) {
-                try { await axios.delete(`/api/journal-entries/${entry.id}`); }
-                catch { Swal.fire("خطأ", "فشل الحذف", "error"); return; }
+                try { await axios.delete(`/api/journal-entries/${entry.id}`); } catch (e) { Swal.fire("خطأ", "فشل الحذف", "error"); return; }
             }
             this.entries = this.entries.filter(e => e.id !== entry.id);
             Swal.fire("تم", "تم حذف القيد بنجاح", "success");
+        },
+        deleteSelected() {
+            Swal.fire("تنويه", "لم يتم تحديد أي قيود بعد", "info");
         },
         exportOptions() {
             Swal.fire({
@@ -275,6 +274,27 @@ export default {
 
 .action-icon:hover {
     transform: scale(1.2);
+}
+
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+
+.btn-warning {
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: #212529;
+}
+
+.btn-warning:hover {
+    background-color: #e0a800;
+    border-color: #d39e00;
 }
 
 .table-responsive {

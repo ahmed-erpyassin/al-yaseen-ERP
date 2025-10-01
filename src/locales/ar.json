@@ -20,8 +20,9 @@
     "sources": "المصادر",
     "projects": "المشاريع",
     "cheques": "الشيكات",
-    "levels": "المراحل",
-    "documents":"المستندات"
+    "milestones": "المراحل",
+    "documents":"المستندات",
+    "financials": "المالية"
   },
   "breadcrumb": {
     "sales": "المبيعات",
@@ -257,7 +258,7 @@
     "accumulated_depreciation_to_operating": "الإهلاك المتراكم - ينقل إلى الحساب التشغيلي",
     "accumulated_depreciation_to_revenue_and_expense": "الإهلاك المتراكم - ينقل إلى حساب الإيرادات والمصروفات",
     "category": "الفئة",
-    "level": "المستوى",
+    "milestones": "المستوى",
     "report_type": "نوع التقرير",
     "classification": "التصنيف",
     "nature": "الطبيعة",
@@ -465,6 +466,7 @@
     "linked_account": "الحساب المرتبط",
     "chart_of_accounts": "شجرة الحسابات",
     "journal_entries": "قيود المحاسبة",
+    "journal_vouchers": "سند قيد",
     "entry_number": "رقم القيد",
     "entry_date": "تاريخ القيد",
     "entry_time": "الساعة",

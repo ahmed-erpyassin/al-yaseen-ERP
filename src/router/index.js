@@ -15,9 +15,10 @@ import warehouses from "./routes/warehouses";
 import taxes from "./routes/taxes";
 import reports from "./routes/reports";
 import tools from "./routes/tools";
-import levelsRoutes from "./routes/levels"; // المسار الجديد
+import milestonesRoutes from "./routes/milestones"; // المسار الجديد
 import sourcesRoutes from "./routes/sources"; // المسار الجديد
 import documentsRoutes from "./routes/documents";
+import financialsRoutes from "./routes/financials";
 
 // مكونات Layout و Home
 import HomeComponent from "@/components/front/home/HomeComponent.vue";
@@ -54,9 +55,15 @@ const adminRoutes = [
   ...taxes,
   ...reports,
   ...tools,
-  ...levelsRoutes, // <-- أضفنا مسارات المراحل
+  ...milestonesRoutes, // <-- أضفنا مسارات المراحل
   ...sourcesRoutes,
-  ...documentsRoutes
+  ...documentsRoutes,
+  ...financialsRoutes,
+  {
+    path: "search",
+    name: "admin.search",
+    component: () => import("@/components/admin/SearchView.vue"),
+  },
 ];
 
 // Admin Layout Routes

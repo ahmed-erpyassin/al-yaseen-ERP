@@ -251,7 +251,7 @@
     "accumulated_depreciation_to_operating": "Accumulated Depreciation Account - Asset accounts are transferred to the operating account.",
     "accumulated_depreciation_to_revenue_and_expense": "Accumulated Depreciation Account - Asset accounts are transferred to the revenue and expense account.",
     "category": "Category",
-    "level": "Level",
+    "milestone": "milestone",
     "report_type": "Report type",
     "classification": "Classification",
     "nature": "Nature",

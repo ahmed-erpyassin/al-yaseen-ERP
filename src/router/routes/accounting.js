@@ -12,6 +12,8 @@ import CreateFunderComponent from "@/components/admin/accounting/funders/CreateF
 import FundersComponent from "@/components/admin/accounting/funders/FundersComponent.vue";
 import CreateEntryComponent from "@/components/admin/accounting/journalEntries/CreateEntryComponent.vue";
 import JournalEntriesComponent from "@/components/admin/accounting/journalEntries/JournalEntriesComponent.vue";
+import JournalVouchersComponent from "@/components/admin/JournalVoucher/JournalVoucherComponent.vue";
+import CreateJournalVouchersComponent from "@/components/admin/JournalVoucher/CreateJournalVoucherComponent.vue";
 
 export default [
     {
@@ -48,6 +50,19 @@ export default [
                         path: 'create',
                         component: CreateEntryComponent,
                         name: "admin.accounting.journal_entries.create"
+                    }
+                ]
+            },{
+                path: "journal-vouchers",
+                children: [
+                    {
+                        path: '',
+                        component: JournalVouchersComponent,
+                        name: "admin.accounting.journal_vouchers"
+                    },{
+                        path: 'create',
+                        component : CreateJournalVouchersComponent,
+                        name: "admin.accounting.journal_vouchers.create"
                     }
                 ]
             }, {

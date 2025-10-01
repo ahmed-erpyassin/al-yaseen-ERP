@@ -134,7 +134,7 @@ export default {
     name: 'ResourcesComponent',
     data() {
         return {
-            useApi: false, // إذا true يستخدم API، إذا false يعرض بيانات وهمية
+            useApi: true, // إذا true يستخدم API، إذا false يعرض بيانات وهمية
 
             // بيانات العرض
             resources: [],
