@@ -16,7 +16,7 @@
 
                 <div class="mb-3 position-relative">
                     <label for="email" class="form-label">{{ $t('label.email') }}</label>
-                    <div class=" position-relative group">
+                    <div class="position-relative group">
                         <input type="email" id="email" class="form-control rounded-0" v-model="form.email"
                             placeholder="yassin2029@gmail.com" />
                         <i class="bi bi-envelope"></i>
@@ -26,7 +26,7 @@
 
                 <div class="mb-3 mt-4 position-relative">
                     <label for="password" class="form-label">{{ $t('label.password') }}</label>
-                    <div class=" position-relative group">
+                    <div class="position-relative group">
                         <input type="password" id="password" class="form-control rounded-0" v-model="form.password"
                             placeholder="******" />
                         <i class="bi bi-lock"></i>
@@ -40,7 +40,7 @@
                             v-model="form.remember" />
                         <label class="form-check-label" for="remember">{{ $t('label.rememberMe') }}</label>
                     </div>
-                    <router-link :to="{ name: 'auth.forget-password' }" class="small d-block  forget-password">
+                    <router-link :to="{ name: 'auth.forget-password' }" class="small d-block forget-password">
                         {{ $t('label.forgetYourPassword') }}
                     </router-link>
                 </div>
@@ -78,7 +78,7 @@ export default {
     components: { LogoComponent, LoadingComponent },
     data() {
         return {
-            isLoading: true,
+            isLoading: false,
             form: {
                 email: null,
                 password: null,
@@ -86,65 +86,64 @@ export default {
             },
             errors: [],
             errorMsg: null,
-            successMsg: null, // ✅ لإظهار رسالة نجاح بعد التسجيل
+            successMsg: null,
         };
     },
     mounted() {
-        this.isLoading = false;
-
-        // ✅ إذا جاي من التسجيل
+        // إذا جاء من التسجيل
         if (this.$route.query.registered) {
             this.successMsg = "تم التسجيل بنجاح، الرجاء التحقق من بريدك الإلكتروني.";
         }
     },
-    computed: {
-        authToken: function () {
-            return this.$store.getters['auth/authToken'];
-        }
-    },
     methods: {
-        login: function () {
+        login() {
             this.errors = [];
             this.errorMsg = null;
             this.successMsg = null;
             this.isLoading = true;
 
-            this.$store.dispatch('auth/login', this.form).then(res => {
-                this.isLoading = false;
+            this.$store.dispatch('auth/login', this.form)
+                .then(res => {
+                    this.isLoading = false;
 
-                if (res.data.token && res.data.user) {
-                    const user = res.data.user;
+                    if (res.data.token && res.data.user) {
+                        const token = res.data.token;
+                        const user = res.data.user;
 
-                    // ✅ تحقق إذا المستخدم لسا مش مفعل OTP
-                    if (user.otp_expires_at) {
-                        this.$router.push({
-                            name: "auth.otp",
-                            params: { token: res.data.token }
-                        });
+                        // ✅ تخزين التوكن في localStorage
+                        localStorage.setItem('authToken', token);
+                        localStorage.setItem('authStatus', 'true');
+                        localStorage.setItem('authUser', JSON.stringify(user));
+
+                        // ✅ تحديث Vuex state
+                        this.$store.commit('auth/setAuthToken', token);
+                        this.$store.commit('auth/setAuthStatus', true);
+                        this.$store.commit('auth/setAuthUser', user);
+
+                        // ✅ التحقق من OTP
+                        if (user.otp_expires_at) {
+                            this.$router.push({ name: "auth.otp", params: { token } });
+                        } else {
+                            this.$router.push("/admin");
+                        }
                     } else {
-                        // ✅ المستخدم مفعل خلاص → دخله على لوحة التحكم
-                        this.$router.push("/admin");
+                        this.errorMsg = res.data.message || "فشل تسجيل الدخول";
                     }
-                } else {
-                    alert(res.data.message || "Login failed");
-                }
-            }).catch(err => {
-                this.isLoading = false;
+                })
+                .catch(err => {
+                    this.isLoading = false;
 
-
-                if (err.response && err.response.status === 422) {
-                    this.errors = err.response.data.errors;
-                } else if (err.response && err.response.status === 401) {
-                    this.errorMsg = err.response.data.message;
-                } else if (err.response && err.response.status === 403) {
-                    this.errorMsg = err.response.data.message || "Please verify your phone before logging in.";
-                    this.$router.push({
-                        name: "auth.otp",
-                    });
-                } else {
-                    this.errorMsg = "Something went wrong";
-                }
-            });
+                    if (err.response && err.response.status === 422) {
+                        this.errors = err.response.data.errors;
+                    } else if (err.response && err.response.status === 401) {
+                        this.errorMsg = err.response.data.message || "بيانات الدخول غير صحيحة";
+                    } else if (err.response && err.response.status === 403) {
+                        this.errorMsg = err.response.data.message || "يرجى التحقق من OTP قبل تسجيل الدخول";
+                        this.$router.push({ name: "auth.otp" });
+                    } else {
+                        this.errorMsg = "حدث خطأ ما، حاول مرة أخرى";
+                    }
+                });
         },
     },
 };

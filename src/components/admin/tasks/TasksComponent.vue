@@ -1,7 +1,7 @@
 <template>
     <div class="container pe-5 ps-5">
         <h1><i class="bi bi-image"></i> {{ $t('label.company_undefined') }}</h1>
-        
+
         <div class="row">
             <div class="col-12">
                 <h3 class="mb-5 mt-5">{{ $t('label.tasks') }}</h3>
@@ -10,12 +10,8 @@
 
         <!-- Filter Buttons -->
         <div class="filter-buttons mb-4">
-            <button 
-                v-for="filter in filters" 
-                :key="filter.key"
-                :class="['filter-btn', { 'active': activeFilter === filter.key }]"
-                @click="setActiveFilter(filter.key)"
-            >
+            <button v-for="filter in filters" :key="filter.key"
+                :class="['filter-btn', { 'active': activeFilter === filter.key }]" @click="setActiveFilter(filter.key)">
                 {{ filter.label }}
             </button>
         </div>
@@ -25,44 +21,23 @@
             <button type="button" class="btn btn-success btn-add-task" @click="openAddTaskModal">
                 <i class="bi bi-plus me-2"></i>{{ $t('buttons.add_new_task') }}
             </button>
-            <button type="button" class="btn btn-outline-secondary btn-filters">
+            <button type="button" class="btn btn-secondary btn-filters ms-5">
                 <i class="bi bi-funnel me-2"></i>{{ $t('buttons.filters') }}
             </button>
         </div>
 
         <!-- Tasks Table -->
         <div class="table-responsive">
-            <table class="table table-bordered">
-                <thead class="table-header">
-                    <tr>
-                        <th class="sortable">
-                            {{ $t('label.task') }}
-                            <i class="bi bi-arrow-up ms-1"></i>
-                        </th>
-                        <th class="sortable">
-                            {{ $t('label.status') }}
-                            <i class="bi bi-arrow-up ms-1"></i>
-                        </th>
-                        <th class="sortable">
-                            {{ $t('label.priority') }}
-                            <i class="bi bi-arrow-up ms-1"></i>
-                        </th>
-                        <th class="sortable">
-                            {{ $t('label.assigned_to') }}
-                            <i class="bi bi-arrow-up ms-1"></i>
-                        </th>
-                        <th class="sortable">
-                            {{ $t('label.created_by') }}
-                            <i class="bi bi-arrow-up ms-1"></i>
-                        </th>
-                        <th class="sortable">
-                            {{ $t('label.due_date') }}
-                            <i class="bi bi-arrow-up ms-1"></i>
-                        </th>
-                        <th class="sortable">
-                            {{ $t('label.actions') }}
-                            <i class="bi bi-arrow-up ms-1"></i>
-                        </th>
+            <table class="table table-bordered text-center align-middle">
+                <thead>
+                    <tr class="header">
+                        <th>{{ $t('label.task') }}</th>
+                        <th>{{ $t('label.status') }}</th>
+                        <th>{{ $t('label.priority') }}</th>
+                        <th>{{ $t('label.assigned_to') }}</th>
+                        <th>{{ $t('label.created_by') }}</th>
+                        <th>{{ $t('label.due_date') }}</th>
+                        <th>{{ $t('label.actions') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -86,99 +61,49 @@
                         <td>{{ task.assigned_to }}</td>
                         <td>{{ task.created_by }}</td>
                         <td>{{ task.due_date }}</td>
-                        <td>
-                            <div class="dropdown">
-                                <button class="btn btn-link dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                    {{ $t('buttons.mark_as_active') }}
-                                    <i class="bi bi-chevron-down ms-1"></i>
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#" @click.prevent="markAsActive(task.id)">{{ $t('buttons.mark_as_active') }}</a></li>
-                                    <li><a class="dropdown-item" href="#" @click.prevent="editTask(task.id)">{{ $t('buttons.edit') }}</a></li>
-                                    <li><a class="dropdown-item" href="#" @click.prevent="deleteTask(task.id)">{{ $t('buttons.delete') }}</a></li>
-                                </ul>
-                            </div>
+                        <td class="text-center">
+                            <i class="bi bi-eye action-icon me-2" title="View" @click="openViewModal(task)"></i>
+                            <i class="bi bi-pencil action-icon me-2" title="Edit" @click="openEditModal(task)"></i>
+                            <i class="bi bi-trash action-icon" title="Delete" @click="confirmDelete(task)"></i>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
-        <!-- Pagination -->
-        <div class="pagination-container">
-            <nav aria-label="Page navigation">
-                <ul class="pagination justify-content-end">
-                    <li class="page-item">
-                        <a class="page-link" href="#">{{ $t('buttons.previous') }}</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">1</a>
-                    </li>
-                    <li class="page-item active">
-                        <a class="page-link" href="#">2</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">3</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">{{ $t('buttons.next') }}</a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-
-        <!-- Add Task Modal -->
-        <div v-if="showAddTaskModal" class="modal-overlay" @click="closeAddTaskModal">
+        <!-- Add / Edit / View Task Modal -->
+        <div v-if="showTaskModal" class="modal-overlay" @click="closeTaskModal">
             <div class="modal-content add-task-modal" @click.stop>
-                <div class="modal-header">
-                    <h4 class="modal-title">{{ $t('buttons.add_new_task') }}</h4>
-                    <button type="button" class="btn-close" @click="closeAddTaskModal">
-                        <i class="bi bi-x"></i>
-                    </button>
+                <div :class="['modal-header', modalType === 'add' ? 'bg-success text-white' : 'bg-warning text-dark']">
+                    <h5 class="modal-title">{{ modalTitle }}</h5>
+                    <button type="button" class="btn-close" @click="closeTaskModal"></button>
                 </div>
-                
-                <div class="modal-body">
-                    <form @submit.prevent="saveNewTask">
-                        <!-- Task Name -->
+
+                <div class="modal-body" v-if="modalType !== 'view'">
+                    <form @submit.prevent="saveTask">
                         <div class="form-group mb-3">
-                            <label for="taskName" class="form-label">{{ $t('label.task_name') }}</label>
-                            <input 
-                                type="text" 
-                                id="taskName" 
-                                class="form-control" 
-                                v-model="newTask.name"
-                                :placeholder="$t('placeholder.task_name')"
-                                required
-                            />
+                            <label class="form-label">{{ $t('label.task_name') }}</label>
+                            <input type="text" class="form-control" v-model="modalTask.title" required />
                         </div>
 
-                        <!-- Notes -->
                         <div class="form-group mb-3">
-                            <label for="taskNotes" class="form-label">{{ $t('label.notes') }}</label>
-                            <textarea 
-                                id="taskNotes" 
-                                class="form-control" 
-                                rows="3"
-                                v-model="newTask.notes"
-                                :placeholder="$t('placeholder.task_notes')"
-                            ></textarea>
+                            <label class="form-label">{{ $t('label.notes') }}</label>
+                            <textarea class="form-control" rows="3" v-model="modalTask.description"></textarea>
                         </div>
 
-                        <!-- Assign To -->
                         <div class="form-group mb-3">
-                            <label for="assignTo" class="form-label">{{ $t('label.assign_to') }}</label>
-                            <select id="assignTo" class="form-control" v-model="newTask.assigned_to" required>
-                                <option value="">{{ $t('placeholder.select_one') }}</option>
+                            <label class="form-label">{{ $t('label.assign_to') }}</label>
+                            <select class="form-control" v-model="modalTask.assigned_to" required>
+                                <option value="">Select</option>
                                 <option value="ahmed">أحمد علي السيد</option>
                                 <option value="mohamed">محمد أحمد</option>
                                 <option value="sara">سارة محمد</option>
                             </select>
                         </div>
 
-                        <!-- Status -->
                         <div class="form-group mb-3">
-                            <label for="taskStatus" class="form-label">{{ $t('label.status') }}</label>
-                            <select id="taskStatus" class="form-control" v-model="newTask.status" required>
+                            <label class="form-label">{{ $t('label.status') }}</label>
+                            <select class="form-control" v-model="modalTask.status" required>
                                 <option value="open">{{ $t('status.open') }}</option>
                                 <option value="in_progress">{{ $t('status.in_progress') }}</option>
                                 <option value="completed">{{ $t('status.completed') }}</option>
@@ -186,63 +111,27 @@
                             </select>
                         </div>
 
-                        <!-- Due Date -->
                         <div class="form-group mb-3">
-                            <label for="dueDate" class="form-label">{{ $t('label.due_date') }}</label>
-                            <input 
-                                type="date" 
-                                id="dueDate" 
-                                class="form-control" 
-                                v-model="newTask.due_date"
-                                required
-                            />
-                        </div>
-
-                        <!-- Records -->
-                        <div class="form-group mb-3">
-                            <label for="taskRecords" class="form-label">{{ $t('label.records') }}</label>
-                            <div class="input-group">
-                                <input 
-                                    type="text" 
-                                    id="taskRecords" 
-                                    class="form-control" 
-                                    v-model="newTask.records"
-                                    :placeholder="$t('placeholder.related_records')"
-                                />
-                                <button type="button" class="btn btn-outline-secondary" @click="addRecord">
-                                    <i class="bi bi-link-45deg"></i>
-                                    {{ $t('buttons.add_record') }}
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Documents -->
-                        <div class="form-group mb-3">
-                            <label for="taskDocuments" class="form-label">{{ $t('label.documents') }}</label>
-                            <div class="input-group">
-                                <input 
-                                    type="text" 
-                                    id="taskDocuments" 
-                                    class="form-control" 
-                                    v-model="newTask.documents"
-                                    :placeholder="$t('placeholder.attached_documents')"
-                                />
-                                <button type="button" class="btn btn-outline-secondary" @click="addDocument">
-                                    <i class="bi bi-link-45deg"></i>
-                                    {{ $t('buttons.add_document') }}
-                                </button>
-                            </div>
+                            <label class="form-label">{{ $t('label.due_date') }}</label>
+                            <input type="date" class="form-control" v-model="modalTask.due_date" required />
                         </div>
                     </form>
                 </div>
-                
+
+                <div class="modal-body" v-else>
+                    <p><b>العنوان:</b> {{ modalTask.title }}</p>
+                    <p><b>الوصف:</b> {{ modalTask.description }}</p>
+                    <p><b>المسؤول:</b> {{ modalTask.assigned_to }}</p>
+                    <p><b>الحالة:</b> {{ modalTask.status_label }}</p>
+                    <p><b>تاريخ الاستحقاق:</b> {{ modalTask.due_date }}</p>
+                </div>
+
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" @click="closeAddTaskModal">
-                        {{ $t('buttons.cancel') }}
-                    </button>
-                    <button type="button" class="btn btn-success" @click="saveNewTask">
-                        {{ $t('buttons.save') }}
-                    </button>
+                    <button type="button" class="btn btn-secondary" @click="closeTaskModal">{{ $t('buttons.cancel')
+                        }}</button>
+                    <button v-if="modalType !== 'view'" type="button"
+                        :class="['btn', modalType === 'add' ? 'btn-success' : 'btn-warning']" @click="saveTask">{{
+                        $t('buttons.save') }}</button>
                 </div>
             </div>
         </div>
@@ -250,21 +139,17 @@
 </template>
 
 <script>
+import Swal from 'sweetalert2';
+
 export default {
     name: 'TasksComponent',
     data() {
         return {
             activeFilter: 'all',
-            showAddTaskModal: false,
-            newTask: {
-                name: '',
-                notes: '',
-                assigned_to: '',
-                status: 'open',
-                due_date: '',
-                records: '',
-                documents: ''
-            },
+            tasks: [
+                { id: 1, title: 'تقرير شهري', description: 'المبيعات والمشتريات', status: 'completed', status_label: 'مكتملة', priority: 'medium', priority_label: 'متوسط', assigned_to: 'أحمد علي السيد', created_by: 'أحمد علي السيد', due_date: '2025-01-10' },
+                { id: 2, title: 'مراجعة العقود', description: 'مراجعة جميع العقود', status: 'in_progress', status_label: 'قيد التنفيذ', priority: 'high', priority_label: 'عالي', assigned_to: 'محمد أحمد', created_by: 'أحمد علي السيد', due_date: '2025-01-15' }
+            ],
             filters: [
                 { key: 'all', label: this.$t('buttons.all_tasks') },
                 { key: 'open', label: this.$t('buttons.open_tasks') },
@@ -272,239 +157,176 @@ export default {
                 { key: 'daily', label: this.$t('buttons.daily_due_date') },
                 { key: 'overdue', label: this.$t('buttons.overdue') }
             ],
-            tasks: [
-                {
-                    id: 1,
-                    title: 'تقرير شهري',
-                    description: 'المبيعات والمشتريات و الريح للشريكين',
-                    status: 'completed',
-                    status_label: 'مكتملة',
-                    priority: 'medium',
-                    priority_label: 'متوسط',
-                    assigned_to: 'أحمد علي السيد',
-                    created_by: 'أحمد علي السيد',
-                    due_date: '10-01-2025'
-                },
-                {
-                    id: 2,
-                    title: 'مراجعة العقود',
-                    description: 'مراجعة جميع العقود المعلقة',
-                    status: 'in_progress',
-                    status_label: 'قيد التنفيذ',
-                    priority: 'high',
-                    priority_label: 'عالي',
-                    assigned_to: 'محمد أحمد',
-                    created_by: 'أحمد علي السيد',
-                    due_date: '15-01-2025'
-                },
-                {
-                    id: 3,
-                    title: 'تحديث قاعدة البيانات',
-                    description: 'تحديث معلومات العملاء والموردين',
-                    status: 'pending',
-                    status_label: 'معلقة',
-                    priority: 'low',
-                    priority_label: 'منخفض',
-                    assigned_to: 'سارة محمد',
-                    created_by: 'أحمد علي السيد',
-                    due_date: '20-01-2025'
-                }
-            ]
+            showTaskModal: false,
+            modalTask: {},
+            modalType: '',
+            modalTitle: ''
         }
     },
     methods: {
-        setActiveFilter(filterKey) {
-            this.activeFilter = filterKey;
-            // Here you would filter the tasks based on the selected filter
-            console.log('Filter changed to:', filterKey);
-        },
-        
+        setActiveFilter(key) { this.activeFilter = key },
         getStatusClass(status) {
-            const statusClasses = {
-                'completed': 'bg-success',
-                'in_progress': 'bg-warning',
-                'pending': 'bg-secondary',
-                'overdue': 'bg-danger'
-            };
-            return statusClasses[status] || 'bg-secondary';
+            return { 'completed': 'bg-success', 'in_progress': 'bg-warning', 'pending': 'bg-secondary', 'overdue': 'bg-danger' }[status] || 'bg-secondary';
         },
-        
         getPriorityClass(priority) {
-            const priorityClasses = {
-                'high': 'priority-high',
-                'medium': 'priority-medium',
-                'low': 'priority-low'
-            };
-            return priorityClasses[priority] || 'priority-medium';
+            return { 'high': 'priority-high', 'medium': 'priority-medium', 'low': 'priority-low' }[priority] || 'priority-medium';
         },
-        
-        markAsActive(taskId) {
-            console.log('Marking task as active:', taskId);
-            // Here you would update the task status
-        },
-        
-        editTask(taskId) {
-            console.log('Editing task:', taskId);
-            // Here you would navigate to edit task page
-        },
-        
-        deleteTask(taskId) {
-            console.log('Deleting task:', taskId);
-            // Here you would delete the task
-        },
-        
-        // Modal methods
         openAddTaskModal() {
-            this.showAddTaskModal = true;
+            this.modalTask = { title: '', description: '', assigned_to: '', status: 'open', due_date: '' };
+            this.modalType = 'add';
+            this.modalTitle = this.$t('buttons.add_new_task');
+            this.showTaskModal = true;
         },
-        
-        closeAddTaskModal() {
-            this.showAddTaskModal = false;
-            this.resetNewTask();
+        openEditModal(task) {
+            this.modalTask = { ...task };
+            this.modalType = 'edit';
+            this.modalTitle = this.$t('buttons.edit_task') || 'تعديل المهمة';
+            this.showTaskModal = true;
         },
-        
-        resetNewTask() {
-            this.newTask = {
-                name: '',
-                notes: '',
-                assigned_to: '',
-                status: 'open',
-                due_date: '',
-                records: '',
-                documents: ''
-            };
+        openViewModal(task) {
+            this.modalTask = { ...task };
+            this.modalType = 'view';
+            this.modalTitle = this.$t('buttons.view_task') || 'عرض المهمة';
+            this.showTaskModal = true;
         },
-        
-        saveNewTask() {
-            if (!this.newTask.name || !this.newTask.assigned_to || !this.newTask.due_date) {
-                alert('Please fill in all required fields');
+        closeTaskModal() { this.showTaskModal = false },
+        saveTask() {
+            if (!this.modalTask.title || !this.modalTask.assigned_to || !this.modalTask.due_date) {
+                Swal.fire({ icon: 'error', title: 'فشل', text: 'الرجاء تعبئة جميع الحقول المطلوبة!' });
                 return;
             }
-            
-            // Create new task object
-            const newTask = {
-                id: this.tasks.length + 1,
-                title: this.newTask.name,
-                description: this.newTask.notes,
-                status: this.newTask.status,
-                priority: 'medium',
-                assigned_to: this.getAssignedToName(this.newTask.assigned_to),
-                created_by: 'أحمد علي السيد',
-                due_date: this.newTask.due_date,
-                records: this.newTask.records,
-                documents: this.newTask.documents
-            };
-            
-            // Add to tasks array
-            this.tasks.unshift(newTask);
-            
-            // Close modal and reset form
-            this.closeAddTaskModal();
-            
-            // Show success message
-            alert('Task created successfully!');
+
+            if (this.modalType === 'add') {
+                const newTask = {
+                    id: this.tasks.length + 1,
+                    title: this.modalTask.title,
+                    description: this.modalTask.description,
+                    status: this.modalTask.status,
+                    status_label: this.getStatusLabel(this.modalTask.status),
+                    priority: 'medium',
+                    priority_label: 'متوسط',
+                    assigned_to: this.modalTask.assigned_to,
+                    created_by: 'أحمد علي السيد',
+                    due_date: this.modalTask.due_date
+                };
+                this.tasks.unshift(newTask);
+                Swal.fire({ icon: 'success', title: 'تمت الإضافة', text: `تمت إضافة المهمة: ${newTask.title}` });
+            } else if (this.modalType === 'edit') {
+                const index = this.tasks.findIndex(t => t.id === this.modalTask.id);
+                if (index !== -1) {
+                    this.modalTask.status_label = this.getStatusLabel(this.modalTask.status);
+                    this.tasks.splice(index, 1, this.modalTask);
+                    Swal.fire({ icon: 'success', title: 'تم التعديل', text: `تم تعديل المهمة: ${this.modalTask.title}` });
+                }
+            }
+            this.closeTaskModal();
         },
-        
-        getAssignedToName(value) {
-            const names = {
-                'ahmed': 'أحمد علي السيد',
-                'mohamed': 'محمد أحمد',
-                'sara': 'سارة محمد'
-            };
-            return names[value] || value;
+        confirmDelete(task) {
+            Swal.fire({
+                title: 'هل أنت متأكد من حذف المهمة؟',
+                text: `سيتم حذف المهمة: ${task.title}`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'نعم، احذف!',
+                cancelButtonText: 'إلغاء'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.tasks = this.tasks.filter(t => t.id !== task.id);
+                    Swal.fire({ icon: 'success', title: 'تم الحذف', text: `تم حذف المهمة: ${task.title}` });
+                }
+            });
         },
-        
-        addRecord() {
-            // Implement add record logic
-            console.log('Add record clicked');
-        },
-        
-        addDocument() {
-            // Implement add document logic
-            console.log('Add document clicked');
+        getStatusLabel(status) {
+            return { 'completed': 'مكتملة', 'in_progress': 'قيد التنفيذ', 'pending': 'قيد الانتظار', 'open': 'مفتوحة', 'overdue': 'متأخرة' }[status] || 'مفتوحة';
         }
     }
 }
 </script>
 
+
 <style scoped>
+/* Buttons */
+.btn-main {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: white;
+}
+
+.btn-main:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: white;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: white;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+
+.btn-warning {
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: #212529;
+}
+
+.btn-warning:hover {
+    background-color: #e0a800;
+    border-color: #d39e00;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
 /* Filter Buttons */
 .filter-buttons {
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
+    margin-bottom: 1rem;
 }
 
 .filter-btn {
     padding: 0.5rem 1rem;
     border: 1px solid #dee2e6;
-    background: white;
-    color: #666;
     border-radius: 6px;
     cursor: pointer;
+    background: white;
+    color: #666;
     transition: all 0.3s ease;
-    font-size: 0.9rem;
+}
+
+.filter-btn.active {
+    background: #28a745;
+    color: white;
+    border-color: #28a745;
 }
 
 .filter-btn:hover {
     background: #f8f9fa;
-    border-color: #adb5bd;
 }
 
-.filter-btn.active {
-    background: #007bff;
-    color: white;
-    border-color: #007bff;
+/* Table */
+.header th {
+    background-color: #F4FFF0 !important;
 }
 
-/* Action Buttons */
-.action-buttons {
-    display: flex;
-    gap: 1rem;
-    justify-content: flex-start;
-}
-
-.btn-add-task {
-    background: #2d5a27;
-    border-color: #2d5a27;
-    color: white;
-    padding: 0.75rem 1.5rem;
-    border-radius: 6px;
-    font-weight: 500;
-}
-
-.btn-add-task:hover {
-    background: #1e3c1a;
-    border-color: #1e3c1a;
-    color: white;
-}
-
-.btn-filters {
-    padding: 0.75rem 1.5rem;
-    border-radius: 6px;
-    font-weight: 500;
-}
-
-/* Table Styles */
-.table-header {
-    background-color: #f8f9fa;
-}
-
-.table-header th {
-    background-color: #f8f9fa !important;
-    border-bottom: 2px solid #dee2e6;
-    font-weight: 600;
-    color: #495057;
-    padding: 1rem 0.75rem;
-}
-
-.sortable {
-    cursor: pointer;
-    user-select: none;
-}
-
-.sortable:hover {
-    background-color: #e9ecef !important;
+.table td,
+.table th {
+    vertical-align: middle;
 }
 
 /* Task Info */
@@ -521,10 +343,9 @@ export default {
 .task-description {
     font-size: 0.85rem;
     color: #666;
-    line-height: 1.3;
 }
 
-/* Status Badges */
+/* Status / Priority Badges */
 .status-badge {
     font-size: 0.8rem;
     padding: 0.4rem 0.8rem;
@@ -532,7 +353,6 @@ export default {
     font-weight: 500;
 }
 
-/* Priority Badges */
 .priority-badge {
     padding: 0.3rem 0.8rem;
     border-radius: 12px;
@@ -558,45 +378,31 @@ export default {
     border: 1px solid #bee5eb;
 }
 
-/* Dropdown */
-.dropdown-toggle {
-    color: #007bff;
-    text-decoration: none;
-    font-size: 0.9rem;
+/* Action Icons */
+.action-icon {
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: transform 0.2s, color 0.3s, opacity 0.3s;
 }
 
-.dropdown-toggle:hover {
-    color: #0056b3;
-    text-decoration: underline;
+.action-icon:hover {
+    transform: scale(1.2);
+    opacity: 0.8;
 }
 
-.dropdown-toggle::after {
-    display: none;
+.action-icon.bi-eye {
+    color: #0d6efd;
 }
 
-/* Pagination */
-.pagination-container {
-    margin-top: 2rem;
+.action-icon.bi-pencil {
+    color: #ffc107;
 }
 
-.pagination .page-link {
-    color: #007bff;
-    border-color: #dee2e6;
-    padding: 0.5rem 0.75rem;
+.action-icon.bi-trash {
+    color: #dc3545;
 }
 
-.pagination .page-item.active .page-link {
-    background-color: #007bff;
-    border-color: #007bff;
-}
-
-.pagination .page-link:hover {
-    color: #0056b3;
-    background-color: #e9ecef;
-    border-color: #dee2e6;
-}
-
-/* Modal Styles */
+/* Modal */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -613,190 +419,61 @@ export default {
 .modal-content {
     background: white;
     border-radius: 8px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     max-width: 600px;
     width: 90%;
     max-height: 90vh;
     overflow-y: auto;
-}
-
-.add-task-modal {
-    max-width: 700px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
 .modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1.5rem;
-    border-bottom: 1px solid #dee2e6;
+    padding: 1rem;
 }
 
 .modal-title {
     margin: 0;
-    font-size: 1.25rem;
     font-weight: 600;
-    color: #333;
+    color: white;
 }
 
 .btn-close {
     background: none;
     border: none;
     font-size: 1.5rem;
-    color: #6c757d;
+    color: white;
     cursor: pointer;
     padding: 0;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    transition: all 0.2s ease;
-}
-
-.btn-close:hover {
-    background-color: #f8f9fa;
-    color: #495057;
 }
 
 .modal-body {
-    padding: 1.5rem;
+    padding: 1rem;
 }
 
 .modal-footer {
     display: flex;
     justify-content: flex-end;
     gap: 0.75rem;
-    padding: 1.5rem;
-    border-top: 1px solid #dee2e6;
+    padding: 1rem;
     background-color: #f8f9fa;
-}
-
-.form-label {
-    font-weight: 500;
-    color: #333;
-    margin-bottom: 0.5rem;
-}
-
-.form-control {
-    border: 1px solid #ced4da;
-    border-radius: 4px;
-    padding: 0.75rem;
-    font-size: 0.875rem;
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-}
-
-.form-control:focus {
-    border-color: #80bdff;
-    outline: 0;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-}
-
-.input-group {
-    display: flex;
-    width: 100%;
-}
-
-.input-group .form-control {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-}
-
-.input-group .btn {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-    border-left: 0;
-}
-
-.btn-success {
-    background-color: #28a745;
-    border-color: #28a745;
-    color: white;
-    padding: 0.75rem 1.5rem;
-    border-radius: 4px;
-    font-weight: 500;
-    transition: all 0.2s ease;
-}
-
-.btn-success:hover {
-    background-color: #218838;
-    border-color: #1e7e34;
-}
-
-.btn-secondary {
-    background-color: #6c757d;
-    border-color: #6c757d;
-    color: white;
-    padding: 0.75rem 1.5rem;
-    border-radius: 4px;
-    font-weight: 500;
-    transition: all 0.2s ease;
-}
-
-.btn-secondary:hover {
-    background-color: #5a6268;
-    border-color: #545b62;
-}
-
-.btn-outline-secondary {
-    color: #6c757d;
-    border-color: #6c757d;
-    background-color: transparent;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    font-weight: 500;
-    transition: all 0.2s ease;
-}
-
-.btn-outline-secondary:hover {
-    color: #fff;
-    background-color: #6c757d;
-    border-color: #6c757d;
+    border-top: 1px solid #dee2e6;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-    .modal-content {
-        width: 95%;
-        margin: 1rem;
-    }
-    
-    .modal-header,
-    .modal-body,
-    .modal-footer {
-        padding: 1rem;
-    }
-    
-    .modal-footer {
-        flex-direction: column;
-    }
-    
-    .modal-footer .btn {
-        width: 100%;
-    }
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
     .filter-buttons {
         flex-direction: column;
     }
-    
-    .filter-btn {
-        text-align: center;
-    }
-    
+
     .action-buttons {
         flex-direction: column;
     }
-    
-    .table-responsive {
-        font-size: 0.85rem;
-    }
-    
-    .task-description {
-        font-size: 0.8rem;
+
+    .modal-content {
+        width: 95%;
+        margin: 1rem;
     }
 }
 </style>

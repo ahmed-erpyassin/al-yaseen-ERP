@@ -269,6 +269,18 @@
                                 class="nav-link text-dark d-flex align-items-center justify-content-between">
                                 <span>{{ $t('breadcrumb.tasks') }}</span>
                             </router-link>
+                            <router-link :to="{ name: 'admin.levels' }"
+                                class="nav-link text-dark d-flex align-items-center justify-content-between">
+                                <span>{{ $t('aside.levels') }}</span>
+                            </router-link>
+                            <router-link :to="{ name: 'admin.sources' }"
+                                class="nav-link text-dark d-flex align-items-center justify-content-between">
+                                <span>{{ $t('aside.sources') }}</span>
+                            </router-link>
+                            <router-link :to="{ name: 'admin.documents' }"
+                                class="nav-link text-dark d-flex align-items-center justify-content-between">
+                                <span>{{ $t('aside.documents') }}</span>
+                            </router-link>
                         </div>
                     </div>
                 </div>

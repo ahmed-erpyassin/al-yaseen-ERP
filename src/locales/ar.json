@@ -17,8 +17,11 @@
     "sales": "المبيعات",
     "purchases": "المشتريات",
     "receipts_and_payments": "القبض والصرف",
+    "sources": "المصادر",
     "projects": "المشاريع",
-    "cheques": "الشيكات"
+    "cheques": "الشيكات",
+    "levels": "المراحل",
+    "documents":"المستندات"
   },
   "breadcrumb": {
     "sales": "المبيعات",
@@ -37,9 +40,12 @@
     "new_purchase_invoice": "فاتورة شراء جديدة",
     "customer_information": "معلومات العميل",
     "customer_type": "نوع العميل",
+    "project_stages": "مراحل المشاريع",
     "barcode_type": "نوع الباركود",
     "select_barcode_type": "اختر نوع الباركود",
     "invoice_no": "رقم الفاتورة",
+    "sources": "المصادر",
+    "documents":"المستندات",
     "no_data": "لا يوجد بيانات",
     "date": "التاريخ",
     "hour": "الساعة",
@@ -1751,6 +1757,7 @@
     "refresh_rates": "تحديث الأسعار",
     "ok": "موافق",
     "add": "إضافة",
+    "add_new_stage": "اضافة مرحلة جديدة",
     "create": "اضافة",
     "edit": "تعديل",
     "delete": "حذف",

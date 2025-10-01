@@ -290,6 +290,8 @@ export default {
         }
     },
     mounted() {
+        console.log('Auth state:', this.$store.state.auth);
+    console.log('Auth token:', this.$store.state.auth?.authToken);
         this.fetchProjects();
     }
 };

@@ -3,7 +3,8 @@
         <LoadingComponent :isLoading="loading" />
         <h1><i class="bi bi-image"></i> {{ $t('label.company_undefined') }}</h1>
         <div class="d-flex align-items-center justify-content-end">
-            <router-link :to="{ name: 'admin.outgoing-offers.create' }" class="btn btn-lg btn-main">{{ $t('buttons.create') }}</router-link>
+            <router-link :to="{ name: 'admin.outgoing-offers.create' }" class="btn btn-lg btn-main">{{
+                $t('buttons.create') }}</router-link>
         </div>
         <div class="row">
             <div class="col-12">
@@ -25,31 +26,41 @@
                 </i>
                 <ul class="dropdown-menu align-center rounded-0 p-2" style="width: 250px;">
                     <li>
-                        <div class="form-check"><input class="form-check-input" type="checkbox" :checked="tableColumns.offer_number" @change="toggleColumn('offer_number')" id="col0"><label
-                                class="form-check-label" for="col0">{{ $t('label.offer_number') }}</label></div>
+                        <div class="form-check"><input class="form-check-input" type="checkbox"
+                                :checked="tableColumns.offer_number" @change="toggleColumn('offer_number')"
+                                id="col0"><label class="form-check-label" for="col0">{{ $t('label.offer_number')
+                                }}</label></div>
                     </li>
                     <li>
-                        <div class="form-check"><input class="form-check-input" type="checkbox" :checked="tableColumns.customer_name" @change="toggleColumn('customer_name')" id="col1"><label
-                                class="form-check-label" for="col1">{{ $t('label.customer_name') }}</label></div>
+                        <div class="form-check"><input class="form-check-input" type="checkbox"
+                                :checked="tableColumns.customer_name" @change="toggleColumn('customer_name')"
+                                id="col1"><label class="form-check-label" for="col1">{{ $t('label.customer_name')
+                                }}</label></div>
                     </li>
                     <li>
-                        <div class="form-check"><input class="form-check-input" type="checkbox" :checked="tableColumns.licensed_operator" @change="toggleColumn('licensed_operator')" id="col2"><label
-                                class="form-check-label" for="col2">{{ $t('label.licensed_operator') }}</label></div>
+                        <div class="form-check"><input class="form-check-input" type="checkbox"
+                                :checked="tableColumns.licensed_operator" @change="toggleColumn('licensed_operator')"
+                                id="col2"><label class="form-check-label" for="col2">{{ $t('label.licensed_operator')
+                                }}</label></div>
                     </li>
                     <li>
-                        <div class="form-check"><input class="form-check-input" type="checkbox" :checked="tableColumns.amount" @change="toggleColumn('amount')" id="col3"><label
+                        <div class="form-check"><input class="form-check-input" type="checkbox"
+                                :checked="tableColumns.amount" @change="toggleColumn('amount')" id="col3"><label
                                 class="form-check-label" for="col3">{{ $t('label.amount') }}</label></div>
                     </li>
                     <li>
-                        <div class="form-check"><input class="form-check-input" type="checkbox" :checked="tableColumns.currency" @change="toggleColumn('currency')" id="col4"><label
+                        <div class="form-check"><input class="form-check-input" type="checkbox"
+                                :checked="tableColumns.currency" @change="toggleColumn('currency')" id="col4"><label
                                 class="form-check-label" for="col4">{{ $t('label.currency') }}</label></div>
                     </li>
                     <li>
-                        <div class="form-check"><input class="form-check-input" type="checkbox" :checked="tableColumns.date" @change="toggleColumn('date')" id="col5"><label
+                        <div class="form-check"><input class="form-check-input" type="checkbox"
+                                :checked="tableColumns.date" @change="toggleColumn('date')" id="col5"><label
                                 class="form-check-label" for="col5">{{ $t('label.date') }}</label></div>
                     </li>
                     <li>
-                        <div class="form-check"><input class="form-check-input" type="checkbox" :checked="tableColumns.mobile" @change="toggleColumn('mobile')" id="col6"><label
+                        <div class="form-check"><input class="form-check-input" type="checkbox"
+                                :checked="tableColumns.mobile" @change="toggleColumn('mobile')" id="col6"><label
                                 class="form-check-label" for="col6">{{ $t('label.mobile') }}</label></div>
                     </li>
                 </ul>
@@ -76,15 +87,15 @@
                         <td v-if="tableColumns.offer_number">{{ offer.journal_number || offer.id || '-' }}</td>
                         <td v-if="tableColumns.invoice_number">{{ offer.invoice_number || '-' }}</td>
                         <td v-if="tableColumns.customer_name">
-                            {{ offer.customer?.company_name || 
-                               (offer.customer?.first_name && offer.customer?.second_name ? 
-                                offer.customer.first_name + ' ' + offer.customer.second_name : 
-                                offer.customer?.first_name || offer.customer?.second_name || '-') }}
+                            {{ offer.customer?.company_name ||
+                                (offer.customer?.first_name && offer.customer?.second_name ?
+                                    offer.customer.first_name + ' ' + offer.customer.second_name :
+                                    offer.customer?.first_name || offer.customer?.second_name || '-') }}
                         </td>
                         <td v-if="tableColumns.licensed_operator">
-                            {{ offer.user?.first_name && offer.user?.second_name ? 
-                               offer.user.first_name + ' ' + offer.user.second_name : 
-                               offer.user?.first_name || offer.user?.second_name || '-' }}
+                            {{ offer.user?.first_name && offer.user?.second_name ?
+                                offer.user.first_name + ' ' + offer.user.second_name :
+                                offer.user?.first_name || offer.user?.second_name || '-' }}
                         </td>
                         <td v-if="tableColumns.amount">{{ offer.total_amount || '0.00' }}</td>
                         <td v-if="tableColumns.currency">{{ offer.currency?.name || offer.currency?.code || '-' }}</td>
@@ -98,14 +109,17 @@
                                 {{ offer.status_label || offer.status || '-' }}
                             </span>
                         </td>
-                        <td v-if="tableColumns.date">{{ offer.created_at ? new Date(offer.created_at).toLocaleDateString() : '-' }}</td>
+                        <td v-if="tableColumns.date">{{ offer.created_at ? new
+                            Date(offer.created_at).toLocaleDateString() : '-' }}</td>
                         <td v-if="tableColumns.mobile">{{ offer.customer?.phone || offer.customer?.email || '-' }}</td>
                         <td>
                             <div class="d-flex gap-2 justify-content-center">
-                                <button type="button" class="btn btn-sm btn-main text-white" @click="handleEdit(offer.id)">
+                                <button type="button" class="btn btn-sm btn-main text-white"
+                                    @click="handleEdit(offer.id)">
                                     <i class="bi bi-pencil me-1"></i>{{ $t('buttons.edit') }}
                                 </button>
-                                <button type="button" class="btn btn-sm btn-outline-danger" @click="handleDelete(offer.id)">
+                                <button type="button" class="btn btn-sm btn-outline-danger"
+                                    @click="handleDelete(offer.id)">
                                     <i class="bi bi-trash me-1"></i>{{ $t('buttons.delete') }}
                                 </button>
                             </div>
@@ -135,15 +149,17 @@ export default {
     },
     computed: {
         ...mapGetters('outgoingQuotations', [
-            'outgoingQuotations', 
-            'loading', 
-            'error', 
-            'searchQuery', 
+            'outgoingQuotations',
+            'loading',
+            'error',
+            'searchQuery',
             'tableColumns',
             'filteredOutgoingQuotations'
         ])
     },
     async mounted() {
+    console.log('Auth state from Vuex store:', this.$store.state.auth);
+    console.log('Auth token from Vuex store:', this.$store.state.auth?.authToken);
         await this.loadOffers();
     },
     methods: {
@@ -151,7 +167,7 @@ export default {
             'fetchOutgoingQuotations',
             'deleteOutgoingQuotation'
         ]),
-        
+
         async loadOffers() {
             try {
                 await this.fetchOutgoingQuotations();
@@ -159,12 +175,12 @@ export default {
                 console.error('Failed to load offers:', error);
             }
         },
-        
+
         handleEdit(offerId) {
             // Navigate to edit offer page
             this.$router.push({ name: 'admin.outgoing-offers.edit', params: { id: offerId } });
         },
-        
+
         async handleDelete(offerId) {
             if (confirm(this.$t('messages.confirm_delete_quotation'))) {
                 try {
@@ -175,17 +191,17 @@ export default {
                 }
             }
         },
-        
+
         toggleColumn(column) {
             this.$store.commit('outgoingQuotations/toggleColumn', column);
         },
-        
-        
-        
+
+
+
         updateSearchQuery(query) {
             this.$store.commit('outgoingQuotations/setSearchQuery', query);
         },
-        
+
         resetSearch() {
             this.$store.commit('outgoingQuotations/setSearchQuery', '');
         }
@@ -220,6 +236,7 @@ export default {
     border-radius: 50%;
     background-color: #1D7342 !important;
 }
+
 .pages p {
     font-size: 25px;
 }
