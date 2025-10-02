@@ -456,6 +456,7 @@
     "account_classification": "Classification",
     "type": "Type",
     "parent_account": "Parent Account",
+    "contracts": "contracts",
     "linked_account": "Linked Account",
     "chart_of_accounts": "Chart of Accounts",
     "journal_entries": "Journal Entries",

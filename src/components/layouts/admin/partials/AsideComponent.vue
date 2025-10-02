@@ -172,6 +172,8 @@ export default {
                         { label: 'label.attendance_sheet', to: { name: 'admin.employees.attendance_sheet' }, icon: 'bi bi-calendar-check' },
                         { label: 'label.leaves', to: { name: 'admin.employees.leaves' }, icon: 'bi bi-file-earmark-minus' },
                         { label: 'label.departments', to: { name: 'admin.accounting.departments' }, icon: 'bi bi-building' },
+                        { label: 'label.contracts', to: { name: 'admin.employees.contracts' }, icon: 'bi bi-file-earmark-text' },
+                        { label: 'label.attendanceshifts', to: { name: 'admin.employees.attendanceshifts' }, icon: 'bi bi-file-earmark-text' },
                     ]
                 },
                 {

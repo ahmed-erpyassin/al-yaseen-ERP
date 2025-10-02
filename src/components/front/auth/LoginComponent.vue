@@ -3,7 +3,7 @@
     <div class="container">
         <div class="form mt-5">
             <form @submit.prevent="login">
-                <div class="header ">
+                <div class="header">
                     <LogoComponent />
                     <p class="text-center fs-5 fw-bold mt-3 mb-5">{{ $t('label.login_now') }}</p>
                 </div>
@@ -35,7 +35,7 @@
                 </div>
 
                 <div class="d-flex align-items-center justify-content-between mb-3">
-                    <div class="form-check ">
+                    <div class="form-check">
                         <input type="checkbox" class="form-check-input rounded-circle" id="remember"
                             v-model="form.remember" />
                         <label class="form-check-label" for="remember">{{ $t('label.rememberMe') }}</label>
@@ -49,7 +49,7 @@
 
                 <div class="or_cont position-relative">
                     <div class="text-center my-3 or">{{ $t('label.or') }}</div>
-                    <div class='border border-solid or-border'></div>
+                    <div class="border border-solid or-border"></div>
                 </div>
 
                 <div class="d-flex justify-content-around gap-3 mt-3">
@@ -72,6 +72,7 @@
 <script>
 import LogoComponent from '../components/LogoComponent.vue';
 import LoadingComponent from '@/components/components/LoadingComponent.vue';
+import axios from 'axios';
 
 export default {
     name: "LoginComponent",
@@ -84,68 +85,75 @@ export default {
                 password: null,
                 remember: false,
             },
-            errors: [],
+            errors: {},
             errorMsg: null,
             successMsg: null,
         };
     },
     mounted() {
-        // إذا جاء من التسجيل
         if (this.$route.query.registered) {
             this.successMsg = "تم التسجيل بنجاح، الرجاء التحقق من بريدك الإلكتروني.";
         }
     },
     methods: {
-        login() {
-            this.errors = [];
+        async login() {
+            this.errors = {};
             this.errorMsg = null;
             this.successMsg = null;
             this.isLoading = true;
 
-            this.$store.dispatch('auth/login', this.form)
-                .then(res => {
-                    this.isLoading = false;
+            try {
+                const response = await axios.post(
+                    `${process.env.VUE_APP_API_BASE_URL}/auth/login`,
+                    this.form
+                );
 
-                    if (res.data.token && res.data.user) {
-                        const token = res.data.token;
-                        const user = res.data.user;
+                this.isLoading = false;
 
-                        // ✅ تخزين التوكن في localStorage
-                        localStorage.setItem('authToken', token);
-                        localStorage.setItem('authStatus', 'true');
-                        localStorage.setItem('authUser', JSON.stringify(user));
+                const { token, user, message } = response.data;
 
-                        // ✅ تحديث Vuex state
-                        this.$store.commit('auth/setAuthToken', token);
-                        this.$store.commit('auth/setAuthStatus', true);
-                        this.$store.commit('auth/setAuthUser', user);
+                if (token && user) {
+                    // ✅ تخزين التوكن والبيانات في localStorage
+                    localStorage.setItem('authToken', token);
+                    localStorage.setItem('authStatus', 'true');
+                    localStorage.setItem('authUser', JSON.stringify(user));
 
-                        // ✅ التحقق من OTP
-                        if (user.otp_expires_at) {
-                            this.$router.push({ name: "auth.otp", params: { token } });
-                        } else {
-                            this.$router.push("/admin");
-                        }
+                    // ✅ تفعيل Remember Me
+                    if (this.form.remember) {
+                        localStorage.setItem('rememberMe', 'true');
                     } else {
-                        this.errorMsg = res.data.message || "فشل تسجيل الدخول";
+                        localStorage.removeItem('rememberMe');
                     }
-                })
-                .catch(err => {
-                    this.isLoading = false;
 
-                    if (err.response && err.response.status === 422) {
+                    // ✅ التحقق من OTP
+                    if (user.otp_expires_at) {
+                        this.$router.push({ name: "auth.otp", params: { token } });
+                    } else {
+                        this.$router.push("/admin");
+                    }
+                } else {
+                    this.errorMsg = message || "فشل تسجيل الدخول";
+                }
+            } catch (err) {
+                this.isLoading = false;
+
+                if (err.response) {
+                    if (err.response.status === 422) {
                         this.errors = err.response.data.errors;
-                    } else if (err.response && err.response.status === 401) {
+                    } else if (err.response.status === 401) {
                         this.errorMsg = err.response.data.message || "بيانات الدخول غير صحيحة";
-                    } else if (err.response && err.response.status === 403) {
+                    } else if (err.response.status === 403) {
                         this.errorMsg = err.response.data.message || "يرجى التحقق من OTP قبل تسجيل الدخول";
                         this.$router.push({ name: "auth.otp" });
                     } else {
                         this.errorMsg = "حدث خطأ ما، حاول مرة أخرى";
                     }
-                });
-        },
-    },
+                } else {
+                    this.errorMsg = "تعذر الاتصال بالخادم";
+                }
+            }
+        }
+    }
 };
 </script>
 
