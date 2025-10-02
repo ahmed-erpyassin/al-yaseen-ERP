@@ -81,8 +81,8 @@ export default {
         return {
             isLoading: false,
             form: {
-                email: null,
-                password: null,
+                email: '',
+                password: '',
                 remember: false,
             },
             errors: {},
@@ -97,16 +97,26 @@ export default {
     },
     methods: {
         async login() {
+            // ✅ إعادة تهيئة الأخطاء والرسائل
             this.errors = {};
             this.errorMsg = null;
             this.successMsg = null;
+
+            // ✅ تحقق من تعبئة الحقول قبل الإرسال
+            if (!this.form.email || !this.form.password) {
+                this.errorMsg = "الرجاء تعبئة البريد الإلكتروني وكلمة المرور";
+                return;
+            }
+
             this.isLoading = true;
 
             try {
-                const response = await axios.post(
-                    `${process.env.VUE_APP_API_BASE_URL}/auth/login`,
-                    this.form
-                );
+                const response = await axios.post('/auth/login', this.form, {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Accept-Language': 'ar'
+                    }
+                });
 
                 this.isLoading = false;
 
@@ -137,7 +147,10 @@ export default {
             } catch (err) {
                 this.isLoading = false;
 
+                console.log("Axios error:", err);
+
                 if (err.response) {
+                    // الأخطاء من السيرفر
                     if (err.response.status === 422) {
                         this.errors = err.response.data.errors;
                     } else if (err.response.status === 401) {
@@ -148,8 +161,12 @@ export default {
                     } else {
                         this.errorMsg = "حدث خطأ ما، حاول مرة أخرى";
                     }
-                } else {
+                } else if (err.request) {
+                    // لم يصل الرد من السيرفر
                     this.errorMsg = "تعذر الاتصال بالخادم";
+                } else {
+                    // أخطاء في إعداد الطلب
+                    this.errorMsg = "حدث خطأ ما، حاول مرة أخرى";
                 }
             }
         }

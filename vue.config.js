@@ -5,13 +5,24 @@ module.exports = defineConfig({
 
   pluginOptions: {
     i18n: {
-      locale: 'en',
-      fallbackLocale: 'ar',
-      localeDir: 'locales',
+      locale: "en",
+      fallbackLocale: "ar",
+      localeDir: "locales",
       enableLegacy: false,
       runtimeOnly: false,
       compositionOnly: false,
-      fullInstall: true
-    }
-  }
+      fullInstall: true,
+    },
+  },
+
+  devServer: {
+    proxy: {
+      "/api": {
+        target: "https://dev.alyaseenerp.com",
+        changeOrigin: true,
+        secure: false,
+        pathRewrite: { "^/api": "/api" }, // يحافظ على نفس المسار
+      },
+    },
+  },
 });
