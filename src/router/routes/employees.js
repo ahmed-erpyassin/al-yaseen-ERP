@@ -9,6 +9,11 @@ import PayrollReportComponent from "@/components/admin/employees/payrollReport/P
 import CreateContractsComponent from "@/components/admin/employees/contracts/CreateContractsComponent.vue";
 import ContractsComponent from "@/components/admin/employees/contracts/ContractsComponent.vue";
 import AttendanceShiftsComponent from "@/components/admin/employees/attendanceshifts/AttendanceShiftsComponent.vue";
+import LoansComponent from "@/components/admin/employees/loans/LoansComponent.vue";
+import PromotionsAndEvaluationsComponent from "@/components/admin/employees/promotionsandevaluations/PromotionsAndEvaluationsComponent.vue";
+import EmployeeDocumentsComponent from "@/components/admin/employees/employeedocuments/EmployeeDocumentsComponent.vue";
+import ReportsComponent from "@/components/admin/employees/reports/ReportsComponent.vue";
+import SettingsComponent from "@/components/admin/employees/Settings/SettingsComponent.vue";
 
 export default [
   {
@@ -90,7 +95,52 @@ export default [
           {
             path: "",
             component: AttendanceShiftsComponent,
-            name: "admin.employees.attendanceshifts",
+            name: "admin.employees.attendance-shifts",
+          }
+        ],
+      },{
+        path: "Loans",
+        children: [
+          {
+            path: "",
+            component: LoansComponent,
+            name: "admin.employees.loans",
+          }
+        ],
+      },{
+        path: "promotions-and-evaluations",
+        children: [
+          {
+            path: "",
+            component: PromotionsAndEvaluationsComponent,
+            name: "admin.employees.promotions-evaluations",
+          }
+        ],
+      },{
+        path: "employee-documents",
+        children: [
+          {
+            path: "",
+            component: EmployeeDocumentsComponent,
+            name: "admin.employees.employee-documents",
+          }
+        ],
+      },{
+        path: "reports",
+        children: [
+          {
+            path: "",
+            component: ReportsComponent,
+            name: "admin.employees.reports",
+          }
+        ],
+      },{
+        path: "settings",
+        children: [
+          {
+            path: "",
+            component: SettingsComponent,
+            name: "admin.employees.settings",
           }
         ],
       },

@@ -277,22 +277,6 @@
                     </div>
                 </div>
 
-                <!-- Attachments -->
-                <div class="col-md-8">
-                    <div class="mb-3 position-relative">
-                        <label class="form-label">{{ t('label.attachments') }}</label>
-                        <div class="box-attachments d-flex align-items-center justify-content-center"
-                            @click="$refs.attachmentsInput.click()">
-                            <div class="text-center">
-                                <i class="bi bi-image"></i>
-                                <p class="small">{{ t('label.attachment_note') }}</p>
-                            </div>
-                        </div>
-                        <input type="file" ref="attachmentsInput" multiple @change="handleFileUpload"
-                            style="display:none;">
-                    </div>
-                </div>
-
             </div>
         </form>
     </div>
@@ -303,6 +287,7 @@ import { reactive, ref } from 'vue';
 import Swal from 'sweetalert2';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
+import axios from 'axios';
 
 const router = useRouter();
 const { t } = useI18n();
@@ -345,22 +330,52 @@ const form = reactive({
 const errorMsg = ref(null);
 const successMsg = ref(null);
 
-const handleFileUpload = (event) => {
-    form.attachments.push(...Array.from(event.target.files));
-};
-
-const saveForm = () => {
+const saveForm = async () => {
     errorMsg.value = null;
     successMsg.value = null;
-    Swal.fire({
-        icon: 'success',
-        title: t('messages.saved_title'),
-        text: t('messages.saved_text'),
-        timer: 2000,
-        showConfirmButton: false
-    }).then(() => {
+
+    const formData = new FormData();
+
+    // إضافة جميع الحقول من reactive form
+    for (const key in form) {
+        if (key === 'attachments') {
+            form.attachments.forEach(file => formData.append('attachments[]', file));
+        } else if (typeof form[key] === 'boolean') {
+            formData.append(key, form[key] ? 1 : 0); // تحويل البوليان إلى 1/0
+        } else {
+            formData.append(key, form[key]);
+        }
+    }
+
+    try {
+        const token = localStorage.getItem('authToken');
+        await axios.post(
+            `${process.env.VUE_APP_API_BASE_URL}/employees`,
+            formData,
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data'
+                }
+            }
+        );
+
+        Swal.fire({
+            icon: 'success',
+            title: t('messages.saved_title'),
+            text: t('messages.employee_saved_successfully'),
+            timer: 2000,
+            showConfirmButton: false
+        });
+
         successMsg.value = t('messages.employee_saved_successfully');
-    });
+        router.push('/admin/employees');
+
+    } catch (error) {
+        console.error(error);
+        errorMsg.value = error.response?.data?.message || t('messages.error_occurred');
+        Swal.fire('خطأ', errorMsg.value, 'error');
+    }
 };
 
 const cancelForm = () => {
@@ -378,6 +393,7 @@ const cancelForm = () => {
     });
 };
 </script>
+
 
 <style>
 .box-attachments {

@@ -1,7 +1,7 @@
 <template>
     <LoadingComponent :isLoading="isLoading" />
 
-    <div class="container pe-5 ps-5">
+    <div class="container pe-5 ps-5" v-if="isAuthenticated">
         <h1><i class="bi bi-kanban"></i> {{ $t('label.projects') }}</h1>
 
         <!-- أزرار إنشاء واستيراد/تصدير -->
@@ -9,7 +9,6 @@
             <router-link :to="{ name: 'admin.projects.create' }" class="btn btn-lg btn-main me-3">
                 {{ $t('buttons.create') }}
             </router-link>
-
             <div class="dropdown">
                 <button class="btn btn-lg btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
                     {{ $t('buttons.import_export') }}
@@ -23,7 +22,7 @@
             </div>
         </div>
 
-        <!-- البحث وضبط الأعمدة -->
+        <!-- البحث -->
         <div class="d-flex align-items-center justify-content-between mb-3">
             <div class="search-bar d-flex align-items-center flex-grow-1 me-3">
                 <i class="bi bi-search me-2"></i>
@@ -65,7 +64,7 @@
         <!-- أزرار الصفحات -->
         <div class="d-flex justify-content-between align-items-center mt-3">
             <button class="btn btn-secondary" @click="prevPage" :disabled="currentPage === 1">{{ $t('buttons.previous')
-                }}</button>
+            }}</button>
             <span>{{ $t('label.page') }} {{ currentPage }} {{ $t('label.of') }} {{ totalPages }}</span>
             <button class="btn btn-secondary" @click="nextPage" :disabled="currentPage === totalPages">{{
                 $t('buttons.next') }}</button>
@@ -111,12 +110,16 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" @click="closeModal">{{ $t('buttons.close')
-                            }}</button>
+                        }}</button>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
+    <div v-else class="text-center mt-5">
+        <p>يرجى تسجيل الدخول للوصول إلى المشاريع.</p>
+        <router-link :to="{ name: 'auth.login' }" class="btn btn-primary mt-3">تسجيل الدخول</router-link>
     </div>
 </template>
 
@@ -135,6 +138,7 @@ export default {
     components: { LoadingComponent },
     data() {
         return {
+            baseUrl: process.env.VUE_APP_API_BASE_URL,
             isLoading: true,
             searchQuery: '',
             currentPage: 1,
@@ -166,26 +170,82 @@ export default {
         },
         totalPages() {
             return Math.ceil(this.filteredProjects.length / this.perPage);
+        },
+        isAuthenticated() {
+            return localStorage.getItem('authToken') ? true : false;
         }
     },
     methods: {
         async fetchProjects() {
+            if (!this.isAuthenticated) return;
             this.isLoading = true;
             try {
-                const res = await axios.get('{{baseUrl}}/api/v1/projects/browse-all', { params: { per_page: 100 } });
-                this.projects = res.data.data || res.data;
+                const token = localStorage.getItem('authToken');
+                const res = await axios.get(`/projects/browse-all/`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json',
+                        'Accept-Language': 'ar'
+                    },
+                    params: {
+                        per_page: this.perPage,
+                        sort_field: 'created_at',
+                        sort_direction: 'desc',
+                    }
+                });
+
+                // تحويل جميع IDs إلى أرقام
+                this.projects = (res.data.data || res.data).map(p => ({
+                    ...p,
+                    id: parseInt(p.id)
+                }));
+
             } catch (err) {
                 console.error(err);
-                Swal.fire('Error', 'Failed to fetch projects', 'error');
+                let msg = 'حدث خطأ ما، حاول مرة أخرى';
+                if (err.response) {
+                    msg = `Failed to fetch projects.\nStatus: ${err.response.status}\nMessage: ${err.response.data?.message || 'Internal Server Error'}`;
+                } else if (err.request) {
+                    msg = 'No response from server';
+                }
+                Swal.fire('Error', msg, 'error');
             } finally {
                 this.isLoading = false;
             }
         },
         viewProject(project) {
-            this.selectedProject = project;
+            this.selectedProject = { ...project, id: parseInt(project.id) };
             const modalEl = document.getElementById('viewProjectModal');
             const modal = new bootstrap.Modal(modalEl);
             modal.show();
+        },
+        editProject(project) {
+            const projectId = parseInt(project.id);
+            this.$router.push({ name: 'admin.projects.edit', params: { id: projectId } });
+        },
+        deleteProject(project) {
+            const projectId = parseInt(project.id);
+            Swal.fire({
+                title: 'تأكيد الحذف',
+                text: 'هل أنت متأكد من حذف هذا المشروع؟',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'نعم',
+                cancelButtonText: 'لا'
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        const token = localStorage.getItem('authToken');
+                        await axios.delete(`${this.baseUrl}/projects/${projectId}`, {
+                            headers: { 'Authorization': `Bearer ${token}` }
+                        });
+                        this.projects = this.projects.filter(p => p.id !== projectId);
+                        Swal.fire('تم الحذف', 'تم حذف المشروع بنجاح', 'success');
+                    } catch (err) {
+                        Swal.fire('خطأ', 'حدث خطأ أثناء الحذف', 'error');
+                    }
+                }
+            });
         },
         closeModal() {
             const modalEl = document.getElementById('viewProjectModal');

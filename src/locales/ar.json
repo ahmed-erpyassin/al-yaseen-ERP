@@ -21,7 +21,7 @@
     "projects": "المشاريع",
     "cheques": "الشيكات",
     "milestones": "المراحل",
-    "documents":"المستندات",
+    "documents": "المستندات",
     "financials": "المالية"
   },
   "breadcrumb": {
@@ -46,7 +46,7 @@
     "select_barcode_type": "اختر نوع الباركود",
     "invoice_no": "رقم الفاتورة",
     "sources": "المصادر",
-    "documents":"المستندات",
+    "documents": "المستندات",
     "no_data": "لا يوجد بيانات",
     "date": "التاريخ",
     "hour": "الساعة",
@@ -93,6 +93,10 @@
     "name": "الاسم",
     "email": "البريد الإلكتروني",
     "licensed_operator": "المشغل المرخص",
+    "settings": "الاعدادات",
+    "users_management": "إدارة المستخدمين",
+    "roles_permissions": "الأدوار والصلاحيات",
+    "general_settings": "الإعدادات العامة",
     "currency": "العملة",
     "currency_price": "سعر العملة",
     "customer_name": "اسم العميل",
@@ -241,16 +245,13 @@
     "account_opening_information": "معلومات فتح الحساب",
     "account_opening_date": "تاريخ فتح الحساب",
     "account_created_by": "أنشئ بواسطة",
-
     "linking_accounts": "ربط الحسابات",
     "follows_account": "يتبع الحساب",
-
     "depreciation_linkage": "ربط الاستهلاك",
     "account_linked": "الحساب المرتبط",
     "depreciation_account": "حساب الإهلاك",
     "consumption_rate": "معدل الاستهلاك",
     "declining_depreciation": "الاستهلاك المتناقص",
-
     "accumulated_depreciation_account_classification": "تصنيف حساب الإهلاك المتراكم",
     "not_a_depreciation_account": "ليس حساب إهلاك",
     "accumulated_depreciation_to_profit_and_loss": "الإهلاك المتراكم - ينقل إلى حساب الأرباح والخسائر",
@@ -380,7 +381,6 @@
     "debit_credit": "ذمم مدينة - دائنة",
     "debit": "ذمم مدينة",
     "credit": "دائن",
-
     "general_budget": "ميزانية عمومية",
     "profits_losses": "أرباح وخسائر",
     "inventory": "مخزون",
@@ -389,11 +389,9 @@
     "balance_sheet_support": "دعم ميزانية وذمة",
     "agent_balance": "وكيل موزعين",
     "project": "مشروع",
-
     "main": "رئيسي",
     "sub": "فرعي",
     "detailed": "تفصيلي",
-
     "budget": "ميزانية",
     "income_statement": "قائمة دخل",
     "account_opened": "الحساب المفتوح",
@@ -465,6 +463,18 @@
     "parent_account": "الحساب التابع",
     "linked_account": "الحساب المرتبط",
     "contracts": "العقود",
+    "promotions-evaluations": "الترقيات والتقييمات",
+    "old_position": "المنصب القديم",
+    "new_position": "المنصب الجديد",
+    "evaluations": "التقييمات",
+    "employee-documents": "الوثائق",
+    "select_report": "اختر التقرير",
+    "expired_contracts": "العقود المنتهية",
+    "attendance_report": "تقرير الحضور",
+    "salary_report": "تقرير الرواتب",
+    "employee_report": "تقرير الموظفين",
+    "promotions": "الترقيات",
+    "loans": "القروض",
     "attendanceshifts": " الحضور والانصراف",
     "attendance": "الحضور",
     "shifts": "الانصراف",
@@ -627,7 +637,6 @@
     "phone": "الهاتف",
     "search_employee": "البحث عن موظف",
     "employee_data": "بيانات الموظف",
-
     "employee_number": "رقم الموظف",
     "surname": "اسم العائلة",
     "third_name": "الاسم الثالث",
@@ -683,7 +692,6 @@
     "leave_type": "نوع الاجازة",
     "other_overtime_hours": "أخرى ساعات اضافي",
     "leaves": "الإيجازات",
-
     "leave_days": "عدد أيام الإجازة",
     "previous_balance": "الرصيد السابق",
     "deducted": "المخصوم",
@@ -692,16 +700,13 @@
     "entity": "الجهة",
     "entity_number": "رقم الجهة",
     "entity_name": "اسم الجهة",
-
     "account_description": "بيان الحساب",
     "account_currency": "عملة الحساب",
     "warehouses": "المخازن",
     "items": "الاصناف",
     "search_item": "البحث عن صنف",
     "item_number": "رقم الصنف",
-
     "manufacturing_number": "رقم المعادلة",
-
     "item_description": "بيان الصنف",
     "model": "موديل",
     "min_limit": "الحد الأدنى",
@@ -718,7 +723,6 @@
     "catalog_number": "رقم الكتالوج",
     "item_detail": "تفاصيل الصنف",
     "default_warehouse": "المخزن الافتراضي",
-
     "units": "الوحدات",
     "balance_unit": "وحدة الرصيد",
     "length": "الطول",
@@ -731,7 +735,6 @@
     "third_unit": "الوحدة الثالثة",
     "third_unit_item_number": "رقم وحدة الصنف الثالثة",
     "dealing_unit": "وحدة التعامل",
-
     "buying_selling_prices": "أسعار البيع والشراء",
     "first_selling_price": "سعر البيع الأول",
     "second_selling_price": "سعر البيع الثاني",
@@ -740,19 +743,16 @@
     "max_discount_percentage": "أعلى نسبة خصم عند البيع",
     "min_price": "أقل سعر مسموح به",
     "selling_price_vat": "تشمل أسعار البيع المذكورة ضريبة القيمة المضافة.",
-
     "second_purchase_price": "سعر الشراء الثاني",
     "third_purchase_price": "سعر الشراء الثالث",
     "purchase_discount_percentage": "نسبة الخصم عند الشراء",
     "purchase_price_vat": "تشمل أسعار الشراء المذكورة ضريبة القيمة المضافة.",
     "item_subject_to_vat": "الصنف خاضع لضريبة القيمة المضافة.",
-
     "other_info": "معلومات أخرى",
     "barcode": "الباركود",
     "expire_date": "تاريخ الانتهاء",
     "add_image": "إضافة صورة للصنف",
     "category_type": "نوع الفئة",
-
     "category_service": "خدمة",
     "category_goods": "بضاعة",
     "category_work": "عمل",
@@ -788,11 +788,9 @@
     "item": "الصنف",
     "manufacture_items_from_warehouse": "تصنيع الأصناف من المخزن",
     "raw_materials_warehouse": "مخزن المواد الخام",
-
     "finished_product_warehouse": "مخزن المنتج النهائي",
     "select_warehouse": "اختر المخزن",
     "manufacturing_duration": "مدة التصنيع",
-
     "cost_calculation_based_on": "إحتساب التكلفة على",
     "no_calculation": "بدون حساب",
     "warehouse_number": "رقم المخزن",
@@ -836,10 +834,8 @@
     "movement_type_adjustment": "جرد",
     "movement_description": "بيان الحركة",
     "reference_number": "المرجع",
-
     "dispatch_number": "رقم الإرسالية",
     "movement_details": "بيانات الحركة",
-
     "row_number": "#",
     "unit_name": "الوحدة",
     "inventory_balance": "الجرد",
@@ -941,7 +937,6 @@
     "offset_invoices": "فواتير المقاصة",
     "withholding_on_vouchers": "خصم المصدر الذي تم على السندات",
     "client_number": "رقم العميل",
-
     "invoice_date": "تاريخ الفاتورة",
     "salesperson": "مندوب المبيعات",
     "sales_return": "مرتجع البيع",
@@ -1161,7 +1156,6 @@
     "update_supplier_images": "تحديث صور الموردين",
     "create_journal_entry_transfer_supplier_balances": "كون سند قيد لنقل أرصدة الموردين",
     "copy_supplier_points_balances": "نسخ أرصدة نقاط الموردين",
-
     "copy_employees": "نسخ الموظفين",
     "update_employees": "تحديث الموظفين",
     "copy_employee_notes": "نسخ ملاحظات الموظفين",
@@ -1227,7 +1221,6 @@
     "switch_users": "تغيير المستخدمين",
     "change_language": "تغيير اللغة",
     "identifier_number": "رقم المعرف",
-
     "copy_group_data": "نسخ بيانات المجموعة",
     "restore_group_data": "إسترجاع بيانات المجموعة",
     "copy_accounts_from_other_group": "نسخ حسابات من مجموعة أخرى",
@@ -1322,7 +1315,6 @@
     "close_payroll": "إغلاق كشوف الرواتب و الأجور",
     "general_data": "بيانات عامة",
     "accounts_and_journal_entries": "الحسابات وقيود المحاسبة",
-
     "entities": "الجهات",
     "on_add": "عند الاضافة",
     "printing": "الطباعة",
@@ -1605,7 +1597,6 @@
     "why_alyaseen": {
       "title": "• لماذا تختار نظام \"الياسين ERP\"؟",
       "description": "نوفر لك أدوات محاسبية متقدمة وشاملة تساعدك في إدارة أموالك بكفاءة وسهولة، موفّرة لك الوقت والجهد.",
-
       "features": {
         "smart_accounting": {
           "title": "محاسبة ذكية",
@@ -1718,7 +1709,6 @@
       "description": "ابدأ بالتجربة المجانية واستكشف قوة نظامنا المحاسبي، ثم اختر الخطة التي تناسب حجم نشاطك.",
       "pay_monthly": "ادفع شهريًا",
       "pay_yearly_offer": "ادفع سنويًا واحصل على خصم 50%",
-
       "free_trial": "تجربة مجانية",
       "free_trial_sub": "جرّب كل الميزات مجانًا",
       "free": "مجاني",
@@ -1727,7 +1717,6 @@
       "limited_features": "ميزات محدودة",
       "try_before": "جرّب قبل الاشتراك",
       "start_trial": "ابدأ التجربة المجانية",
-
       "most_popular": "الأكثر شيوعًا",
       "basic_plan": "الخطة الأساسية",
       "for_small": "للمؤسسات الصغيرة",
@@ -1737,10 +1726,8 @@
       "project_tracking": "متابعة المشاريع",
       "custom_roles": "صلاحيات مخصصة",
       "subscribe": "اشترك الآن",
-
       "medium_plan": "الخطة المتوسطة",
       "for_medium": "للشركات المتوسطة",
-
       "advanced_plan": "الخطة المتقدمة",
       "for_large": "للمؤسسات الكبيرة"
     },
@@ -1750,7 +1737,6 @@
       "button": "ابدأ التجربة المجانية"
     }
   },
-
   "buttons": {
     "save": "حفظ",
     "cancel": "إلغاء",
@@ -1785,7 +1771,6 @@
     "add_record": "إضافة سجل",
     "add_document": "إضافة وثيقة",
     "previous": "السابق",
-
     "next": "التالي",
     "add": "اضافة",
     "import_export": "استيراد/تصدير",
@@ -1795,7 +1780,6 @@
     "print": "طباعة",
     "next": "التالي"
   },
-
   "placeholder": {
     "task_name": "أدخل اسم المهمة",
     "task_notes": "أدخل ملاحظات المهمة",

@@ -167,13 +167,19 @@ export default {
                     label: 'label.employees',
                     icon: 'bi bi-people',
                     items: [
-                        { label: 'label.employees', to: { name: 'admin.employees' }, icon: 'bi bi-people' },
-                        { label: 'label.payroll_report', to: { name: 'admin.employees.payroll_report' }, icon: 'bi bi-file-text' },
-                        { label: 'label.attendance_sheet', to: { name: 'admin.employees.attendance_sheet' }, icon: 'bi bi-calendar-check' },
-                        { label: 'label.leaves', to: { name: 'admin.employees.leaves' }, icon: 'bi bi-file-earmark-minus' },
-                        { label: 'label.departments', to: { name: 'admin.accounting.departments' }, icon: 'bi bi-building' },
-                        { label: 'label.contracts', to: { name: 'admin.employees.contracts' }, icon: 'bi bi-file-earmark-text' },
-                        { label: 'label.attendanceshifts', to: { name: 'admin.employees.attendanceshifts' }, icon: 'bi bi-file-earmark-text' },
+                        { label: 'label.employees', to: { name: 'admin.employees' }, icon: 'bi bi-people' }, // الموظفين
+                        { label: 'label.payroll_report', to: { name: 'admin.employees.payroll_report' }, icon: 'bi bi-file-earmark-text' }, // تقرير الرواتب
+                        { label: 'label.attendance_sheet', to: { name: 'admin.employees.attendance_sheet' }, icon: 'bi bi-calendar-check' }, // كشف الحضور
+                        { label: 'label.leaves', to: { name: 'admin.employees.leaves' }, icon: 'bi bi-file-earmark-minus' }, // الإجازات
+                        { label: 'label.departments', to: { name: 'admin.accounting.departments' }, icon: 'bi bi-building' }, // الأقسام
+                        { label: 'label.contracts', to: { name: 'admin.employees.contracts' }, icon: 'bi bi-file-text' }, // العقود
+                        { label: 'label.attendanceshifts', to: { name: 'admin.employees.attendance-shifts' }, icon: 'bi bi-clock' }, // الشفتات / حضور
+                        { label: 'label.loans', to: { name: 'admin.employees.loans' }, icon: 'bi bi-cash-stack' }, // القروض
+                        { label: 'label.promotions-evaluations', to: { name: 'admin.employees.promotions-evaluations' }, icon: 'bi bi-award' }, // الترقيات والتقييمات
+                        { label: 'label.employee-documents', to: { name: 'admin.employees.employee-documents' }, icon: 'bi bi-folder' }, // مستندات الموظفين
+                        { label: 'label.reports', to: { name: 'admin.employees.reports' }, icon: 'bi bi-graph-up' }, // التقارير
+                        { label: 'label.settings', to: { name: 'admin.employees.settings' }, icon: 'bi bi-gear' }, // الإعدادات
+
                     ]
                 },
                 {
