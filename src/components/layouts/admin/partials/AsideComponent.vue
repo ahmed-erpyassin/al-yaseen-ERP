@@ -126,6 +126,8 @@ export default {
                         { label: 'aside.sources', to: { name: 'admin.sources' }, icon: 'bi bi-journal-bookmark' },
                         { label: 'aside.documents', to: { name: 'admin.documents' }, icon: 'bi bi-file-earmark-text' },
                         { label: 'aside.financials', to: { name: 'admin.financials' }, icon: 'bi bi-bar-chart' },
+                        { label: 'aside.risks', to: { name: 'admin.projects.risks' }, icon: 'bi bi-bar-chart' },
+                        { label: 'aside.close projects', to: { name: 'admin.projects.close' }, icon: 'bi bi-close' },
                     ]
                 },
                 {

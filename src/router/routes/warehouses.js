@@ -2,6 +2,7 @@ import ChartOfItemsComponent from "@/components/admin/warehouses/chartOfItems/Ch
 import CurrentInventoryValueComponent from "@/components/admin/warehouses/currentInventoryValue/CurrentInventoryValueComponent.vue";
 import CreateItemComponent from "@/components/admin/warehouses/items/CreateItemComponent.vue";
 import ItemsComponent from "@/components/admin/warehouses/items/ItemsComponent.vue";
+import ShowCustomerComponent from "@/components/admin/sales/customers/ShowCustomerComponent.vue";
 import CreateManufacturingComponent from "@/components/admin/warehouses/manufacturingFormula/CreateManufacturingFormulaComponent.vue";
 import ManufacturingComponent from "@/components/admin/warehouses/manufacturingFormula/ManufacturingComponent.vue";
 import ManufacturingFormulaComponent from "@/components/admin/warehouses/manufacturingFormula/ManufacturingFormulaComponent.vue";
@@ -23,9 +24,13 @@ export default [
                         component: ItemsComponent,
                         name: "admin.warehouses.items"
                     }, {
-                        path: "create",
+                        path: "items-create",
                         component: CreateItemComponent,
                         name: "admin.warehouses.items.create"
+                    },{
+                        path: "item-show",
+                        component: ShowCustomerComponent,
+                        name: "admin.warehouses.items.details"
                     }
                 ]
             }, {

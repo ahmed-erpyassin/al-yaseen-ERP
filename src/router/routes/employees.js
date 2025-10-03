@@ -1,7 +1,9 @@
 import JournalEntriesComponent from "@/components/admin/employees/journalEntries/JournalEntriesComponent.vue";
 import AttendanceSheetComponent from "@/components/admin/employees/attendanceSheet/AttendanceSheetComponent.vue";
-import CreateEmployeeComponent from "@/components/admin/employees/employees/CreateEmployeeComponent.vue";
+import CreateEmployeeComponent from "@/components/admin/employees/employees/EditEmployeeComponent.vue";
+import ShowEmployeeComponent from "@/components/admin/employees/employees/ShowEmployeeComponent.vue";
 import EmployeesComonent from "@/components/admin/employees/employees/EmployeesComonent.vue";
+import EditEmployeeComponent from "@/components/admin/employees/employees/EditEmployeeComponent.vue";
 import CreateEntryComponent from "@/components/admin/employees/journalEntries/CreateEntryComponent.vue";
 import LeavesComponent from "@/components/admin/employees/leaves/LeavesComponent.vue";
 import CreatePayrollComponent from "@/components/admin/employees/payrollReport/CreatePayrollComponent.vue";
@@ -31,6 +33,18 @@ export default [
             path: "create",
             component: CreateEmployeeComponent,
             name: "admin.employees.create",
+          },
+          {
+            path: "/admin/employees/:id/edit",
+            component: EditEmployeeComponent,
+            name: "admin.employees.edit",
+            props: true,
+          },
+          {
+            path: "/admin/employees/:id",
+            component: ShowEmployeeComponent,
+            name: "admin.employees.show",
+            props: true,
           },
         ],
       },
@@ -96,52 +110,57 @@ export default [
             path: "",
             component: AttendanceShiftsComponent,
             name: "admin.employees.attendance-shifts",
-          }
+          },
         ],
-      },{
+      },
+      {
         path: "Loans",
         children: [
           {
             path: "",
             component: LoansComponent,
             name: "admin.employees.loans",
-          }
+          },
         ],
-      },{
+      },
+      {
         path: "promotions-and-evaluations",
         children: [
           {
             path: "",
             component: PromotionsAndEvaluationsComponent,
             name: "admin.employees.promotions-evaluations",
-          }
+          },
         ],
-      },{
+      },
+      {
         path: "employee-documents",
         children: [
           {
             path: "",
             component: EmployeeDocumentsComponent,
             name: "admin.employees.employee-documents",
-          }
+          },
         ],
-      },{
+      },
+      {
         path: "reports",
         children: [
           {
             path: "",
             component: ReportsComponent,
             name: "admin.employees.reports",
-          }
+          },
         ],
-      },{
+      },
+      {
         path: "settings",
         children: [
           {
             path: "",
             component: SettingsComponent,
             name: "admin.employees.settings",
-          }
+          },
         ],
       },
     ],

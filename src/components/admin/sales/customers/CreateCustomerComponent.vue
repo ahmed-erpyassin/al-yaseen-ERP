@@ -66,7 +66,7 @@
                     <div class="item mb-4">
                         <div class="mb-3 position-relative">
                             <label for="email" class="form-label">{{ $t('label.email')
-                                }}</label>
+                            }}</label>
                             <div class=" position-relative group">
                                 <input type="email" id="email" class="form-control rounded-1"
                                     placeholder="yassin2029@gmail.com" v-model="form.email" maxlength="150"
@@ -102,24 +102,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-12">
-                    <div class="item mb-4">
-                        <div class="mb-3 position-relative">
-                            <label for="attachments" class="form-label">{{ $t('label.attachments') }}</label>
-
-                            <div class="box-attachments d-flex align-items-center justify-content-center"
-                                @click="$refs.fileInput.click()" style="cursor: pointer;">
-                                <div class="text-center">
-                                    <i class="bi bi-image"></i>
-                                    <p class="small">{{ t('label.drop_file_here') }}</p>
-                                </div>
-                            </div>
-                            <input type="file" ref="fileInput" @change="handleFileUpload" multiple
-                                style="display: none;">
-
-                        </div>
-                    </div>
-                </div>
             </div>
         </form>
     </div>
@@ -130,9 +112,12 @@ import { ref, reactive } from 'vue';
 import Swal from 'sweetalert2';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
+import axios from 'axios';
 
 const router = useRouter();
 const { t } = useI18n();
+// const baseUrl = process.env.VUE_APP_API_BASE_URL;
+const useApi = true; // true = إرسال البيانات إلى API
 
 const form = reactive({
     company_id: 1,
@@ -172,19 +157,64 @@ const handleFileUpload = (event) => {
     form.attachments.push(...files);
 };
 
-const saveForm = () => {
+const saveForm = async () => {
     errorMsg.value = null;
     successMsg.value = null;
+    Object.keys(errors).forEach(key => delete errors[key]);
 
-    Swal.fire({
-        icon: 'success',
-        title: t('messages.saved_title'),
-        text: t('messages.saved_text'),
-        timer: 2000,
-        showConfirmButton: false
-    }).then(() => {
+    if (!useApi) {
+        // بيانات وهمية
+        Swal.fire({
+            icon: 'success',
+            title: t('messages.saved_title'),
+            text: t('messages.saved_text'),
+            timer: 2000,
+            showConfirmButton: false
+        }).then(() => {
+            successMsg.value = t('messages.customer_created_successfully');
+        });
+        return;
+    }
+
+    try {
+        const token = localStorage.getItem('authToken');
+        const formData = new FormData();
+
+        Object.keys(form).forEach(key => {
+            if (key === 'attachments') {
+                form.attachments.forEach(file => formData.append('attachments[]', file));
+            } else {
+                formData.append(key, form[key]);
+            }
+        });
+
+        await axios.post(`/customers`, formData, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+
         successMsg.value = t('messages.customer_created_successfully');
-    });
+        Swal.fire({
+            icon: 'success',
+            title: t('messages.saved_title'),
+            text: successMsg.value,
+            timer: 2000,
+            showConfirmButton: false
+        }).then(() => {
+            router.push({ name: 'admin.customers' });
+        });
+
+    } catch (err) {
+        if (err.response && err.response.status === 422) {
+            Object.assign(errors, err.response.data.errors);
+            errorMsg.value = t('messages.validation_error');
+        } else {
+            errorMsg.value = t('messages.server_error') || 'حدث خطأ ما';
+        }
+        Swal.fire('خطأ', errorMsg.value, 'error');
+    }
 };
 
 const cancelForm = () => {
@@ -224,6 +254,7 @@ const fields = [
     { id: 'attachments', label: 'label.attachments', model: 'attachments', type: 'file', ref: 'attachmentsInput' }
 ];
 </script>
+
 
 
 <style>

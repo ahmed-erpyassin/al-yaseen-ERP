@@ -1,155 +1,200 @@
 <template>
+    <LoadingComponent :isLoading="isLoading" />
+
     <div class="container pe-5 ps-5">
         <h1><i class="bi bi-image"></i> {{ $t('label.company_undefined') }}</h1>
-        <div class="d-flex align-items-center justify-content-end">
-            <router-link :to="{ name: 'admin.new-supplier' }" class="btn btn-lg btn-main me-3">{{ $t('buttons.create') }}</router-link>
-            <button class="btn btn-lg btn-outline-danger" type="button">
-                {{ $t('buttons.delete') }}
-            </button>
 
+        <!-- أزرار إضافة وحذف -->
+        <div class="d-flex align-items-center justify-content-end mb-3">
+            <router-link :to="{ name: 'admin.new-supplier' }" class="btn btn-lg btn-main me-3">
+                {{ $t('buttons.create') }}
+            </router-link>
         </div>
-        <div class="row">
-            <div class="col-12">
-                <h3 class="mb-5">{{ $t('label.suppliers') }}</h3>
-            </div>
-        </div>
-        <div class="d-flex align-items-center actions mb-3">
-            <div class='search me-2 mb-3'>
+
+        <!-- بحث -->
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="search-bar d-flex align-items-center flex-grow-1 me-3">
                 <i class="bi bi-search me-2"></i>
-                <span class="text-main">{{ $t('label.search_supplier') }}</span>
-            </div>
-            <div class='edit me-4 mb-3'>
-                <i class="bi bi-pencil me-2"></i>
-                <span class="text-main">{{ $t('label.edit') }}</span>
-            </div>
-            <div class="dropdown mb-3">
-                <i class="bi bi-gear" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                </i>
-                <ul class="dropdown-menu align-center rounded-0 p-2" style="width: 250px;">
-                    <li>
-                        <div class="form-check"><input class="form-check-input" type="checkbox" checked id="col0"><label
-                                class="form-check-label" for="col0">{{ $t('label.number') }}</label></div>
-                    </li>
-                    <li>
-                        <div class="form-check"><input class="form-check-input" type="checkbox" checked id="col1"><label
-                                class="form-check-label" for="col1">{{ $t('label.supplier_name') }}</label></div>
-                    </li>
-                    <li>
-                        <div class="form-check"><input class="form-check-input" type="checkbox" checked id="col2"><label
-                                class="form-check-label" for="col2">{{ $t('label.balance') }}</label></div>
-                    </li>
-                    <li>
-                        <div class="form-check"><input class="form-check-input" type="checkbox" checked id="col3"><label
-                                class="form-check-label" for="col3">{{ $t('label.currency') }}</label></div>
-                    </li>
-                    <li>
-                        <div class="form-check"><input class="form-check-input" type="checkbox" checked id="col4"><label
-                                class="form-check-label" for="col4">{{ $t('label.branch') }}</label></div>
-                    </li>
-                    <li>
-                        <div class="form-check"><input class="form-check-input" type="checkbox" checked id="col5"><label
-                                class="form-check-label" for="col5">{{ $t('label.date_last_transaction') }}</label></div>
-                    </li>
-                    <li>
-                        <div class="form-check"><input class="form-check-input" type="checkbox" checked id="col6"><label
-                                class="form-check-label" for="col6">{{ $t('label.mobile') }}</label></div>
-                    </li>
-                    <li>
-                        <div class="form-check"><input class="form-check-input" type="checkbox" checked id="col7"><label
-                                class="form-check-label" for="col7">{{ $t('label.sales_representative') }}</label></div>
-                    </li>
-                </ul>
+                <input type="text" class="form-control" :placeholder="$t('label.search_supplier')"
+                    v-model="searchQuery" />
             </div>
         </div>
-        <div class="d-flex align-items-center justify-content-end">
-            <div class="pages">
 
-                <p class="text-main mb-0">{{ $t('label.suppliers') }}</p>
-                <p class="text-main mb-0">{{ $t('label.supplier_financial_activity') }}</p>
-                <p class="text-main mb-0">{{ $t('label.supplier_inventory_movements') }}</p>
-            </div>
-        </div>
+        <!-- جدول الموردين -->
         <div class="table-responsive">
             <table class="table table-bordered text-center align-middle">
                 <thead>
                     <tr class="header">
-                        <th>{{ $t('label.number') }}</th>
-                        <th>{{ $t('label.supplier_name') }}</th>
-                        <th>{{ $t('label.balance') }}</th>
-                        <th>{{ $t('label.currency') }}</th>
-                        <th>{{ $t('label.branch') }}</th>
-                        <th>{{ $t('label.date_last_transaction') }}</th>
-                        <th>{{ $t('label.mobile') }}</th>
-                        <th>{{ $t('label.sales_representative') }}</th>
+                        <th v-for="field in visibleFields" :key="field.key">{{ field.name }}</th>
+                        <th>{{ $t('label.actions') }}</th>
                     </tr>
                 </thead>
                 <tbody class="table-body form">
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                    <tr v-if="isLoading">
+                        <td :colspan="visibleFields.length + 1" class="text-center">
+                            <div class="spinner-border" role="status"></div>
+                        </td>
                     </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                    <tr v-else-if="paginatedSuppliers.length === 0">
+                        <td :colspan="visibleFields.length + 1" class="text-center">No suppliers found</td>
                     </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                    <tr v-else v-for="supplier in paginatedSuppliers" :key="supplier.id">
+                        <td v-for="field in visibleFields" :key="field.key">{{ supplier[field.key] }}</td>
+                        <td>
+                            <i class="bi bi-eye action-icon me-2" title="View" @click="viewSupplier(supplier)"></i>
+                            <i class="bi bi-pencil action-icon me-2" title="Edit" @click="editSupplier(supplier)"></i>
+                            <i class="bi bi-trash action-icon" title="Delete" @click="deleteSupplier(supplier)"></i>
+                        </td>
                     </tr>
                 </tbody>
             </table>
-
         </div>
 
+        <!-- Pagination -->
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <button class="btn btn-secondary" @click="prevPage" :disabled="currentPage === 1">
+                {{ $t('buttons.previous') }}
+            </button>
+            <span>{{ $t('label.page') }} {{ currentPage }} {{ $t('label.of') }} {{ totalPages }}</span>
+            <button class="btn btn-secondary" @click="nextPage" :disabled="currentPage === totalPages">
+                {{ $t('buttons.next') }}
+            </button>
+        </div>
     </div>
 </template>
 
-<style>
+<script>
+import LoadingComponent from '@/components/components/LoadingComponent.vue';
+import Swal from 'sweetalert2';
+import axios from 'axios';
+
+export default {
+    name: 'SuppliersComponent',
+    components: { LoadingComponent },
+    data() {
+        return {
+            isLoading: true,
+            useApi: false, // ضع false لتجربة بيانات وهمية
+            searchQuery: '',
+            currentPage: 1,
+            perPage: 10,
+            suppliers: [],
+            table: {
+                fields: [
+                    { name: 'Number', key: 'number', status: true },
+                    { name: 'Supplier Name', key: 'supplier_name', status: true },
+                    { name: 'Balance', key: 'balance', status: true },
+                    { name: 'Currency', key: 'currency', status: true },
+                    { name: 'Branch', key: 'branch', status: true },
+                    { name: 'Last Transaction', key: 'last_transaction', status: true },
+                    { name: 'Mobile', key: 'mobile', status: true },
+                    { name: 'Sales Rep', key: 'sales_representative', status: true },
+                ]
+            }
+        };
+    },
+    computed: {
+        visibleFields() {
+            return this.table.fields.filter(f => f.status);
+        },
+        filteredSuppliers() {
+            if (!this.searchQuery) return this.suppliers;
+            const q = this.searchQuery.toLowerCase();
+            return this.suppliers.filter(s =>
+                Object.values(s).some(v => v && v.toString().toLowerCase().includes(q))
+            );
+        },
+        paginatedSuppliers() {
+            const start = (this.currentPage - 1) * this.perPage;
+            return this.filteredSuppliers.slice(start, start + this.perPage);
+        },
+        totalPages() {
+            return Math.ceil(this.filteredSuppliers.length / this.perPage);
+        }
+    },
+    methods: {
+        async fetchSuppliers() {
+            this.isLoading = true;
+
+            if (this.useApi) {
+                const baseUrl = process.env.VUE_APP_API_BASE_URL;
+                const token = localStorage.getItem('token');
+
+                try {
+                    const res = await axios.get(`${baseUrl}/api/v1/suppliers/list`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            'Content-Type': 'application/json',
+                            Accept: 'application/json'
+                        }
+                    });
+                    this.suppliers = res.data.data || res.data;
+                } catch (err) {
+                    console.error(err);
+                    Swal.fire('Error', 'Failed to fetch suppliers', 'error');
+                } finally {
+                    this.isLoading = false;
+                }
+            } else {
+                // بيانات وهمية
+                this.suppliers = Array.from({ length: 20 }, (_, i) => ({
+                    id: i + 1,
+                    number: `SUP-${1000 + i}`,
+                    supplier_name: `Supplier ${i + 1}`,
+                    balance: (Math.random() * 10000).toFixed(2),
+                    currency: ["USD", "ILS", "EUR"][i % 3],
+                    branch: ["Main Branch", "Gaza Branch", "Ramallah Branch"][i % 3],
+                    last_transaction: new Date(2025, i % 12, (i + 1) * 2).toISOString().split('T')[0],
+                    mobile: `059${1000000 + i}`,
+                    sales_representative: `Sales Rep ${i + 1}`
+                }));
+                this.isLoading = false;
+            }
+        },
+        viewSupplier(supplier) {
+            this.$router.push({
+                name: 'admin.purchase.suppliers.details',
+                query: { id: supplier.id }
+            });
+        },
+        editSupplier(supplier) {
+            // يمكن إضافة نافذة تعديل هنا
+            Swal.fire('Edit', `Edit supplier: ${supplier.supplier_name}`, 'info');
+        },
+        deleteSupplier(supplier) {
+            Swal.fire({ title: 'Confirm Delete?', icon: 'warning', showCancelButton: true })
+                .then(res => {
+                    if (res.isConfirmed) {
+                        if (this.useApi) {
+                            axios.delete(`https://alyaseenerp.com/api/v1/suppliers/${supplier.id}`)
+                                .then(() => this.fetchSuppliers())
+                                .catch(() => Swal.fire('Error', 'Failed to delete', 'error'));
+                        } else {
+                            const idx = this.suppliers.findIndex(s => s.id === supplier.id);
+                            if (idx !== -1) this.suppliers.splice(idx, 1);
+                        }
+                    }
+                });
+        },
+        deleteSelected() {
+            Swal.fire('Info', 'Implement delete selected functionality', 'info');
+        },
+        prevPage() { if (this.currentPage > 1) this.currentPage--; },
+        nextPage() { if (this.currentPage < this.totalPages) this.currentPage++; },
+    },
+    mounted() {
+        this.fetchSuppliers();
+    }
+};
+</script>
+
+<style scoped>
 .header th {
-
-    background-color: #F4FFF0 !important;
-
-}
-
-.btn-action {
     background-color: #F4FFF0 !important;
 }
 
-.actions i {
-    font-size: 30px;
-}
-
-.actions span {
-    font-size: 24px;
-}
-
-.dropdown .show {
-    color: #1D7342
-}
-
-.form-check-input:checked[type=checkbox] {
-    border-radius: 50%;
-    background-color: #1D7342 !important;
-}
-.pages p {
-    font-size: 25px;
+.action-icon {
+    cursor: pointer;
+    font-size: 1.2rem;
 }
 </style>

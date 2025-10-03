@@ -14,117 +14,134 @@ import CreateEntryComponent from "@/components/admin/accounting/journalEntries/C
 import JournalEntriesComponent from "@/components/admin/accounting/journalEntries/JournalEntriesComponent.vue";
 import JournalVouchersComponent from "@/components/admin/JournalVoucher/JournalVoucherComponent.vue";
 import CreateJournalVouchersComponent from "@/components/admin/JournalVoucher/CreateJournalVoucherComponent.vue";
+import ShowAccountsListComponent from "@/components/admin/accounting/accounts/ShowAccountsListComponent.vue";
 
 export default [
-    {
-        path: 'accounting',
+  {
+    path: "accounting",
+    children: [
+      {
+        path: "accounts",
         children: [
-            {
-                path: 'accounts',
-                children: [
+          {
+            path: "",
+            component: AccountsListComponent,
+            name: "admin.accounting.accounts",
+          },
+          {
+            path: "create",
+            component: CreateAccountComponent,
+            name: "admin.accounting.accounts.create",
+          },
+          {
+            path: ":id",
+            component: ShowAccountsListComponent,
+            name: "admin.accounting.accounts.show",
+            props: true,
+          },
+        ],
+      },
+      {
+        path: "chart-of-accounts",
+        component: ChartOfAccountsComponent,
+        name: "admin.accounting.chart_of_accounts",
+      },
+      {
+        path: "journal-entries",
+        children: [
+          {
+            path: "",
+            component: JournalEntriesComponent,
+            name: "admin.accounting.journal_entries",
+          },
+          {
+            path: "create",
+            component: CreateEntryComponent,
+            name: "admin.accounting.journal_entries.create",
+          },
+        ],
+      },
+      {
+        path: "journal-vouchers",
+        children: [
+          {
+            path: "",
+            component: JournalVouchersComponent,
+            name: "admin.accounting.journal_vouchers",
+          },
+          {
+            path: "create",
+            component: CreateJournalVouchersComponent,
+            name: "admin.accounting.journal_vouchers.create",
+          },
+        ],
+      },
+      {
+        path: "budgets",
+        children: [
+          {
+            path: "",
+            component: BudgetsComponent,
+            name: "admin.accounting.budgets",
+          },
+          {
+            path: "create",
+            component: CreateBudgetComponent,
+            name: "admin.accounting.budgets.create",
+          },
+        ],
+      },
+      {
+        path: "balance-sheet",
+        component: BalanceSheetComponent,
+        name: "admin.accounting.balance_sheet",
+      },
+      {
+        path: "departments",
 
-                    {
-                        path: '',
-                        component: AccountsListComponent,
-                        name: "admin.accounting.accounts"
-                    }, {
-                        path: 'create',
-                        component: CreateAccountComponent,
-                        name: "admin.accounting.accounts.create"
-                    }
-
-                ]
-            },
-            {
-                path: 'chart-of-accounts',
-                component: ChartOfAccountsComponent,
-                name: "admin.accounting.chart_of_accounts"
-            }, {
-                path: 'journal-entries',
-                children: [
-                    {
-                        path: '',
-                        component: JournalEntriesComponent,
-                        name: "admin.accounting.journal_entries"
-                    }, {
-                        path: 'create',
-                        component: CreateEntryComponent,
-                        name: "admin.accounting.journal_entries.create"
-                    }
-                ]
-            },{
-                path: "journal-vouchers",
-                children: [
-                    {
-                        path: '',
-                        component: JournalVouchersComponent,
-                        name: "admin.accounting.journal_vouchers"
-                    },{
-                        path: 'create',
-                        component : CreateJournalVouchersComponent,
-                        name: "admin.accounting.journal_vouchers.create"
-                    }
-                ]
-            }, {
-                path: 'budgets',
-                children: [
-                    {
-                        path: '',
-                        component: BudgetsComponent,
-                        name: "admin.accounting.budgets"
-                    }, {
-                        path: 'create',
-                        component: CreateBudgetComponent,
-                        name: "admin.accounting.budgets.create"
-
-                    }
-                ]
-            },{
-                path: 'balance-sheet',
-                component : BalanceSheetComponent,
-                name: "admin.accounting.balance_sheet"
-            },{
-                path: 'departments',
-
-                children : [
-                    {
-                        path: '',
-                        component: DepartmentsComponent,
-                        name: "admin.accounting.departments"
-                    },{
-                        path: 'create', 
-                        component: CreateDapartmentComponent,
-                        name: "admin.accounting.departments.create"
-                    }
-                ]
-            },{
-                path: "funders",
-                children : [
-                    {
-                        path: '',
-                        component: FundersComponent,
-                        name: "admin.accounting.funders"
-                    },{
-                        path: "create",
-                        component: CreateFunderComponent,
-                        name: "admin.accounting.funders.create"
-                    }
-                ]
-            },{
-                path: "assets",
-                children : [
-                    {
-                        path: '',
-                        component: AssetsComponent,
-                        name: "admin.accounting.assets"
-                    },{
-                        path: "create",
-                        component: CreateAssetComponent,
-                        name: "admin.accounting.assets.create"
-                    }
-                ]
-            }
-        ]
-    }
-
-]
+        children: [
+          {
+            path: "",
+            component: DepartmentsComponent,
+            name: "admin.accounting.departments",
+          },
+          {
+            path: "create",
+            component: CreateDapartmentComponent,
+            name: "admin.accounting.departments.create",
+          },
+        ],
+      },
+      {
+        path: "funders",
+        children: [
+          {
+            path: "",
+            component: FundersComponent,
+            name: "admin.accounting.funders",
+          },
+          {
+            path: "create",
+            component: CreateFunderComponent,
+            name: "admin.accounting.funders.create",
+          },
+        ],
+      },
+      {
+        path: "assets",
+        children: [
+          {
+            path: "",
+            component: AssetsComponent,
+            name: "admin.accounting.assets",
+          },
+          {
+            path: "create",
+            component: CreateAssetComponent,
+            name: "admin.accounting.assets.create",
+          },
+        ],
+      },
+    ],
+  },
+];

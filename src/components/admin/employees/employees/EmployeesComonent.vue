@@ -104,7 +104,6 @@
                                     <td>{{ selectedEmployee?.currency }}</td>
                                 </tr>
                             </tbody>
-
                         </table>
                     </div>
                     <div class="modal-footer">
@@ -139,20 +138,22 @@ export default {
         return {
             baseUrl: process.env.VUE_APP_API_BASE_URL,
             isLoading: true,
+            useApi: false, // true لاستخدام API، false لاستخدام بيانات وهمية
             searchQuery: "",
             currentPage: 1,
             perPage: 10,
             selectedEmployee: null,
             employees: [],
             table: {
+                // أسماء مؤقتة لتجنب مشاكل this.$t داخل data()
                 fields: [
-                    { name: this.$t('label.number'), key: "id", status: true },
-                    { name: this.$t('label.name'), key: "name", status: true },
-                    { name: this.$t('label.department'), key: "department", status: true },
-                    { name: this.$t('label.branch'), key: "branch", status: true },
-                    { name: this.$t('label.phone'), key: "phone", status: true },
-                    { name: this.$t('label.balance'), key: "balance", status: true },
-                    { name: this.$t('label.currency'), key: "currency", status: true },
+                    { name: "ID", key: "id", status: true },
+                    { name: "Name", key: "name", status: true },
+                    { name: "Department", key: "department", status: true },
+                    { name: "Branch", key: "branch", status: true },
+                    { name: "Phone", key: "phone", status: true },
+                    { name: "Balance", key: "balance", status: true },
+                    { name: "Currency", key: "currency", status: true },
                 ]
             }
         };
@@ -174,10 +175,12 @@ export default {
     methods: {
         async fetchEmployees() {
             if (!this.isAuthenticated) return;
+            if (!this.useApi) return;
+
             this.isLoading = true;
             try {
                 const token = localStorage.getItem('authToken');
-                const res = await axios.get(`/employees/browse-all/`, {
+                const res = await axios.get(`${this.baseUrl}/employees/browse-all/`, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Accept': 'application/json',
@@ -191,16 +194,29 @@ export default {
                 });
                 this.employees = res.data.data || res.data;
             } catch (err) {
-                Swal.fire('خطأ', 'تعذر تحميل الموظفين', 'error');
+                console.error(err);
+                Swal.fire('خطأ', 'تعذر تحميل الموظفين من API', 'error');
             } finally {
                 this.isLoading = false;
             }
         },
+
+        loadDummyEmployees(count = 20) {
+            this.employees = Array.from({ length: count }, (_, i) => ({
+                id: i + 1,
+                name: `Employee ${i + 1}`,
+                department: ["HR", "Sales", "IT"][i % 3],
+                branch: ["Main Branch", "Gaza Branch", "Ramallah Branch"][i % 3],
+                phone: `059${1000000 + i}`,
+                balance: (Math.random() * 10000).toFixed(2),
+                currency: ["USD", "ILS", "EUR"][i % 3]
+            }));
+            this.isLoading = false; // توقف اللودنج عند استخدام البيانات الوهمية
+        },
+
         viewEmployee(emp) {
-            this.selectedEmployee = emp;
-            const modalEl = document.getElementById('viewEmployeeModal');
-            const modal = new bootstrap.Modal(modalEl);
-            modal.show();
+            if (!emp || !emp.id) return;
+            this.$router.push({ name: 'admin.employees.show', params: { id: emp.id } });
         },
         editEmployee(emp) {
             this.$router.push({ name: 'admin.employees.edit', params: { id: emp.id } });
@@ -216,10 +232,12 @@ export default {
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     try {
-                        const token = localStorage.getItem('authToken');
-                        await axios.delete(`${this.baseUrl}/employees/${emp.id}`, {
-                            headers: { 'Authorization': `Bearer ${token}` }
-                        });
+                        if (this.useApi) {
+                            const token = localStorage.getItem('authToken');
+                            await axios.delete(`${this.baseUrl}/employees/${emp.id}`, {
+                                headers: { 'Authorization': `Bearer ${token}` }
+                            });
+                        }
                         this.employees = this.employees.filter(e => e.id !== emp.id);
                         Swal.fire('تم الحذف', 'تم حذف الموظف بنجاح', 'success');
                     } catch {
@@ -236,6 +254,7 @@ export default {
         },
         prevPage() { if (this.currentPage > 1) this.currentPage--; },
         nextPage() { if (this.currentPage < this.totalPages) this.currentPage++; },
+
         exportExcel() {
             const ws = XLSX.utils.json_to_sheet(this.employees);
             const wb = XLSX.utils.book_new();
@@ -270,7 +289,26 @@ export default {
             newWin.close();
         }
     },
-    mounted() { this.fetchEmployees(); }
+    mounted() {
+        // بعد المونت، نقوم بترجمة أسماء الأعمدة
+        this.table.fields.forEach(f => {
+            switch (f.key) {
+                case 'id': f.name = this.$t('label.number'); break;
+                case 'name': f.name = this.$t('label.name'); break;
+                case 'department': f.name = this.$t('label.department'); break;
+                case 'branch': f.name = this.$t('label.branch'); break;
+                case 'phone': f.name = this.$t('label.phone'); break;
+                case 'balance': f.name = this.$t('label.balance'); break;
+                case 'currency': f.name = this.$t('label.currency'); break;
+            }
+        });
+
+        if (this.useApi) {
+            this.fetchEmployees();
+        } else {
+            this.loadDummyEmployees(15);
+        }
+    }
 };
 </script>
 

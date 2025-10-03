@@ -1,247 +1,288 @@
 <template>
+    <LoadingComponent :isLoading="isLoading" />
     <div class="container pe-5 ps-5">
-        <LoadingComponent :isLoading="loading" />
         <h1><i class="bi bi-image"></i> {{ $t('label.company_undefined') }}</h1>
-        <div class="d-flex align-items-center justify-content-end">
-            <router-link :to="{ name: 'admin.outgoing-offers.create' }" class="btn btn-lg btn-main">{{
-                $t('buttons.create') }}</router-link>
-        </div>
-        <div class="row">
-            <div class="col-12">
-                <h3 class="mb-5">{{ $t('label.outgoing_price_offers') }}</h3>
-            </div>
-        </div>
-        <div class="d-flex align-items-center actions mb-3">
-            <div class='search me-2 mb-3'>
-                <i class="bi bi-search me-2"></i>
-                <span class="text-main">{{ $t('label.search_account') }}</span>
 
+        <div class="d-flex align-items-center justify-content-end mb-3">
+            <!-- Add Button -->
+            <router-link :to="{ name: 'admin.outgoing-offers.create' }" class="btn btn-lg btn-main me-3">
+                {{ $t('buttons.create') }}
+            </router-link>
+
+            <!-- Import/Export Dropdown -->
+            <div class="dropdown">
+                <button class="btn btn-lg btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    {{ $t('buttons.import_export') }}
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end p-2">
+                    <li>
+                        <label class="dropdown-item mb-0" style="cursor: pointer;">
+                            {{ $t('buttons.import_excel') }}
+                            <input type="file" @change="importExcel" accept=".xlsx, .xls" class="d-none" />
+                        </label>
+                    </li>
+                    <li><button class="dropdown-item" @click="exportExcel">{{ $t('buttons.export_excel') }}</button>
+                    </li>
+                    <li><button class="dropdown-item" @click="exportPDF">{{ $t('buttons.export_pdf') }}</button></li>
+                    <li><button class="dropdown-item" @click="printTable">{{ $t('buttons.print') }}</button></li>
+                </ul>
             </div>
-            <div class='edit me-4 mb-3'>
-                <i class="bi bi-pencil me-2"></i>
-                <span class="text-main">{{ $t('buttons.edit') }}</span>
+        </div>
+
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <!-- Search Bar -->
+            <div class="search-bar d-flex align-items-center flex-grow-1 me-3">
+                <i class="bi bi-search me-2"></i>
+                <input type="text" class="form-control" :placeholder="$t('label.search')" v-model="searchQuery" />
             </div>
-            <div class="dropdown mb-3">
-                <i class="bi bi-gear" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                </i>
+
+            <!-- Column Toggle Dropdown -->
+            <div class="dropdown">
+                <i class="bi bi-gear" type="button" data-bs-toggle="dropdown" aria-expanded="false"
+                    style="font-size:1.5rem;cursor:pointer;"></i>
                 <ul class="dropdown-menu align-center rounded-0 p-2" style="width: 250px;">
-                    <li>
-                        <div class="form-check"><input class="form-check-input" type="checkbox"
-                                :checked="tableColumns.offer_number" @change="toggleColumn('offer_number')"
-                                id="col0"><label class="form-check-label" for="col0">{{ $t('label.offer_number')
-                                }}</label></div>
-                    </li>
-                    <li>
-                        <div class="form-check"><input class="form-check-input" type="checkbox"
-                                :checked="tableColumns.customer_name" @change="toggleColumn('customer_name')"
-                                id="col1"><label class="form-check-label" for="col1">{{ $t('label.customer_name')
-                                }}</label></div>
-                    </li>
-                    <li>
-                        <div class="form-check"><input class="form-check-input" type="checkbox"
-                                :checked="tableColumns.licensed_operator" @change="toggleColumn('licensed_operator')"
-                                id="col2"><label class="form-check-label" for="col2">{{ $t('label.licensed_operator')
-                                }}</label></div>
-                    </li>
-                    <li>
-                        <div class="form-check"><input class="form-check-input" type="checkbox"
-                                :checked="tableColumns.amount" @change="toggleColumn('amount')" id="col3"><label
-                                class="form-check-label" for="col3">{{ $t('label.amount') }}</label></div>
-                    </li>
-                    <li>
-                        <div class="form-check"><input class="form-check-input" type="checkbox"
-                                :checked="tableColumns.currency" @change="toggleColumn('currency')" id="col4"><label
-                                class="form-check-label" for="col4">{{ $t('label.currency') }}</label></div>
-                    </li>
-                    <li>
-                        <div class="form-check"><input class="form-check-input" type="checkbox"
-                                :checked="tableColumns.date" @change="toggleColumn('date')" id="col5"><label
-                                class="form-check-label" for="col5">{{ $t('label.date') }}</label></div>
-                    </li>
-                    <li>
-                        <div class="form-check"><input class="form-check-input" type="checkbox"
-                                :checked="tableColumns.mobile" @change="toggleColumn('mobile')" id="col6"><label
-                                class="form-check-label" for="col6">{{ $t('label.mobile') }}</label></div>
+                    <li v-for="(field, index) in table.fields" :key="field.key">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" v-model="field.status"
+                                :id="'col-' + index" />
+                            <label class="form-check-label" :for="'col-' + index">{{ field.name }}</label>
+                        </div>
                     </li>
                 </ul>
             </div>
         </div>
+
+        <!-- Table -->
         <div class="table-responsive">
             <table class="table table-bordered text-center align-middle">
                 <thead>
                     <tr class="header">
-                        <th v-if="tableColumns.offer_number">{{ $t('label.offer_number') }}</th>
-                        <th v-if="tableColumns.invoice_number">{{ $t('label.invoice_number') }}</th>
-                        <th v-if="tableColumns.customer_name">{{ $t('label.customer_name') }}</th>
-                        <th v-if="tableColumns.licensed_operator">{{ $t('label.licensed_operator') }}</th>
-                        <th v-if="tableColumns.amount">{{ $t('label.amount') }}</th>
-                        <th v-if="tableColumns.currency">{{ $t('label.currency') }}</th>
-                        <th v-if="tableColumns.status">{{ $t('label.status') }}</th>
-                        <th v-if="tableColumns.date">{{ $t('label.date') }}</th>
-                        <th v-if="tableColumns.mobile">{{ $t('label.mobile') }}</th>
+                        <th v-for="field in visibleFields" :key="field.key">{{ field.name }}</th>
                         <th>{{ $t('label.actions') }}</th>
                     </tr>
                 </thead>
                 <tbody class="table-body form">
-                    <tr v-for="offer in filteredOutgoingQuotations" :key="offer.id">
-                        <td v-if="tableColumns.offer_number">{{ offer.journal_number || offer.id || '-' }}</td>
-                        <td v-if="tableColumns.invoice_number">{{ offer.invoice_number || '-' }}</td>
-                        <td v-if="tableColumns.customer_name">
-                            {{ offer.customer?.company_name ||
-                                (offer.customer?.first_name && offer.customer?.second_name ?
-                                    offer.customer.first_name + ' ' + offer.customer.second_name :
-                                    offer.customer?.first_name || offer.customer?.second_name || '-') }}
-                        </td>
-                        <td v-if="tableColumns.licensed_operator">
-                            {{ offer.user?.first_name && offer.user?.second_name ?
-                                offer.user.first_name + ' ' + offer.user.second_name :
-                                offer.user?.first_name || offer.user?.second_name || '-' }}
-                        </td>
-                        <td v-if="tableColumns.amount">{{ offer.total_amount || '0.00' }}</td>
-                        <td v-if="tableColumns.currency">{{ offer.currency?.name || offer.currency?.code || '-' }}</td>
-                        <td v-if="tableColumns.status">
-                            <span class="badge" :class="{
-                                'bg-warning': offer.status === 'draft',
-                                'bg-success': offer.status === 'approved',
-                                'bg-danger': offer.status === 'rejected',
-                                'bg-info': offer.status === 'pending'
-                            }">
-                                {{ offer.status_label || offer.status || '-' }}
-                            </span>
-                        </td>
-                        <td v-if="tableColumns.date">{{ offer.created_at ? new
-                            Date(offer.created_at).toLocaleDateString() : '-' }}</td>
-                        <td v-if="tableColumns.mobile">{{ offer.customer?.phone || offer.customer?.email || '-' }}</td>
-                        <td>
-                            <div class="d-flex gap-2 justify-content-center">
-                                <button type="button" class="btn btn-sm btn-main text-white"
-                                    @click="handleEdit(offer.id)">
-                                    <i class="bi bi-pencil me-1"></i>{{ $t('buttons.edit') }}
-                                </button>
-                                <button type="button" class="btn btn-sm btn-outline-danger"
-                                    @click="handleDelete(offer.id)">
-                                    <i class="bi bi-trash me-1"></i>{{ $t('buttons.delete') }}
-                                </button>
+                    <tr v-if="loading">
+                        <td :colspan="visibleFields.length + 1" class="text-center">
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">Loading...</span>
                             </div>
                         </td>
                     </tr>
-                    <tr v-if="filteredOutgoingQuotations.length === 0">
-                        <td :colspan="Object.values(tableColumns).filter(v => v).length + 2" class="text-center py-4">
-                            {{ $t('label.no_offers_found') }}
+                    <tr v-else-if="paginatedItems.length === 0">
+                        <td :colspan="visibleFields.length + 1" class="text-center">No items found</td>
+                    </tr>
+                    <tr v-else v-for="offer in paginatedItems" :key="offer.id">
+                        <td v-for="field in visibleFields" :key="field.key">
+                            {{ getFieldValue(offer, field.key) }}
+                        </td>
+                        <td class="text-center">
+                            <i class="bi bi-eye action-icon me-2" :title="$t('buttons.check')"
+                                @click="viewItem(offer)"></i>
+                            <i class="bi bi-pencil action-icon me-2" :title="$t('buttons.edit')"
+                                @click="editItem(offer)"></i>
+                            <i class="bi bi-trash action-icon" :title="$t('buttons.delete')"
+                                @click="deleteItem(offer)"></i>
                         </td>
                     </tr>
                 </tbody>
             </table>
-
         </div>
 
+        <!-- Pagination -->
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <button class="btn btn-secondary" @click="prevPage" :disabled="currentPage === 1">
+                {{ $t('buttons.previous') }}
+            </button>
+            <span>{{ $t('label.page') }} {{ currentPage }} {{ $t('label.of') }} {{ totalPages }}</span>
+            <button class="btn btn-secondary" @click="nextPage" :disabled="currentPage === totalPages">
+                {{ $t('buttons.next') }}
+            </button>
+        </div>
     </div>
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
 import LoadingComponent from '@/components/components/LoadingComponent.vue';
+import Swal from "sweetalert2";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import axios from "axios";
 
 export default {
     name: 'OffersComponent',
-    components: {
-        LoadingComponent
+    components: { LoadingComponent },
+    data() {
+        return {
+            baseUrl: process.env.VUE_APP_API_BASE_URL,
+            useApi: false,
+            isLoading: false,
+            searchQuery: '',
+            currentPage: 1,
+            perPage: 10,
+            loading: false,
+            items: [],
+            table: {
+                fields: [
+                    { name: 'رقم العرض', key: 'offer_number', status: true },
+                    { name: 'اسم العميل', key: 'customer_name', status: true },
+                    { name: 'المبلغ', key: 'amount', status: true },
+                    { name: 'العملة', key: 'currency', status: true },
+                    { name: 'تاريخ العرض', key: 'date', status: true },
+                    { name: 'الجوال', key: 'mobile', status: true }
+                ]
+            }
+        };
     },
     computed: {
-        ...mapGetters('outgoingQuotations', [
-            'outgoingQuotations',
-            'loading',
-            'error',
-            'searchQuery',
-            'tableColumns',
-            'filteredOutgoingQuotations'
-        ])
-    },
-    async mounted() {
-    console.log('Auth state from Vuex store:', this.$store.state.auth);
-    console.log('Auth token from Vuex store:', this.$store.state.auth?.authToken);
-        await this.loadOffers();
+        visibleFields() { return this.table.fields.filter(f => f.status); },
+        filteredItems() {
+            if (!this.searchQuery) return this.items;
+            const query = this.searchQuery.toLowerCase();
+            return this.items.filter(item =>
+                (item.offer_number?.toString().toLowerCase().includes(query)) ||
+                (item.customer_name?.toLowerCase().includes(query)) ||
+                (item.mobile?.includes(query))
+            );
+        },
+        paginatedItems() {
+            const start = (this.currentPage - 1) * this.perPage;
+            return this.filteredItems.slice(start, start + this.perPage);
+        },
+        totalPages() {
+            return Math.ceil(this.filteredItems.length / this.perPage) || 1;
+        }
     },
     methods: {
-        ...mapActions('outgoingQuotations', [
-            'fetchOutgoingQuotations',
-            'deleteOutgoingQuotation'
-        ]),
-
-        async loadOffers() {
-            try {
-                await this.fetchOutgoingQuotations();
-            } catch (error) {
-                console.error('Failed to load offers:', error);
-            }
-        },
-
-        handleEdit(offerId) {
-            // Navigate to edit offer page
-            this.$router.push({ name: 'admin.outgoing-offers.edit', params: { id: offerId } });
-        },
-
-        async handleDelete(offerId) {
-            if (confirm(this.$t('messages.confirm_delete_quotation'))) {
+        async fetchItems() {
+            this.isLoading = true;
+            if (this.useApi) {
                 try {
-                    await this.deleteOutgoingQuotation(offerId);
-                    this.loadOffers(); // Reload the list
-                } catch (error) {
-                    console.error('Failed to delete offer:', error);
+                    const token = localStorage.getItem('authToken');
+                    const res = await axios.get(`${this.baseUrl}/offers`, {
+                        headers: { Authorization: `Bearer ${token}` }
+                    });
+                    this.items = (res.data.data || []).map((o, i) => ({
+                        id: o.id || i + 1,
+                        offer_number: o.journal_number || `OFF-${i + 1}`,
+                        customer_name: o.customer?.company_name || '-',
+                        amount: o.total_amount || 0,
+                        currency: o.currency?.code || 'USD',
+                        date: o.created_at ? new Date(o.created_at).toLocaleDateString() : '-',
+                        mobile: o.customer?.phone || '-'
+                    }));
+                } catch (err) {
+                    console.error(err);
+                    Swal.fire('خطأ', 'فشل في جلب البيانات من السيرفر', 'error');
                 }
+            } else {
+                this.items = Array.from({ length: 20 }, (_, i) => ({
+                    id: i + 1,
+                    offer_number: `OFF-${1000 + i}`,
+                    customer_name: `العميل ${i + 1}`,
+                    amount: (Math.random() * 1000).toFixed(2),
+                    currency: ['USD', 'ILS', 'EUR'][i % 3],
+                    date: new Date(2025, i % 12, (i + 1) * 2).toISOString().split('T')[0],
+                    mobile: `059${1000000 + i}`
+                }));
             }
+            this.isLoading = false;
         },
-
-        toggleColumn(column) {
-            this.$store.commit('outgoingQuotations/toggleColumn', column);
+        getFieldValue(item, key) { return item[key] || '-'; },
+        viewItem(item) { this.$router.push({ name: 'admin.outgoing-offers.show', params: { id: item.id } }); },
+        editItem(item) { this.$router.push({ name: 'admin.outgoing-offers.edit', params: { id: item.id } }); },
+        deleteItem(item) {
+            Swal.fire({
+                title: 'هل أنت متأكد من الحذف؟',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'حذف',
+                cancelButtonText: 'إلغاء'
+            }).then(async result => {
+                if (result.isConfirmed) {
+                    if (this.useApi) {
+                        try {
+                            const token = localStorage.getItem('authToken');
+                            await axios.delete(`${this.baseUrl}/offers/${item.id}`, {
+                                headers: { Authorization: `Bearer ${token}` }
+                            });
+                            this.items = this.items.filter(i => i.id !== item.id);
+                            Swal.fire('تم الحذف', 'تم حذف العرض بنجاح', 'success');
+                        } catch (err) {
+                            Swal.fire('خطأ', 'فشل في حذف العرض', 'error');
+                        }
+                    } else {
+                        this.items = this.items.filter(i => i.id !== item.id);
+                        Swal.fire('تم الحذف', 'تم حذف العرض محليًا', 'success');
+                    }
+                }
+            });
         },
-
-
-
-        updateSearchQuery(query) {
-            this.$store.commit('outgoingQuotations/setSearchQuery', query);
+        prevPage() { if (this.currentPage > 1) this.currentPage--; },
+        nextPage() { if (this.currentPage < this.totalPages) this.currentPage++; },
+        importExcel(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = e => {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: "array" });
+                const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+                const jsonData = XLSX.utils.sheet_to_json(worksheet);
+                jsonData.forEach(item => {
+                    this.items.push({
+                        id: this.items.length + 1,
+                        offer_number: item.offer_number || `OFF-${this.items.length + 1}`,
+                        customer_name: item.customer_name || '-',
+                        amount: item.amount || 0,
+                        currency: item.currency || 'USD',
+                        date: item.date || '-',
+                        mobile: item.mobile || '-'
+                    });
+                });
+            };
+            reader.readAsArrayBuffer(file);
         },
-
-        resetSearch() {
-            this.$store.commit('outgoingQuotations/setSearchQuery', '');
+        exportExcel() {
+            const ws = XLSX.utils.json_to_sheet(this.items);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Offers");
+            const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+            saveAs(new Blob([wbout], { type: "application/octet-stream" }), "Offers.xlsx");
+        },
+        exportPDF() {
+            const doc = new jsPDF();
+            const columns = this.visibleFields.map(f => ({ header: f.name, dataKey: f.key }));
+            const rows = this.items.map(item =>
+                this.visibleFields.reduce((acc, field) => { acc[field.key] = item[field.key]; return acc; }, {})
+            );
+            autoTable(doc, { columns, body: rows, startY: 20, styles: { fontSize: 8 }, headStyles: { fillColor: [29, 115, 66] } });
+            doc.save("offers.pdf");
+        },
+        printTable() {
+            const printContent = this.$el.querySelector('.table-responsive').innerHTML;
+            const WinPrint = window.open('', '', 'width=900,height=650');
+            WinPrint.document.write('<html><head><title>Print</title></head><body>');
+            WinPrint.document.write(printContent);
+            WinPrint.document.write('</body></html>');
+            WinPrint.document.close();
+            WinPrint.focus();
+            WinPrint.print();
+            WinPrint.close();
         }
-    }
-}
+    },
+    mounted() { this.fetchItems(); }
+};
 </script>
 
-<style>
+<style scoped>
 .header th {
-
-    background-color: #F4FFF0 !important;
-
-}
-
-.btn-action {
     background-color: #F4FFF0 !important;
 }
 
-.actions i {
-    font-size: 30px;
-}
-
-.actions span {
-    font-size: 24px;
-}
-
-.dropdown .show {
-    color: #1D7342
-}
-
-.form-check-input:checked[type=checkbox] {
-    border-radius: 50%;
-    background-color: #1D7342 !important;
-}
-
-.pages p {
-    font-size: 25px;
-}
-
-/* Action buttons styling */
 .btn-main {
     background-color: #28a745;
     border-color: #28a745;
@@ -256,46 +297,26 @@ export default {
     transform: translateY(-1px);
 }
 
-.btn-outline-danger {
-    border-radius: 4px;
-    font-weight: 500;
-    transition: all 0.2s ease;
+.action-icon {
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: transform 0.2s, color 0.3s, opacity 0.3s;
 }
 
-.btn-outline-danger:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
+.action-icon.bi-eye {
+    color: #0d6efd;
 }
 
-/* Button icons */
-.btn i {
-    font-size: 0.875rem;
+.action-icon.bi-pencil {
+    color: #ffc107;
 }
 
-/* Status badges */
-.badge {
-    font-size: 0.75rem;
-    padding: 0.375rem 0.75rem;
-    border-radius: 0.375rem;
+.action-icon.bi-trash {
+    color: #dc3545;
 }
 
-.bg-warning {
-    background-color: #ffc107 !important;
-    color: #000 !important;
-}
-
-.bg-success {
-    background-color: #198754 !important;
-    color: #fff !important;
-}
-
-.bg-danger {
-    background-color: #dc3545 !important;
-    color: #fff !important;
-}
-
-.bg-info {
-    background-color: #0dcaf0 !important;
-    color: #000 !important;
+.action-icon:hover {
+    transform: scale(1.2);
+    opacity: 0.8;
 }
 </style>

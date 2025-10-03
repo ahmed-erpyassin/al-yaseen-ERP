@@ -22,7 +22,9 @@
     "cheques": "الشيكات",
     "milestones": "المراحل",
     "documents": "المستندات",
-    "financials": "المالية"
+    "financials": "المالية",
+    "risks": "المخاطر",
+    "close projects":" اغلاق المشاريع"
   },
   "breadcrumb": {
     "sales": "المبيعات",

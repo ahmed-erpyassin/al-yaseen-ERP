@@ -54,7 +54,7 @@ export default {
     name: "DocumentsComponent",
     data() {
         return {
-            useApi: true, // true = استخدام API
+            useApi: false, // true = استخدام API
             documents: [],
         };
     },

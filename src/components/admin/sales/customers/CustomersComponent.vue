@@ -104,7 +104,7 @@
         </div>
 
         <!-- View Customer Modal -->
-        <div class="modal fade" id="viewItemModal" tabindex="-1" aria-labelledby="viewItemModalLabel"
+        <!-- <div class="modal fade" id="viewItemModal" tabindex="-1" aria-labelledby="viewItemModalLabel"
             aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">
@@ -139,11 +139,12 @@
                         </table>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" @click="closeModal">{{$t('buttons.close')}}</button>
+                        <button type="button" class="btn btn-secondary" @click="closeModal">{{ $t('buttons.close')
+                        }}</button>
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
 
 
     </div>
@@ -156,31 +157,23 @@ import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import * as bootstrap from 'bootstrap';
+// import * as bootstrap from 'bootstrap';
+import axios from "axios";
 
 export default {
     name: 'ItemsComponent',
     components: { LoadingComponent },
     data() {
         return {
+            baseUrl: process.env.VUE_APP_API_BASE_URL,
+            useApi: false, // true = استخدام API، false = بيانات وهمية
             isLoading: false,
             searchQuery: "",
             currentPage: 1,
             perPage: 10,
             loading: false,
-            showModal: false,
             selectedItem: null,
-            items: Array.from({ length: 20 }, (_, i) => ({
-                id: i + 1,
-                customer_number: `CUST-${1000 + i}`,
-                customer_name: `الزبون ${i + 1}`,
-                balance: (Math.random() * 1000).toFixed(2),
-                currency: ["USD", "ILS", "EUR"][i % 3],
-                branch: ["الرئيسي", "فرع غزة", "فرع رام الله"][i % 3],
-                date_of_last_movement: new Date(2025, i % 12, (i + 1) * 2).toISOString().split('T')[0],
-                mobile: `059${1000000 + i}`,
-                sales_representative: `مندوب ${i + 1}`
-            })),
+            items: [], // سيتم ملؤها حسب useApi
             table: {
                 fields: [
                     { name: 'رقم العميل', key: 'customer_number', status: true },
@@ -211,23 +204,76 @@ export default {
             return this.filteredItems.slice(start, start + this.perPage);
         },
         totalPages() {
-            return Math.ceil(this.filteredItems.length / this.perPage);
+            return Math.ceil(this.filteredItems.length / this.perPage) || 1;
         }
     },
     methods: {
+        async fetchItems() {
+            this.isLoading = true;
+            if (this.useApi) {
+                try {
+                    const token = localStorage.getItem('authToken');
+                    const res = await axios.get(`/customers/`, {
+                        headers: { 'Authorization': `Bearer ${token}` },
+                        params: { per_page: this.perPage }
+                    });
+                    this.items = (res.data.data || res.data).map((item, index) => ({
+                        id: parseInt(item.id || index + 1),
+                        customer_number: item.customer_number,
+                        customer_name: item.customer_name,
+                        balance: item.balance,
+                        currency: item.currency,
+                        branch: item.branch,
+                        date_of_last_movement: item.date_of_last_movement,
+                        mobile: item.mobile,
+                        sales_representative: item.sales_representative
+                    }));
+                } catch (err) {
+                    console.error(err);
+                    Swal.fire('خطأ', 'فشل في جلب بيانات الزبائن من السيرفر', 'error');
+                }
+            } else {
+                // بيانات وهمية
+                this.items = Array.from({ length: 20 }, (_, i) => ({
+                    id: i + 1,
+                    customer_number: `CUST-${1000 + i}`,
+                    customer_name: `الزبون ${i + 1}`,
+                    balance: (Math.random() * 1000).toFixed(2),
+                    currency: ["USD", "ILS", "EUR"][i % 3],
+                    branch: ["الرئيسي", "فرع غزة", "فرع رام الله"][i % 3],
+                    date_of_last_movement: new Date(2025, i % 12, (i + 1) * 2).toISOString().split('T')[0],
+                    mobile: `059${1000000 + i}`,
+                    sales_representative: `مندوب ${i + 1}`
+                }));
+            }
+            this.isLoading = false;
+        },
+
         viewItem(item) {
-            this.selectedItem = item;
-            const modalEl = document.getElementById('viewItemModal');
-            const modal = new bootstrap.Modal(modalEl);
-            modal.show();
+            this.$router.push({
+                name: 'admin.customers.show',
+                params: { id: item.id }
+            });
+            // this.selectedItem = item;
+            // const modalEl = document.getElementById('viewItemModal');
+            // const modal = new bootstrap.Modal(modalEl);
+            // modal.show();
         },
-        closeModal() {
-            const modalEl = document.getElementById('viewItemModal');
-            const modal = bootstrap.Modal.getInstance(modalEl);
-            if (modal) modal.hide();
-            this.selectedItem = null;
+
+        // closeModal() {
+        //     const modalEl = document.getElementById('viewItemModal');
+        //     const modal = bootstrap.Modal.getInstance(modalEl);
+        //     if (modal) modal.hide();
+        //     this.selectedItem = null;
+        // },
+
+        editItem(item) {
+            this.$router.push({
+                name: 'admin.customers.edit',
+                params: { id: item.id }
+            });
         },
-        editItem(item) { console.log('Edit', item); },
+
         deleteItem(item) {
             Swal.fire({
                 title: 'هل أنت متأكد من الحذف؟',
@@ -235,16 +281,30 @@ export default {
                 showCancelButton: true,
                 confirmButtonText: 'حذف',
                 cancelButtonText: 'إلغاء'
-            }).then(result => {
+            }).then(async result => {
                 if (result.isConfirmed) {
-                    this.items = this.items.filter(i => i.id !== item.id);
+                    if (this.useApi) {
+                        try {
+                            const token = localStorage.getItem('authToken');
+                            await axios.delete(`${this.baseUrl}/customers/${item.id}`, {
+                                headers: { 'Authorization': `Bearer ${token}` }
+                            });
+                            this.items = this.items.filter(i => i.id !== item.id);
+                            Swal.fire('تم الحذف', 'تم حذف الزبون بنجاح', 'success');
+                        } catch (err) {
+                            Swal.fire('خطأ', 'فشل في حذف الزبون', 'error');
+                        }
+                    } else {
+                        this.items = this.items.filter(i => i.id !== item.id);
+                        Swal.fire('تم الحذف', 'تم حذف الزبون محليًا', 'success');
+                    }
                 }
             });
         },
+
         prevPage() { if (this.currentPage > 1) this.currentPage--; },
         nextPage() { if (this.currentPage < this.totalPages) this.currentPage++; },
 
-        // --- Import/Export/Print ---
         importExcel(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -270,6 +330,7 @@ export default {
             };
             reader.readAsArrayBuffer(file);
         },
+
         exportExcel() {
             const ws = XLSX.utils.json_to_sheet(this.items);
             const wb = XLSX.utils.book_new();
@@ -277,6 +338,7 @@ export default {
             const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
             saveAs(new Blob([wbout], { type: "application/octet-stream" }), "Customers.xlsx");
         },
+
         exportPDF() {
             const doc = new jsPDF();
             const columns = this.visibleFields.map(f => ({ header: f.name, dataKey: f.key }));
@@ -286,6 +348,7 @@ export default {
             autoTable(doc, { columns, body: rows, startY: 20, styles: { fontSize: 8 }, headStyles: { fillColor: [29, 115, 66] } });
             doc.save("customers.pdf");
         },
+
         printTable() {
             const printContent = this.$el.querySelector('.table-responsive').innerHTML;
             const WinPrint = window.open('', '', 'width=900,height=650');
@@ -297,10 +360,14 @@ export default {
             WinPrint.print();
             WinPrint.close();
         }
-    }
+    },
 
+    mounted() {
+        this.fetchItems();
+    }
 };
 </script>
+
 
 <style>
 .header th {

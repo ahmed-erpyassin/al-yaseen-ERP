@@ -6,6 +6,8 @@ import OutgoingOrdersComponent from "@/components/admin/purchases/outgoingOrders
 import PurchaseReturnInvoiceComponent from "@/components/admin/purchases/purchaseReferenceInvoices/PurchaseReturnInvoiceComponent.vue";
 import PurchasesInvoiceComponent from "@/components/admin/purchases/purchaseInvoices/PurchasesInvoiceComponent.vue";
 import SuplliersComponent from "@/components/admin/purchases/suppliers/SuplliersComponent.vue";
+import CreateSupplierComponent from "@/components/admin/purchases/suppliers/CreateSupplierComponent.vue";
+import ShowSupplierComponent from "@/components/admin/purchases/suppliers/ShowSupplierComponent.vue";
 import IncomingShipmentComponent from "@/components/admin/purchases/incomingShipments/incomingShipmentComponent.vue";
 
 export default [
@@ -13,6 +15,14 @@ export default [
         path: "/suppliers",
         component : SuplliersComponent,
         name: "admin.purchase.suppliers"
+    },{
+        path: "/suppliers-create",
+        component : CreateSupplierComponent,
+        name: "admin.purchase.suppliers.create"
+    },{
+        path: "/suppliers-details",
+        component : ShowSupplierComponent,
+        name: "admin.purchase.suppliers.details"
     },{
         path: "/incoming-offers",
         component : IncomingOffersComponent,

@@ -86,7 +86,7 @@
         <!-- أزرار الصفحات -->
         <div class="d-flex justify-content-between align-items-center mt-3">
             <button class="btn btn-secondary" @click="prevPage" :disabled="currentPage === 1">{{ $t('buttons.previous')
-                }}</button>
+            }}</button>
             <span>{{ $t('label.page') }} {{ currentPage }} {{ $t('label.of') }} {{ totalPages }}</span>
             <button class="btn btn-secondary" @click="nextPage" :disabled="currentPage === totalPages">{{
                 $t('buttons.next') }}</button>
@@ -126,7 +126,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" @click="closeModal">{{ $t('buttons.close')
-                            }}</button>
+                        }}</button>
                     </div>
                 </div>
             </div>
@@ -189,6 +189,7 @@ export default {
     data() {
         return {
             isLoading: true,
+            useApi: true, // ضع false لاستخدام بيانات وهمية
             searchQuery: '',
             currentPage: 1,
             perPage: 10,
@@ -212,9 +213,7 @@ export default {
         filteredItems() {
             if (!this.searchQuery) return this.items;
             const q = this.searchQuery.toLowerCase();
-            return this.items.filter(i =>
-                (i.name || '').toLowerCase().includes(q)
-            );
+            return this.items.filter(i => (i.name || '').toLowerCase().includes(q));
         },
         paginatedItems() {
             const start = (this.currentPage - 1) * this.perPage;
@@ -227,23 +226,40 @@ export default {
     methods: {
         async fetchItems() {
             this.isLoading = true;
-            try {
-                const response = await axios.get('{{baseUrl}}/api/v1/items/inventory-all', {
-                    params: { type: 'product', per_page: 100 }
-                });
-                this.items = response.data.data || response.data; // حسب رد السيرفر
-            } catch (err) {
-                console.error(err);
-                Swal.fire('خطأ', 'تعذر جلب الأصناف', 'error');
-            } finally {
-                this.isLoading = false;
+
+            if (this.useApi) {
+                try {
+                    const res = await axios.get('/items/inventory-all', {
+                        params: { type: 'product', per_page: 100 }
+                    });
+                    this.items = res.data.data || res.data;
+                } catch (err) {
+                    console.error(err);
+                    Swal.fire('خطأ', 'تعذر جلب الأصناف من الـ API، سيتم استخدام بيانات وهمية', 'warning');
+                    this.loadDummyItems();
+                } finally {
+                    this.isLoading = false;
+                }
+            } else {
+                this.loadDummyItems();
             }
         },
+        loadDummyItems() {
+            this.items = Array.from({ length: 20 }, (_, i) => ({
+                id: i + 1,
+                name: `Item ${i + 1}`,
+                quantity: Math.floor(Math.random() * 100),
+                unit_name: ["pcs", "kg", "ltr"][i % 3],
+                category_name: ["Electronics", "Food", "Clothing"][i % 3],
+                stock_tracking: i % 2 === 0
+            }));
+            this.isLoading = false;
+        },
         viewItem(item) {
-            this.selectedItem = item;
-            const modalEl = document.getElementById('viewItemModal');
-            const modal = new bootstrap.Modal(modalEl);
-            modal.show();
+            this.$router.push({
+                name: 'admin.warehouses.items.details',
+                query: { id: item.id }
+            });
         },
         closeModal() {
             const modalEl = document.getElementById('viewItemModal');
@@ -261,11 +277,17 @@ export default {
         },
         async saveItemEdit() {
             try {
-                const item = this.editModal.item;
-                const res = await axios.put(`{{baseUrl}}/api/v1/items/modify-item/${item.id}`, item);
-                const index = this.items.findIndex(i => i.id === res.data.id);
-                if (index !== -1) this.items[index] = res.data;
-                Swal.fire('تم التعديل', 'تم تعديل الصنف بنجاح', 'success');
+                if (this.useApi) {
+                    const item = this.editModal.item;
+                    const res = await axios.put(`{{baseUrl}}/api/v1/items/modify-item/${item.id}`, item);
+                    const index = this.items.findIndex(i => i.id === res.data.id);
+                    if (index !== -1) this.items[index] = res.data;
+                    Swal.fire('تم التعديل', 'تم تعديل الصنف بنجاح', 'success');
+                } else {
+                    const index = this.items.findIndex(i => i.id === this.editModal.item.id);
+                    if (index !== -1) this.items[index] = { ...this.editModal.item };
+                    Swal.fire('تم التعديل', 'تم تعديل الصنف بنجاح (وهمي)', 'success');
+                }
                 this.closeEditModal();
             } catch (err) {
                 console.error(err);
@@ -281,13 +303,18 @@ export default {
                 cancelButtonText: 'إلغاء'
             });
             if (result.isConfirmed) {
-                try {
-                    await axios.delete(`{{baseUrl}}/api/v1/items/discard-item/${item.id}`);
+                if (this.useApi) {
+                    try {
+                        await axios.delete(`{{baseUrl}}/api/v1/items/discard-item/${item.id}`);
+                        this.items = this.items.filter(i => i.id !== item.id);
+                        Swal.fire('تم الحذف', 'تم حذف الصنف بنجاح', 'success');
+                    } catch (err) {
+                        console.error(err);
+                        Swal.fire('خطأ', 'تعذر حذف الصنف', 'error');
+                    }
+                } else {
                     this.items = this.items.filter(i => i.id !== item.id);
-                    Swal.fire('تم الحذف', 'تم حذف الصنف بنجاح', 'success');
-                } catch (err) {
-                    console.error(err);
-                    Swal.fire('خطأ', 'تعذر حذف الصنف', 'error');
+                    Swal.fire('تم الحذف', 'تم حذف الصنف بنجاح (وهمي)', 'success');
                 }
             }
         },

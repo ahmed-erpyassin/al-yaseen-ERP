@@ -178,7 +178,7 @@ export default {
             this.isLoading = true;
             if (this.useApi) {
                 try {
-                    const res = await axios.get('{{baseUrl}}/api/v1/documents');
+                    const res = await axios.get(`/documents`);
                     this.documents = res.data.data || res.data;
                 } catch (err) {
                     console.error(err);

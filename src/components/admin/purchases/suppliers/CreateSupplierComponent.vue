@@ -177,7 +177,7 @@ const cancelForm = () => {
         confirmButtonText: t('buttons.yes_cancel'),
         cancelButtonText: t('buttons.no')
     }).then((result) => {
-        if (result.isConfirmed) router.push({ name: 'admin.suppliers' });
+        if (result.isConfirmed) router.push({ name: 'admin.purchase.suppliers' });
     });
 };
 </script>
