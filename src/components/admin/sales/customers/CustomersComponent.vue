@@ -166,7 +166,7 @@ export default {
     data() {
         return {
             baseUrl: process.env.VUE_APP_API_BASE_URL,
-            useApi: false, // true = استخدام API، false = بيانات وهمية
+            useApi: true, // true = استخدام API، false = بيانات وهمية
             isLoading: false,
             searchQuery: "",
             currentPage: 1,

@@ -1,5 +1,6 @@
 import AccountsListComponent from "@/components/admin/accounting/accounts/AccountsListComponent.vue";
 import CreateAccountComponent from "@/components/admin/accounting/accounts/CreateAccountComponent.vue";
+import EditAccountComponent from "@/components/admin/accounting/accounts/EditAccountComponent.vue";
 import AssetsComponent from "@/components/admin/accounting/assets/AssetsComponent.vue";
 import CreateAssetComponent from "@/components/admin/accounting/assets/CreateAssetComponent.vue";
 import BalanceSheetComponent from "@/components/admin/accounting/balanceSheet/BalanceSheetComponent.vue";
@@ -37,6 +38,11 @@ export default [
             path: ":id",
             component: ShowAccountsListComponent,
             name: "admin.accounting.accounts.show",
+            props: true,
+          },{
+            path: ":id/edit",
+            component: EditAccountComponent,
+            name: "admin.accounting.accounts.edit",
             props: true,
           },
         ],

@@ -8,12 +8,6 @@
                     <p class="text-center fs-5 fw-bold mt-3 mb-5">{{ $t('label.login_now') }}</p>
                 </div>
 
-                <!-- ✅ رسالة نجاح عند التسجيل -->
-                <div class="alert alert-success" v-if="successMsg">{{ successMsg }}</div>
-
-                <!-- ❌ رسالة خطأ عامة -->
-                <div class="alert alert-danger" v-if="errorMsg">{{ errorMsg }}</div>
-
                 <div class="mb-3 position-relative">
                     <label for="email" class="form-label">{{ $t('label.email') }}</label>
                     <div class="position-relative group">
@@ -21,7 +15,6 @@
                             placeholder="yassin2029@gmail.com" />
                         <i class="bi bi-envelope"></i>
                     </div>
-                    <p class="form-text text-danger" v-if="errors.email">{{ errors.email[0] }}</p>
                 </div>
 
                 <div class="mb-3 mt-4 position-relative">
@@ -31,7 +24,6 @@
                             placeholder="******" />
                         <i class="bi bi-lock"></i>
                     </div>
-                    <p class="form-text text-danger" v-if="errors.password">{{ errors.password[0] }}</p>
                 </div>
 
                 <div class="d-flex align-items-center justify-content-between mb-3">
@@ -73,6 +65,7 @@
 import LogoComponent from '../components/LogoComponent.vue';
 import LoadingComponent from '@/components/components/LoadingComponent.vue';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 export default {
     name: "LoginComponent",
@@ -85,33 +78,36 @@ export default {
                 password: '',
                 remember: false,
             },
-            errors: {},
-            errorMsg: null,
-            successMsg: null,
         };
     },
     mounted() {
         if (this.$route.query.registered) {
-            this.successMsg = "تم التسجيل بنجاح، الرجاء التحقق من بريدك الإلكتروني.";
+            Swal.fire({
+                icon: 'success',
+                title: 'تم التسجيل بنجاح',
+                text: 'الرجاء التحقق من بريدك الإلكتروني',
+                timer: 3000,
+                showConfirmButton: false
+            });
         }
     },
     methods: {
         async login() {
-            // ✅ إعادة تهيئة الأخطاء والرسائل
-            this.errors = {};
-            this.errorMsg = null;
-            this.successMsg = null;
+            this.isLoading = true;
 
-            // ✅ تحقق من تعبئة الحقول قبل الإرسال
+            // تحقق من تعبئة الحقول
             if (!this.form.email || !this.form.password) {
-                this.errorMsg = "الرجاء تعبئة البريد الإلكتروني وكلمة المرور";
+                this.isLoading = false;
+                Swal.fire('خطأ', 'الرجاء تعبئة البريد الإلكتروني وكلمة المرور', 'error');
                 return;
             }
 
-            this.isLoading = true;
-
             try {
-                const response = await axios.post('/auth/login', this.form, {
+                const payload = new FormData();
+                payload.append('email', this.form.email);
+                payload.append('password', this.form.password);
+
+                const response = await axios.post('https://alyaseenerp.com/api/v1/auth/login?lang=ar', payload, {
                     headers: {
                         'Accept': 'application/json',
                         'Accept-Language': 'ar'
@@ -119,54 +115,52 @@ export default {
                 });
 
                 this.isLoading = false;
-
                 const { token, user, message } = response.data;
 
                 if (token && user) {
-                    // ✅ تخزين التوكن والبيانات في localStorage
                     localStorage.setItem('authToken', token);
                     localStorage.setItem('authStatus', 'true');
                     localStorage.setItem('authUser', JSON.stringify(user));
-
-                    // ✅ تفعيل Remember Me
                     if (this.form.remember) {
                         localStorage.setItem('rememberMe', 'true');
                     } else {
                         localStorage.removeItem('rememberMe');
                     }
 
-                    // ✅ التحقق من OTP
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'تم تسجيل الدخول بنجاح',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+
                     if (user.otp_expires_at) {
                         this.$router.push({ name: "auth.otp", params: { token } });
                     } else {
                         this.$router.push("/admin");
                     }
                 } else {
-                    this.errorMsg = message || "فشل تسجيل الدخول";
+                    Swal.fire('خطأ', message || "فشل تسجيل الدخول", 'error');
                 }
+
             } catch (err) {
                 this.isLoading = false;
-
-                console.log("Axios error:", err);
-
                 if (err.response) {
-                    // الأخطاء من السيرفر
-                    if (err.response.status === 422) {
-                        this.errors = err.response.data.errors;
-                    } else if (err.response.status === 401) {
-                        this.errorMsg = err.response.data.message || "بيانات الدخول غير صحيحة";
-                    } else if (err.response.status === 403) {
-                        this.errorMsg = err.response.data.message || "يرجى التحقق من OTP قبل تسجيل الدخول";
+                    const status = err.response.status;
+                    if (status === 422) {
+                        Swal.fire('خطأ', 'الرجاء التأكد من تعبئة الحقول بشكل صحيح', 'error');
+                    } else if (status === 401) {
+                        Swal.fire('خطأ', 'المستخدم غير موجود أو كلمة المرور خاطئة', 'error');
+                    } else if (status === 403) {
+                        Swal.fire('تنبيه', 'يرجى التحقق من OTP قبل تسجيل الدخول', 'warning');
                         this.$router.push({ name: "auth.otp" });
                     } else {
-                        this.errorMsg = "حدث خطأ ما، حاول مرة أخرى";
+                        Swal.fire('خطأ', 'حدث خطأ ما، حاول مرة أخرى', 'error');
                     }
                 } else if (err.request) {
-                    // لم يصل الرد من السيرفر
-                    this.errorMsg = "تعذر الاتصال بالخادم";
+                    Swal.fire('خطأ', 'تعذر الاتصال بالخادم', 'error');
                 } else {
-                    // أخطاء في إعداد الطلب
-                    this.errorMsg = "حدث خطأ ما، حاول مرة أخرى";
+                    Swal.fire('خطأ', 'حدث خطأ ما، حاول مرة أخرى', 'error');
                 }
             }
         }

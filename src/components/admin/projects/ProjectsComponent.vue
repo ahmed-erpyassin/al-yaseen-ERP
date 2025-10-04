@@ -144,7 +144,7 @@ export default {
             perPage: 10,
             selectedProject: null,
             projects: [],
-            useApi: false, // true = استخدام API, false = بيانات وهمية
+            useApi: true, // true = استخدام API, false = بيانات وهمية
             table: {
                 fields: [
                     { name: 'ID', key: 'id', status: true },
@@ -187,7 +187,7 @@ export default {
                 // جلب البيانات من API
                 try {
                     const token = localStorage.getItem('authToken');
-                    const res = await axios.get(`${this.baseUrl}/projects/browse-all/`, {
+                    const res = await axios.get('/projects/browse-all/', {
                         headers: {
                             'Authorization': `Bearer ${token}`,
                             'Accept': 'application/json',

@@ -74,7 +74,7 @@ export default {
     data() {
         return {
             isLoading: true,
-            useApi: false, // ضع false لتجربة بيانات وهمية
+            useApi: true, // ضع false لتجربة بيانات وهمية
             searchQuery: '',
             currentPage: 1,
             perPage: 10,
@@ -117,21 +117,31 @@ export default {
             this.isLoading = true;
 
             if (this.useApi) {
-                const baseUrl = process.env.VUE_APP_API_BASE_URL;
-                const token = localStorage.getItem('token');
-
                 try {
-                    const res = await axios.get(`${baseUrl}/api/v1/suppliers/list`, {
+                    const token = localStorage.getItem('authToken'); // تأكد أن التوكن محفوظ في localStorage
+                    console.log('authToken:', token);
+                    // const baseUrl = process.env.VUE_APP_API_BASE_URL; // قاعدة API من .env
+
+                    // طلب API كامل
+                    const res = await axios.get("/suppliers/list", {
                         headers: {
                             Authorization: `Bearer ${token}`,
-                            'Content-Type': 'application/json',
-                            Accept: 'application/json'
-                        }
+                            "Content-Type": "application/json",
+                            Accept: "application/json",
+                        },
                     });
+
+
+                    // تعيين البيانات
                     this.suppliers = res.data.data || res.data;
                 } catch (err) {
-                    console.error(err);
-                    Swal.fire('Error', 'Failed to fetch suppliers', 'error');
+                    console.error('Fetch suppliers error:', err);
+
+                    if (err.response && err.response.status === 401) {
+                        Swal.fire('Unauthorized', 'تأكد من تسجيل الدخول أو صلاحية التوكن', 'error');
+                    } else {
+                        Swal.fire('Error', 'فشل في جلب بيانات الموردين', 'error');
+                    }
                 } finally {
                     this.isLoading = false;
                 }
