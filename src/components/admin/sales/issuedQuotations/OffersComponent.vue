@@ -162,7 +162,7 @@ export default {
             if (this.useApi) {
                 try {
                     const token = localStorage.getItem('authToken');
-                    const res = await axios.get(`${this.baseUrl}/offers`, {
+                    const res = await axios.get('/sales-management/outgoing-offers/list-all', {
                         headers: { Authorization: `Bearer ${token}` }
                     });
                     this.items = (res.data.data || []).map((o, i) => ({

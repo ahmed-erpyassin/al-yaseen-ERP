@@ -2,18 +2,13 @@
     <div class="container pe-5 ps-5">
         <h1><i class="bi bi-image"></i>{{ $t('label.company_undefined') }}</h1>
 
-        <div class="d-flex align-items-center justify-content-end">
-            <button class="btn btn-lg btn-outline-secondary me-3">{{ $t('buttons.cancel') }}</button>
-            <div class="dropdown">
-                <button class="btn btn-lg btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                    aria-expanded="false">
-                    {{ $t('buttons.save') }}
-                </button>
-                <ul class="dropdown-menu bg-main text-light">
-                    <li><a class="dropdown-item" href="#">{{ $t('buttons.save&email') }}</a></li>
-                    <li><a class="dropdown-item" href="#">{{ $t('buttons.save&print') }}</a></li>
-                </ul>
-            </div>
+        <div class="d-flex align-items-center justify-content-end mb-4">
+            <button type="button" class="btn btn-lg btn-outline-secondary me-3">
+                {{ $t('buttons.cancel') }}
+            </button>
+            <button type="button" class="btn btn-lg btn-success">
+                {{ $t('buttons.save') }}
+            </button>
         </div>
 
         <form class="form">
@@ -93,7 +88,7 @@
                     <div class="item mb-4">
                         <div class="mb-3 position-relative">
                             <label for="licensed_operator" class="form-label">{{ $t('label.licensed_operator')
-                            }}</label>
+                                }}</label>
                             <input type="text" id="licensed_operator" class="form-control rounded-1" />
                         </div>
                     </div>

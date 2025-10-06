@@ -65,6 +65,7 @@ export default {
                     icon: 'bi bi-house',
                     items: [
                         { label: 'aside.chart_of_accounts', to: { name: 'admin.account-list' }, icon: 'bi bi-list-columns' },
+                        { label: 'aside.branches', to: { name: 'admin.branches' }, icon: 'bi bi bi-building' },
                         { label: 'label.exchange_rates', to: { name: 'admin.currency-rates' }, icon: 'bi bi-currency-exchange' },
                         { label: 'label.currency_rates_from_internet', to: { name: 'admin.currency-rates-from-internet' }, icon: 'bi bi-cloud-arrow-down' },
                         { label: 'label.banks', to: { name: 'admin.banks' }, icon: 'bi bi-bank' },

@@ -3,10 +3,6 @@
         <h1><i class="bi bi-image"></i> {{ $t('label.company_undefined') }}</h1>
         <div class="d-flex align-items-center justify-content-end">
             <router-link :to="{ name: 'admin.new-sales-return-invoice' }" class="btn btn-lg btn-main me-3">{{ $t('buttons.create') }}</router-link>
-            <button class="btn btn-lg btn-outline-danger" type="button">
-                {{ $t('buttons.delete') }}
-            </button>
-
         </div>
         <div class="row">
             <div class="col-12">

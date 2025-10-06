@@ -15,6 +15,7 @@
         <form @submit.prevent="saveForm">
             <h3>{{ t('label.supplier_information') }}</h3>
             <div class="row mt-4">
+
                 <!-- Supplier Type -->
                 <div class="col-12 mb-4">
                     <label class="form-label">{{ t('label.supplier_type') }}</label>
@@ -36,7 +37,17 @@
                 <div class="col-md-3" v-for="(field, index) in supplierFields" :key="index">
                     <div class="mb-3 position-relative">
                         <label :for="field.id" class="form-label">{{ t(field.label) }}</label>
-                        <input :type="field.type" :id="field.id" class="form-control rounded-1"
+
+                        <!-- تحويل company_name لقائمة منسدلة -->
+                        <select v-if="field.model === 'company_name'" :id="field.id" class="form-control rounded-1"
+                            v-model="form.company_name">
+                            <option value="">{{ t('label.select_company') }}</option>
+                            <option v-for="company in companies" :key="company.id" :value="company.name">{{ company.name
+                            }}</option>
+                        </select>
+
+                        <!-- باقي الحقول تبقى إدخال نص -->
+                        <input v-else :type="field.type" :id="field.id" class="form-control rounded-1"
                             v-model="form[field.model]" />
                     </div>
                 </div>
@@ -54,61 +65,81 @@
                     </div>
                 </div>
 
-                <!-- Currency & Email -->
-                <div class="col-md-12 mb-4">
-                    <div class="mb-3 position-relative">
-                        <label for="currency" class="form-label">{{ t('label.currency') }}</label>
-                        <select id="currency" class="form-control" v-model="form.currency">
-                            <option value="USD">$ USD</option>
-                            <option value="EUR">€ EUR</option>
-                        </select>
-                    </div>
+                <!-- Company & Branch -->
+                <div class="col-md-6 mb-4">
+                    <label for="company_id" class="form-label">{{ t('label.company') }}</label>
+                    <select id="company_id" class="form-control" v-model="form.company_id">
+                        <option value="">{{ t('label.select_company') }}</option>
+                        <option v-for="company in companies" :key="company.id" :value="company.id">{{ company.name }}
+                        </option>
+                    </select>
                 </div>
 
-                <div class="col-md-12 mb-4">
-                    <div class="mb-3 position-relative">
-                        <label for="email" class="form-label">{{ t('label.email') }}</label>
-                        <input type="email" id="email" class="form-control rounded-1" v-model="form.email"
-                            placeholder="example@gmail.com" />
-                    </div>
+                <div class="col-md-6 mb-4">
+                    <label for="branch_id" class="form-label">{{ t('label.branch') }}</label>
+                    <select id="branch_id" class="form-control" v-model="form.branch_id">
+                        <option value="">{{ t('label.select_branch') }}</option>
+                        <option v-for="branch in branches" :key="branch.id" :value="branch.id">{{ branch.name }}
+                        </option>
+                    </select>
+                </div>
+
+                <!-- Status -->
+                <div class="col-md-6 mb-4">
+                    <label for="status" class="form-label">{{ t('label.status') }}</label>
+                    <select id="status" class="form-control" v-model="form.status">
+                        <option value="">{{ t('label.select_status') }}</option>
+                        <option value="active">{{ t('label.active') }}</option>
+                        <option value="inactive">{{ t('label.inactive') }}</option>
+                    </select>
+                </div>
+
+                <!-- Currency -->
+                <div class="col-md-6 mb-4">
+                    <label for="currency" class="form-label">{{ t('label.currency') }}</label>
+                    <select id="currency" class="form-control" v-model="form.currency">
+                        <option value="USD">$ USD</option>
+                        <option value="EUR">€ EUR</option>
+                    </select>
+                </div>
+
+                <!-- Email -->
+                <div class="col-md-6 mb-4">
+                    <label for="email" class="form-label">{{ t('label.email') }}</label>
+                    <input type="email" id="email" class="form-control rounded-1" v-model="form.email"
+                        placeholder="example@gmail.com" />
                 </div>
 
                 <!-- Notes -->
                 <div class="col-md-12 mb-4">
-                    <div class="mb-3 position-relative">
-                        <label for="notes" class="form-label">{{ t('label.notes') }}</label>
-                        <textarea id="notes" rows="3" class="form-control" v-model="form.notes"></textarea>
-                    </div>
+                    <label for="notes" class="form-label">{{ t('label.notes') }}</label>
+                    <textarea id="notes" rows="3" class="form-control" v-model="form.notes"></textarea>
                 </div>
 
-                <!-- Attachments -->
-                <div class="col-md-12 mb-4">
-                    <div class="mb-3 position-relative">
-                        <label class="form-label">{{ t('label.attachments') }}</label>
-                        <div class="box-attachments d-flex align-items-center justify-content-center"
-                            @click="$refs.attachmentsInput.click()">
-                            <div class="text-center">
-                                <i class="bi bi-image"></i>
-                                <p class="small">{{ t('label.drop_file_here') }}</p>
-                            </div>
-                        </div>
-                        <input type="file" ref="attachmentsInput" @change="handleFileUpload" multiple
-                            style="display:none;">
-                    </div>
-                </div>
             </div>
         </form>
     </div>
 </template>
 
 <script setup>
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
 import Swal from 'sweetalert2';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
+import axios from 'axios';
 
 const router = useRouter();
 const { t } = useI18n();
+
+const companies = ref([
+    { id: 1, name: 'Company A' },
+    { id: 2, name: 'Company B' }
+]);
+
+const branches = ref([
+    { id: 1, name: 'Branch A' },
+    { id: 2, name: 'Branch B' }
+]);
 
 const form = reactive({
     supplier_type: '',
@@ -126,11 +157,14 @@ const form = reactive({
     licensed_operator: '',
     code: '',
     invoice_type: '',
+    category: '',
     currency: 'USD',
     email: '',
-    category: '',
     notes: '',
-    attachments: []
+    // attachments: [],
+    company_id: '',
+    branch_id: '',
+    status: ''
 });
 
 const supplierFields = [
@@ -154,18 +188,49 @@ const accountFields = [
     { id: 'category', label: 'label.category', model: 'category', type: 'text' }
 ];
 
-const handleFileUpload = (event) => {
-    form.attachments.push(...Array.from(event.target.files));
-};
+// const handleFileUpload = (event) => {
+//     form.attachments.push(...Array.from(event.target.files));
+// };
 
-const saveForm = () => {
-    Swal.fire({
-        icon: 'success',
-        title: t('messages.saved_title'),
-        text: t('messages.saved_text'),
-        timer: 2000,
-        showConfirmButton: false
-    });
+const saveForm = async () => {
+    if (!form.supplier_type || !form.company_id || !form.branch_id || !form.status) {
+        Swal.fire('Error', 'Please fill all required fields', 'error');
+        return;
+    }
+
+    try {
+        const token = localStorage.getItem('authToken');
+        const formData = new FormData();
+
+        for (const key in form) {
+            if (key === 'attachments') {
+                form.attachments.forEach(file => formData.append('attachments[]', file));
+            } else {
+                formData.append(key, form[key]);
+            }
+        }
+
+        await axios.post('/suppliers/', formData, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+
+        Swal.fire({
+            icon: 'success',
+            title: t('messages.saved_title'),
+            text: t('messages.saved_text'),
+            timer: 2000,
+            showConfirmButton: false
+        });
+
+        router.push({ name: 'admin.purchase.suppliers' });
+
+    } catch (err) {
+        console.error('Create supplier error:', err.response?.data);
+        Swal.fire('Error', err.response?.data?.message || 'Failed to create supplier', 'error');
+    }
 };
 
 const cancelForm = () => {

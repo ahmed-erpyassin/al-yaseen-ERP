@@ -252,7 +252,10 @@ export default {
             this.selectedItem = null;
         },
         editItem(item) {
-            console.log("Editing account:", item);
+            this.$router.push({
+                name: 'admin.account-edit',
+                params: { id: item.id }
+            });
         },
         deleteItem(item) {
             Swal.fire({

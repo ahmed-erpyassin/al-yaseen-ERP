@@ -119,11 +119,11 @@ export default {
             if (this.useApi) {
                 try {
                     const token = localStorage.getItem('authToken'); // تأكد أن التوكن محفوظ في localStorage
-                    console.log('authToken:', token);
+                    // console.log('authToken:', token);
                     // const baseUrl = process.env.VUE_APP_API_BASE_URL; // قاعدة API من .env
 
                     // طلب API كامل
-                    const res = await axios.get("/suppliers/list", {
+                    const res = await axios.get('/suppliers/list', {
                         headers: {
                             Authorization: `Bearer ${token}`,
                             "Content-Type": "application/json",

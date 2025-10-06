@@ -77,7 +77,7 @@
                 </div>
                 <div class="mb-3 mt-4 position-relative">
                     <label for="password_confirmtion" class="form-label">{{ $t('label.password_confirmtion')
-                    }}</label>
+                        }}</label>
                     <div class=" position-relative group">
 
                         <input type="password" id="password_confirmtion" class="form-control rounded-0"
@@ -153,22 +153,14 @@ export default {
             this.$store.dispatch('auth/register', this.form).then(res => {
 
                 if (res.status === 201) {
+                    // بدل التوجيه لصفحة تسجيل الدخول، نوجه لصفحة إنشاء الشركة
                     this.$router.push({
-                        name: "auth.login",
+                        name: "auth.create-company",
                         query: { registered: true }
                     });
                 } else {
                     alert(res.data.message);
                 }
-
-                // if (res.data.success) {
-                //     localStorage.setItem('accessToken', res.data.token); // save token
-                //     this.$router.push({
-                //         name: "auth.create-company"
-                //     });
-                // } else {
-                //     alert(res.data.message);
-                // }
 
             }).catch(err => {
                 if (err.response && err.response.status === 422) {
@@ -179,6 +171,7 @@ export default {
             });
         },
     },
+
 };
 </script>
 

@@ -101,6 +101,7 @@ const requireAuth = (to, from, next) => {
   if (authStatus && authToken && (to.name === "auth.login" || to.name === "auth.register")) {
     return next({ name: "admin.dashboard" });
   }
+
   next();
 };
 

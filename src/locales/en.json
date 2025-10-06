@@ -18,7 +18,8 @@
     "purchases": "Purchases",
     "receipts_and_payments": "Receipts and Payments",
     "projects": "Projects",
-    "cheques": "Cheques"
+    "cheques": "Cheques",
+    "branches":"Branches"
   },
   "breadcrumb": {
     "sales": "Sales",
@@ -51,8 +52,18 @@
     "search_account": "Search for account",
     "supplier_information": "Supplier Information",
     "supplier_type": "Supplier Type",
-
-    "edit": "Edit",
+    "company": "Company",
+    "search_branch": "Search branch...",
+    "branches_count": "Branches",
+    "users_count": "Users",
+    "stores_count": "Stores",
+    "branch_name": "Branch Name",
+    "manager": "Manager",
+    "currency": "Currency",
+    "city": "City",
+    "country": "Country",
+    "status": "Status",
+    "actions": "Actions",
     "notebook": "Notebook",
     "invoice_no": "Invoice Number",
     "date": "Date",
@@ -234,16 +245,13 @@
     "account_opening_information": "Account opening information",
     "account_opening_date": "Account opening date",
     "account_created_by": "Account created by",
-
     "linking_accounts": "Linking accounts",
     "follows_account": "Follows Account",
-
     "depreciation_linkage": "Depreciation linkage",
     "account_linked": "Account linked",
     "depreciation_account": "Depreciation account",
     "consumption_rate": "Consumption rate",
     "declining_depreciation": "declining depreciation",
-
     "accumulated_depreciation_account_classification": "Accumulated Depreciation Account Classification",
     "not_a_depreciation_account": "Not a depreciation account",
     "accumulated_depreciation_to_profit_and_loss": "Accumulated Depreciation Account - Asset accounts are transferred to the profit and loss account.",
@@ -373,7 +381,6 @@
     "debit_credit": "Debit / Credit",
     "debit": "Debit",
     "credit": "Credit",
-
     "general_budget": "General Budget",
     "profits_losses": "Profits and Losses",
     "inventory": "Inventory",
@@ -382,11 +389,9 @@
     "balance_sheet_support": "Balance Sheet Support",
     "agent_balance": "Agent / Distributors",
     "project": "Project",
-
     "main": "Main",
     "sub": "Sub",
     "detailed": "Detailed",
-
     "budget": "Budget",
     "income_statement": "Income Statement",
     "account_opened": "Account Opened",
@@ -584,6 +589,7 @@
     "add_funder": "Add Funder",
     "file_open_start": "Start of File Opening",
     "active": "Active",
+    "inactive": "In Active",
     "assets": "Assets",
     "asset_number": "Asset Number",
     "asset_details": "Asset Details",
@@ -597,7 +603,6 @@
     "add_asset": "Add Asset",
     "asset_account": "Asset Account",
     "location": "Location",
-
     "invoice_number": "Invoice Number",
     "supplier_number": "Supplier Number",
     "depreciation": "Depreciation",
@@ -699,7 +704,6 @@
     "catalog_number": "Catalog number",
     "item_detail": "Item detail",
     "default_warehouse": "Default warehouse",
-
     "units": "Units",
     "balance_unit": "Balance unit",
     "length": "Length",
@@ -712,7 +716,6 @@
     "third_unit": "Third unit",
     "third_unit_item_number": "Third unit item number",
     "dealing_unit": "Dealing unit",
-
     "buying_selling_prices": "Buying and selling prices",
     "first_selling_price": "First selling price",
     "second_selling_price": "Second selling price",
@@ -721,19 +724,16 @@
     "max_discount_percentage": "Highest discount rate when selling",
     "min_price": "Lowest allowed price",
     "selling_price_vat": "The mentioned selling prices include VAT.",
-
     "second_purchase_price": "Second purchase price",
     "third_purchase_price": "Third purchase price",
     "purchase_discount_percentage": "Discount percentage when purchasing",
     "purchase_price_vat": "The mentioned purchase prices include VAT.",
     "item_subject_to_vat": "The item is subject to VAT.",
-
     "other_info": "Other information",
     "barcode": "Barcode",
     "expire_date": "Expire date",
     "add_image": "Add item image",
     "category_type": "Category type",
-
     "category_service": "Service",
     "category_goods": "Goods",
     "category_work": "Work",
@@ -814,17 +814,13 @@
     "movement_type_transfer": "Transfer",
     "movement_type_manufacturing": "Manufacturing",
     "movement_type_adjustment": "Adjustment",
-
     "movement_description": "Movement Description",
     "reference_number": "Reference",
     "dispatch_number": "Dispatch No.",
     "movement_details": "Movement Details",
-
     "row_number": "#",
-
     "unit_name": "Unit",
     "inventory_balance": "Inventory",
-
     "unit_price": "Unit Price",
     "current_inventory_value": "Current Inventory Value",
     "group_by": "Group By",
@@ -1135,7 +1131,6 @@
     "create_journal_entry_transfer_customer_balances": "Create Journal Entry to Transfer Customer Balances",
     "copy_customer_points_balances": "Copy Customer Points Balances",
     "copy_account_points_balances": "Copy Account Points Balances",
-
     "update_suppliers": "Update Suppliers",
     "copy_supplier_notes": "Copy Supplier Notes",
     "update_supplier_notes": "Update Supplier Notes",
@@ -1143,7 +1138,6 @@
     "update_supplier_images": "Update Supplier Images",
     "create_journal_entry_transfer_supplier_balances": "Create Journal Entry to Transfer Supplier Balances",
     "copy_supplier_points_balances": "Copy Supplier Points Balances",
-
     "copy_employees": "Copy Employees",
     "update_employees": "Update Employees",
     "copy_employee_notes": "Copy Employee Notes",
@@ -1208,7 +1202,6 @@
     "switch_users": "Switch Users",
     "change_language": "Change Language",
     "identifier_number": "Identifier Number",
-
     "copy_group_data": "Copy Group Data",
     "restore_group_data": "Restore Group Data",
     "copy_accounts_from_other_group": "Copy Accounts from Another Group",
@@ -1542,6 +1535,7 @@
     "saved_text": "Formula has been saved successfully",
     "error_fetching_rates": "Error fetching currency rates",
     "invalid_api_response": "Invalid response from API",
+    "copied": "Branch copied successfully",
     "failed_fetch": "Failed to fetch warehouse movements",
     "network_error": "Network error",
     "cancel_title": "Are you sure?",
@@ -1557,7 +1551,6 @@
     "customer_load_failed": "Failed to load customer data.",
     "customer_not_found": "Customer not found.",
     "confirm_delete_customer": "Are you sure you want to delete this customer?",
-
     "quotation_created_successfully": "Offer created successfully!",
     "quotation_creation_failed": "Failed to create offer. Please try again.",
     "quotation_updated_successfully": "Offer updated successfully!",
@@ -1573,7 +1566,6 @@
     "why_alyaseen": {
       "title": "• Why Choose \"Al-Yaseen ERP System\"?",
       "description": "We provide you with comprehensive and advanced accounting tools that help you manage your finances efficiently and easily, saving you time and effort.",
-
       "features": {
         "smart_accounting": {
           "title": "Smart Accounting",
@@ -1686,7 +1678,6 @@
       "description": "Start with the free trial and explore the power of our accounting system. Then choose the plan that fits your business size.",
       "pay_monthly": "Pay Monthly",
       "pay_yearly_offer": "Pay yearly and get 50% off",
-
       "free_trial": "Free Trial",
       "free_trial_sub": "Try all features for free",
       "free": "Free",
@@ -1695,7 +1686,6 @@
       "limited_features": "Limited features",
       "try_before": "Try before subscribing",
       "start_trial": "Start Free Trial",
-
       "most_popular": "Most popular",
       "basic_plan": "Basic Plan",
       "for_small": "For small institutions",
@@ -1705,10 +1695,8 @@
       "project_tracking": "Project tracking",
       "custom_roles": "Custom roles",
       "subscribe": "Subscribe Now",
-
       "medium_plan": "Medium Package",
       "for_medium": "For medium-sized companies",
-
       "advanced_plan": "Advanced Plan",
       "for_large": "For large institutions"
     },
@@ -1733,6 +1721,7 @@
     "delete": "Delete",
     "yes_cancel": "Yes, Cancel",
     "no": "No",
+    "add_branch": "Add Branch",
     "save": "Save",
     "add": "Add",
     "add_row": "Add Row",

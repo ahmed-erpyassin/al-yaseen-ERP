@@ -168,7 +168,12 @@ export default {
         totalPages() { return Math.ceil(this.filteredBanks.length / this.perPage); }
     },
     methods: {
-        editItem(bank) { console.log("Edit", bank); },
+        editItem(bank) {
+            this.$router.push({
+                name: 'admin.banks.edit',
+                params: { id: bank.id }
+            });
+        },
         deleteItem(bank) {
             Swal.fire({
                 title: 'هل أنت متأكد من الحذف؟',

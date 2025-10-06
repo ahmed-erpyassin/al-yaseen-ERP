@@ -229,124 +229,122 @@
 </template>
 
 <script>
-import NavbarLogoComponent from '../components/NavbarLogoComponent.vue'
-import 'intl-tel-input/build/css/intlTelInput.css'
-import intlTelInput from 'intl-tel-input'
-import LanguageSwitcher from '../components/LanguageSwitcher.vue'
-import Select from "vue3-select";
-import "vue3-select/dist/vue3-select.css";
-import LoadingComponent from '@/components/components/LoadingComponent.vue'
-import { useI18n } from 'vue-i18n'
+import axios from 'axios';
+import intlTelInput from 'intl-tel-input';
+import Swal from 'sweetalert2';
 
 export default {
-    name: 'RegisterCompany',
-    components: { NavbarLogoComponent, LanguageSwitcher, Select, LoadingComponent },
+    name: "RegisterCompany",
     data() {
         return {
-            isLoading: true,
-            locale: null,
             form: {
-                company_name: '',
-                commercial_registration_number: '',
+                company_name: "",
                 company_type: null,
                 work_type: null,
                 company_logo: null,
-                company_address: '',
-                email: '',
-                country_code: '',
-                phone: '',
+                company_address: "",
+                email: "",
+                country_code: "",
+                phone: "",
                 allow_emails: false,
                 income_tax_rate: 0,
                 vat_rate: 0,
                 fiscal_year: 2026,
-                from: '2026-01-01',
-                to: '2026-12-31',
+                from: "2026-01-01",
+                to: "2026-12-31",
                 currency_id: null,
             },
+            errors: [],
             iti: null,
-            errors: []
-        }
+            isLoading: false
+        };
     },
-    computed: {
-        currencies() {
-            return this.$store.getters['options/currencies'];
-        },
-        workTypes() {
-            return this.$store.getters['options/workTypes'];
-        },
-        companyTypes() {
-            return this.$store.getters['options/companyTypes'];
-        },
-    },
-    async mounted() {
-        const input = document.querySelector("#phone")
-        this.iti = intlTelInput(input, {
-            initialCountry: "PS",
-            loadUtils: () => import("intl-tel-input/build/js/utils"),
-            containerClass: 'w-100',
-        });
+    mounted() {
+        const input = document.querySelector("#phone");
+        this.iti = intlTelInput(input, { initialCountry: "PS" });
         this.form.country_code = this.iti.getSelectedCountryData().dialCode;
 
         input.addEventListener("countrychange", () => {
             this.form.country_code = this.iti.getSelectedCountryData().dialCode;
         });
-
-        const { locale } = useI18n();
-        this.locale = locale.value;
-
-        await this.$store.dispatch('options/getCurrencies');
-        await this.$store.dispatch('options/getWorkTypes');
-        await this.$store.dispatch('options/getCompanyTypes');
-
-        this.isLoading = false;
     },
     methods: {
         handleLogo(event) {
-            this.form.company_logo = event.target.files[0]
+            this.form.company_logo = event.target.files[0];
         },
-        submitForm() {
+        async submitForm() {
             this.isLoading = true;
             this.errors = [];
-            const formData = new FormData()
 
-            formData.append('company_name', this.form.company_name)
-            formData.append('commercial_registration_number', this.form.commercial_registration_number)
-            formData.append('company_type', this.form.company_type)
-            formData.append('work_type', this.form.work_type)
-            formData.append('company_logo', this.form.company_logo)
-            formData.append('company_address', this.form.company_address)
-            formData.append('email', this.form.email)
-            formData.append('country_code', this.form.country_code)
-            formData.append('phone', this.form.phone)
-            formData.append('allow_emails', this.form.allow_emails ? 1 : 0)
-            formData.append('income_tax_rate', this.form.income_tax_rate)
-            formData.append('vat_rate', this.form.vat_rate)
-            formData.append('fiscal_year', this.form.fiscal_year)
-            formData.append('from', this.form.from)
-            formData.append('to', this.form.to)
-            formData.append('currency_id', this.form.currency_id)
+            try {
+                const formData = new FormData();
+                formData.append('title', this.form.company_name);
+                formData.append('industry_id', this.form.company_type);
+                formData.append('business_type_id', this.form.work_type);
+                formData.append('country_id', 1);
+                formData.append('region_id', 1);
+                formData.append('city_id', 1);
+                formData.append('commercial_registeration_number', this.form.commercial_registration_number);
+                formData.append('address', this.form.company_address);
+                formData.append('email', this.form.email);
+                formData.append('mobile', this.form.phone);
+                formData.append('landline', this.form.landline || '');
+                formData.append('income_tax_rate', this.form.income_tax_rate);
+                formData.append('vat_rate', this.form.vat_rate);
+                formData.append('logo', this.form.company_logo);
+                formData.append('status', 'active');
 
-            this.$store.dispatch('auth/registerCompany', formData)
-                .then(res => {
-                    this.isLoading = false;
-                    if (res.data.success) {
-                        this.$router.push("/admin");
-                    } else {
-                        alert(res.data.message);
+                const token = localStorage.getItem('authToken');
+                if (!token) {
+                    Swal.fire('خطأ', 'يرجى تسجيل الدخول أولاً', 'error');
+                    this.$router.push({ name: 'auth.login' });
+                    return;
+                }
+                console.log("Auth token:", token);
+
+                const response = await axios.post(
+                    'https://alyaseenerp.com/api/v1/companies',
+                    formData,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                            'Authorization': 'Bearer ' + token,
+                            'Accept': 'application/json',
+                            'Accept-Language': 'ar'
+                        }
                     }
-                })
-                .catch(err => {
-                    this.isLoading = false;
-                    if (err.response && err.response.status === 422) {
-                        this.errors = err.response.data.errors;
-                    } else {
-                        this.errorMsg = "Something went wrong";
-                    }
-                });
-        },
+                );
+
+                if (response.data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'تم تسجيل الشركة بنجاح',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                    this.$router.push("/admin");
+                } else {
+                    Swal.fire('خطأ', response.data.message || 'حدث خطأ أثناء التسجيل', 'error');
+                }
+
+            } catch (err) {
+                if (err.response && err.response.status === 422) {
+                    this.errors = err.response.data.errors;
+                } else {
+                    Swal.fire('خطأ', 'حدث خطأ ما، حاول مرة أخرى', 'error');
+                }
+            } finally {
+                this.isLoading = false;
+            }
+        }
+
+
+
     }
-}
+
+};
 </script>
+
 
 <style scoped>
 header,

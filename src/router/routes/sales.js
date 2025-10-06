@@ -5,9 +5,12 @@ import ShowCustomerComponent from "@/components/admin/sales/customers/ShowCustom
 import DebitNoticesComponent from "@/components/admin/sales/DebitNotice/DebitNoticesComponent.vue";
 import OffersComponent from "@/components/admin/sales/issuedQuotations/OffersComponent.vue";
 import OrdersComponent from "@/components/admin/sales/incomingOrders/OrdersComponent.vue";
+import CreateOrderComponent from "@/components/admin/sales/incomingOrders/CreateOrderComponent.vue";
 import SalesInvoiceComponent from "@/components/admin/sales/selesInvoice/SalesInvoiceComponent.vue";
 import SalesReturnInvoices from "@/components/admin/sales/salesReferenceInvoices/SalesReturnInvoices.vue";
 import ServicesComponent from "@/components/admin/sales/services/ServicesComponent.vue";
+import CreateServiceComponent from "@/components/admin/sales/services/CreateServiceComponent.vue";
+import EditServiceComponent from "@/components/admin/sales/services/EditServiceComponent.vue";
 import OutgoingShipmentComponent from "@/components/admin/sales/outgoingShipments/OutgoingShipmentComponent.vue";
 
 export default [
@@ -35,6 +38,10 @@ export default [
     path: "orders",
     component: OrdersComponent,
     name: "admin.orders",
+  },{
+    path: "create/orders",
+    component: CreateOrderComponent,
+    name: "admin.orders.create",
   },
   {
     path: "shipments",
@@ -50,6 +57,14 @@ export default [
     path: "services",
     component: ServicesComponent,
     name: "admin.services",
+  },{
+    path: "services/create",
+    component: CreateServiceComponent,
+    name: "admin.services.create",
+  },{
+    path: "services/:id/edit",
+    component: EditServiceComponent,
+    name: "admin.services.edit",
   },
   {
     path: "sales-return-invoices",

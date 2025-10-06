@@ -62,54 +62,51 @@
     </div>
 </template>
 
-<script>
-import Swal from 'sweetalert2';
-export default {
-    name: "MangeCurrencyRatesComponent",
-    data() {
-        return {
-            formData: {
-                date: "",
-                day: "",
-                hour: "",
-                rates: {}
-            }
-        };
-    },
-    mounted() {
-        // جلب العملات من Vuex
-        this.$store.dispatch('options/getCurrencies').then(() => {
-            this.initForm();
-        });
-    },
-    computed: {
-        currencies() {
-            return this.$store.getters['options/currencies'] || [];
-        }
-    },
-    methods: {
-        initForm() {
-            // إعداد الـ formData للعملات
-            const newRates = {};
-            this.currencies.forEach(currency => {
-                newRates[currency.code] = this.formData.rates[currency.code] || null;
-            });
-            this.formData.rates = newRates;
-        },
-        saveRates() {
-            // مثال: هنا يمكن ربط API لحفظ البيانات
-            console.log("Saving rates:", this.formData);
-            Swal.fire({
-                icon: 'success',
-                title: 'تم الحفظ بنجاح',
-                showConfirmButton: false,
-                timer: 1500
-            });
-        }
-        ,
+<script setup>
+import { reactive, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+// i18n
+const { t } = useI18n();
+
+// Sample currencies
+const currencies = ref([
+    { code: 'USD', name_ar: 'دولار' },
+    { code: 'EUR', name_ar: 'يورو' },
+    { code: 'GBP', name_ar: 'جنيه إسترليني' }
+]);
+
+// Form data
+const formData = reactive({
+    date: '',
+    day: '',
+    hour: '',
+    rates: {}
+});
+
+// Initialize rates to zero
+currencies.value.forEach(currency => {
+    formData.rates[currency.code] = 0;
+});
+
+// Save function
+function saveRates() {
+    // Basic validation example
+    if (!formData.date || !formData.day || !formData.hour) {
+        alert(t('messages.fill_all_fields'));
+        return;
     }
-};
+
+    console.log('Form Data:', JSON.stringify(formData, null, 2));
+
+    // Here you can call your API to save rates
+    // Example:
+    // await axios.post('/api/rates', formData);
+
+    alert(t('messages.rates_saved'));
+}
 </script>
+
 
 <style>
 .header th {
