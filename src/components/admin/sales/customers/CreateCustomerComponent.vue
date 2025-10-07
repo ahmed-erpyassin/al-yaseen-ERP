@@ -132,113 +132,80 @@
     </div>
 </template>
 
-<script>
-import Swal from "sweetalert2";
-import axios from "axios";
+<script setup>
+import { reactive } from 'vue'
+import { useStore } from 'vuex'
+import Swal from 'sweetalert2'
+import { useRouter } from 'vue-router'
 
-export default {
-    name: "CustomersCreate",
-    data() {
-        return {
-            form: {
-                company_id: 1,
-                branch_id: 1,
-                currency_id: 1,
-                employee_id: 1,
-                country_id: 1,
-                region_id: 1,
-                city_id: 1,
-                customer_number: "",
-                company_name: "",
-                first_name: "",
-                second_name: "",
-                email: "",
-                phone: "",
-                mobile: "",
-                address_one: "",
-                address_two: "",
-                city: "",
-                state: "",
-                postal_code: "",
-                licensed_operator: "",
-                notes: "",
-                code: "",
-                invoice_type: "",
-                category: "",
-                client_type: "personal",
-                status: "active",
-            },
-        };
-    },
-    methods: {
-        async saveForm() {
-            try {
-                const token = localStorage.getItem("authToken");
-                if (!token) {
-                    Swal.fire("تنبيه", "يجب تسجيل الدخول أولًا", "warning");
-                    return;
-                }
+const store = useStore()
+const router = useRouter()
 
-                const headers = {
-                    Authorization: `Bearer ${token}`,
-                    Accept: "application/json",
-                    "Content-Type": "multipart/form-data",
-                };
+// ✅ بيانات النموذج
+const form = reactive({
+    company_id: 1,
+    branch_id: 1,
+    currency_id: 1,
+    employee_id: 1,
+    country_id: 1,
+    region_id: 1,
+    city_id: 1,
+    customer_number: '',
+    company_name: '',
+    first_name: '',
+    second_name: '',
+    contact_name: '',
+    email: '',
+    phone: '',
+    mobile: '',
+    address_one: '',
+    address_two: '',
+    postal_code: '',
+    licensed_operator: '',
+    tax_number: '',
+    notes: '',
+    status: 'active',
+    code: '',
+    invoice_type: '',
+    category: '',
+    client_type: 'personal'
+})
 
-                const formData = new FormData();
-                for (const key in this.form) {
-                    formData.append(key, this.form[key]);
-                }
+// ✅ حفظ العميل الجديد
+const saveForm = async () => {
+    try {
+        // 🔹 استدعاء الأكشن الصحيح من Vuex
+        await store.dispatch('customer/createCustomer', form)
 
-                await axios.post("/customers/create", formData, { headers });
-                Swal.fire("تم الحفظ", "تم إنشاء العميل بنجاح", "success");
-                this.$router.push({ name: "admin.customers" });
-            } catch (err) {
-                console.error("Server error:", err.response?.data);
+        Swal.fire({
+            icon: 'success',
+            title: 'تم الحفظ بنجاح',
+            text: 'تم إنشاء العميل الجديد بنجاح',
+            timer: 2000,
+            showConfirmButton: false
+        })
 
-                // الرسالة القادمة من السيرفر (إذا وجدت)
-                const serverMessage = err.response?.data?.message || "";
+        // 🔹 الانتقال إلى صفحة العملاء بعد الحفظ
+        router.push({ name: 'admin.customers' })
+    } catch (error) {
+        Swal.fire({
+            icon: 'error',
+            title: 'خطأ أثناء الحفظ',
+            text: error.response?.data?.message || 'فشل إنشاء العميل'
+        })
+    }
+}
 
-                let userMessage = "حدث خطأ غير متوقع أثناء حفظ العميل.";
-
-                // تحليل الأخطاء الخاصة بـ SQL أو Foreign Key
-                if (serverMessage.includes("foreign key constraint")) {
-                    userMessage = "تعذّر حفظ العميل: أحد الحقول (مثل الفرع أو الشركة) غير موجود في النظام.";
-                }
-                else if (serverMessage.includes("duplicate")) {
-                    userMessage = "يوجد عميل بنفس البيانات مُسجّل مسبقًا.";
-                }
-                else if (serverMessage.includes("SQLSTATE")) {
-                    userMessage = "حدث خطأ في قاعدة البيانات. يُرجى التحقق من البيانات المُدخلة.";
-                }
-
-                Swal.fire({
-                    icon: "error",
-                    title: "خطأ في الحفظ",
-                    text: userMessage,
-                    confirmButtonText: "موافق",
-                });
-            }
-
-        },
-        cancelForm() {
-            Swal.fire({
-                title: "هل تريد إلغاء العملية؟",
-                text: "لن يتم حفظ البيانات الحالية",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "نعم، إلغاء",
-                cancelButtonText: "لا",
-            }).then((r) => {
-                if (r.isConfirmed) this.$router.push({ name: "admin.customers" });
-            });
-        },
-    },
-};
+// ✅ إلغاء وإنهاء النموذج
+const cancelForm = () => {
+    router.push({ name: 'admin.customers' })
+}
 </script>
 
-<style scoped>
-.form-label {
-    font-weight: 600;
+
+
+<style>
+.container {
+    max-width: 900px;
 }
 </style>
