@@ -110,70 +110,137 @@
 import LogoComponent from '../components/LogoComponent.vue';
 import 'intl-tel-input/build/css/intlTelInput.css';
 import intlTelInput from 'intl-tel-input';
+import axios from 'axios';
+import Swal from 'sweetalert2';
 
 export default {
     name: "RegisterComponent",
-    components: {
-        LogoComponent
-    },
+    components: { LogoComponent },
+
     data() {
         return {
             form: {
-                first_name: null,
-                second_name: null,
-                email: null,
-                phone: null,
-                phone_country_code: null,
-                // allows_emails: false,
-                password: null,
-                password_confirmation: null,
+                first_name: "",
+                second_name: "",
+                email: "",
+                phone: "",
+                phone_country_code: "",
+                allows_emails: false,
+                password: "",
+                password_confirmation: "",
             },
-            iti: {},
+            iti: null,
             errors: [],
-            errorMsg: null
+            errorMsg: null,
+            isLoading: false,
         };
     },
+
     mounted() {
         const input = document.querySelector("#phone");
         this.iti = intlTelInput(input, {
             initialCountry: "PS",
             loadUtils: () => import("../../../../node_modules/intl-tel-input/build/js/utils"),
-            containerClass: 'w-100',
-
+            containerClass: "w-100",
         });
         this.form.phone_country_code = this.iti.getSelectedCountryData().dialCode;
 
         input.addEventListener("countrychange", () => {
             this.form.phone_country_code = this.iti.getSelectedCountryData().dialCode;
         });
-
     },
-    methods: {
-        register: function () {
-            this.$store.dispatch('auth/register', this.form).then(res => {
 
-                if (res.status === 201) {
-                    // بدل التوجيه لصفحة تسجيل الدخول، نوجه لصفحة إنشاء الشركة
-                    this.$router.push({
-                        name: "auth.create-company",
-                        query: { registered: true }
+    methods: {
+        async register() {
+            this.isLoading = true;
+            this.errors = [];
+            this.errorMsg = null;
+
+            try {
+                // 1️⃣ إرسال بيانات التسجيل
+                const registerData = new FormData();
+                registerData.append("first_name", this.form.first_name);
+                registerData.append("second_name", this.form.second_name);
+                registerData.append("email", this.form.email);
+                registerData.append("phone", this.form.phone);
+                registerData.append("phone_country_code", "+" + this.form.phone_country_code);
+                registerData.append("password", this.form.password);
+                registerData.append("password_confirmation", this.form.password_confirmation);
+
+                const res = await axios.post(
+                    "https://alyaseenerp.com/api/v1/auth/register?lang=ar",
+                    registerData,
+                    { headers: { Accept: "application/json" } }
+                );
+
+                if (res.data?.success) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "تم إنشاء الحساب بنجاح 🎉",
+                        showConfirmButton: false,
+                        timer: 1500
                     });
+
+                    // ✅ تجاوز التحقق من البريد (تجريبي)
+                    // نحفظ توكن مؤقت محليًا لتجاوز شرط تسجيل الدخول
+                    localStorage.setItem("authToken", "temp_dev_token");
+
+                    // 🟢 تحويل المستخدم مباشرة لصفحة تسجيل الشركة
+                    setTimeout(() => {
+                        this.$router.push({ name: "auth.create-company", query: { registered: true } });
+                    }, 1500);
+
                 } else {
-                    alert(res.data.message);
+                    Swal.fire("تنبيه", res.data.message || "حدث خطأ أثناء التسجيل", "warning");
                 }
 
-            }).catch(err => {
+            } catch (err) {
                 if (err.response && err.response.status === 422) {
                     this.errors = err.response.data.errors;
+                    this.errorMsg = "يرجى تصحيح الأخطاء الموضحة أدناه.";
                 } else {
-                    this.errorMsg = "Something went wrong";
+                    this.errorMsg = "حدث خطأ غير متوقع، حاول مرة أخرى.";
                 }
-            });
+            } finally {
+                this.isLoading = false;
+            }
+        },
+
+
+        // 🔐 تسجيل الدخول التلقائي
+        async autoLogin() {
+            try {
+                const loginData = new FormData();
+                loginData.append("email", this.form.email);
+                loginData.append("password", this.form.password);
+
+                const loginRes = await axios.post(
+                    "https://alyaseenerp.com/api/v1/auth/login?lang=ar",
+                    loginData,
+                    { headers: { Accept: "application/json" } }
+                );
+
+                const token = loginRes.data?.data?.access_token;
+
+                if (token) {
+                    // 🟢 حفظ التوكن وتوجيه المستخدم لتسجيل الشركة
+                    localStorage.setItem("authToken", token);
+                    this.$router.push({ name: "auth.create-company", query: { registered: true } });
+                } else {
+                    Swal.fire("تنبيه", "تم التسجيل ولكن لم يتم تسجيل الدخول تلقائيًا.", "info");
+                }
+
+            } catch (error) {
+                console.error("❌ فشل تسجيل الدخول التلقائي:", error);
+                Swal.fire("خطأ", "تم إنشاء الحساب لكن واجهنا مشكلة في تسجيل الدخول التلقائي.", "error");
+                this.$router.push({ name: "auth.login" });
+            }
         },
     },
-
 };
 </script>
+
+
 
 <style scoped>
 .form {

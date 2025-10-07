@@ -1,95 +1,49 @@
 <template>
     <div class="container pe-5 ps-5">
-        <h1><i class="bi bi-image"></i> {{ $t('label.company_undefined') }}</h1>
+        <h1><i class="bi bi-box-seam"></i> {{ $t('label.shipments_incoming') }}</h1>
 
-        <div class="d-flex align-items-center justify-content-end">
+        <!-- أزرار إنشاء وحذف -->
+        <div class="d-flex align-items-center justify-content-end mb-4">
             <router-link :to="{ name: 'admin.new-income-shipment' }" class="btn btn-lg btn-main me-3">
                 {{ $t('buttons.create') }}
             </router-link>
-            <button class="btn btn-lg btn-outline-danger" type="button">
-                {{ $t('buttons.delete') }}
-            </button>
         </div>
 
-        <div class="row">
-            <div class="col-12">
-                <h3 class="mb-5">{{ $t('label.shipments_incoming') }}</h3>
-            </div>
-        </div>
-
+        <!-- أزرار البحث والتحكم -->
         <div class="d-flex align-items-center actions mb-3">
             <div class="search me-2 mb-3">
                 <i class="bi bi-search me-2"></i>
-                <span class="text-main">{{ $t('label.search_account') }}</span>
-            </div>
-            <div class="edit me-4 mb-3">
-                <i class="bi bi-pencil me-2"></i>
-                <span class="text-main">{{ $t('label.edit') }}</span>
+                <input type="text" v-model="searchQuery" placeholder="Search shipment..."
+                    class="border rounded px-2 py-1" />
             </div>
 
             <div class="dropdown mb-3">
                 <i class="bi bi-gear" type="button" data-bs-toggle="dropdown" aria-expanded="false"></i>
                 <ul class="dropdown-menu align-center rounded-0 p-2" style="width: 250px;">
-                    <li>
+                    <li v-for="(col, index) in columns" :key="index">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" checked id="col0">
-                            <label class="form-check-label" for="col0">{{ $t('fields.shipment_number') }}</label>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" checked id="col1">
-                            <label class="form-check-label" for="col1">{{ $t('fields.customer_name') }}</label>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" checked id="col2">
-                            <label class="form-check-label" for="col2">{{ $t('fields.licensed_operator') }}</label>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" checked id="col3">
-                            <label class="form-check-label" for="col3">{{ $t('fields.invoice_no') }}</label>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" checked id="col5">
-                            <label class="form-check-label" for="col5">{{ $t('fields.date') }}</label>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" checked id="col6">
-                            <label class="form-check-label" for="col6">{{ $t('fields.mobile') }}</label>
+                            <input class="form-check-input" type="checkbox" v-model="col.visible" :id="'col' + index" />
+                            <label class="form-check-label" :for="'col' + index">{{ col.label }}</label>
                         </div>
                     </li>
                 </ul>
             </div>
         </div>
 
+        <!-- جدول الشحنات -->
         <div class="table-responsive">
             <table class="table table-bordered text-center align-middle">
                 <thead>
                     <tr class="header">
-                        <th>{{ $t('fields.shipment_number') }}</th>
-                        <th>{{ $t('fields.customer_name') }}</th>
-                        <th>{{ $t('fields.licensed_operator') }}</th>
-                        <th>{{ $t('fields.invoice_no') }}</th>
-                        <th>{{ $t('fields.date') }}</th>
-                        <th>{{ $t('fields.mobile') }}</th>
+                        <th v-for="col in visibleColumns" :key="col.key">{{ col.label }}</th>
                     </tr>
                 </thead>
-                <tbody class="table-body form">
-                    <tr v-for="i in 3" :key="i">
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                <tbody>
+                    <tr v-if="shipments.length === 0">
+                        <td :colspan="visibleColumns.length" class="text-center">No shipments found</td>
+                    </tr>
+                    <tr v-else v-for="shipment in filteredShipments" :key="shipment.id">
+                        <td v-for="col in visibleColumns" :key="col.key">{{ shipment[col.key] }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -97,16 +51,86 @@
     </div>
 </template>
 
+<script>
+import Swal from "sweetalert2";
 
-<style>
+export default {
+    name: "IncomingShipmentsComponent",
+    data() {
+        return {
+            searchQuery: "",
+            shipments: [],
+            columns: [
+                { key: "shipment_number", label: this.$t("fields.shipment_number"), visible: true },
+                { key: "customer_name", label: this.$t("fields.customer_name"), visible: true },
+                { key: "licensed_operator", label: this.$t("fields.licensed_operator"), visible: true },
+                { key: "invoice_no", label: this.$t("fields.invoice_no"), visible: true },
+                { key: "date", label: this.$t("fields.date"), visible: true },
+                { key: "mobile", label: this.$t("fields.mobile"), visible: true },
+            ],
+        };
+    },
+    computed: {
+        visibleColumns() {
+            return this.columns.filter((col) => col.visible);
+        },
+        filteredShipments() {
+            if (!this.searchQuery) return this.shipments;
+            return this.shipments.filter(
+                (s) =>
+                    s.customer_name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+                    s.shipment_number.toString().includes(this.searchQuery)
+            );
+        },
+    },
+    mounted() {
+        this.fetchShipments();
+    },
+    methods: {
+        fetchShipments() {
+            // بيانات وهمية كمثال
+            this.shipments = [
+                {
+                    id: 1,
+                    shipment_number: "SH-1001",
+                    customer_name: "Customer A",
+                    licensed_operator: "Operator 1",
+                    invoice_no: "INV-5001",
+                    date: "2025-09-01",
+                    mobile: "1234567890",
+                },
+                {
+                    id: 2,
+                    shipment_number: "SH-1002",
+                    customer_name: "Customer B",
+                    licensed_operator: "Operator 2",
+                    invoice_no: "INV-5002",
+                    date: "2025-09-03",
+                    mobile: "0987654321",
+                },
+            ];
+        },
+        deleteSelected() {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes, delete it!",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire("Deleted!", "Shipments have been deleted.", "success");
+                    // هنا يمكنك ربط حذف حقيقي عبر API
+                }
+            });
+        },
+    },
+};
+</script>
+
+<style scoped>
 .header th {
-
-    background-color: #F4FFF0 !important;
-
-}
-
-.btn-action {
-    background-color: #F4FFF0 !important;
+    background-color: #f4fff0 !important;
 }
 
 .actions i {
@@ -118,15 +142,11 @@
 }
 
 .dropdown .show {
-    color: #1D7342
+    color: #1d7342;
 }
 
-.form-check-input:checked[type=checkbox] {
+.form-check-input:checked[type="checkbox"] {
     border-radius: 50%;
-    background-color: #1D7342 !important;
-}
-
-.pages p {
-    font-size: 25px;
+    background-color: #1d7342 !important;
 }
 </style>

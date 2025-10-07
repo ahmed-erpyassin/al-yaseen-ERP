@@ -3,8 +3,9 @@ import CurrentInventoryValueComponent from "@/components/admin/warehouses/curren
 import CreateItemComponent from "@/components/admin/warehouses/items/CreateItemComponent.vue";
 import ItemsComponent from "@/components/admin/warehouses/items/ItemsComponent.vue";
 import ShowCustomerComponent from "@/components/admin/sales/customers/ShowCustomerComponent.vue";
-import CreateManufacturingComponent from "@/components/admin/warehouses/manufacturingFormula/CreateManufacturingFormulaComponent.vue";
+import CreateManufacturingFormulaComponent from "@/components/admin/warehouses/manufacturingFormula/CreateManufacturingFormulaComponent.vue";
 import ManufacturingComponent from "@/components/admin/warehouses/manufacturingFormula/ManufacturingComponent.vue";
+import CreateManufacturingComponent from "@/components/admin/warehouses/manufacturingFormula/CreateManufacturingComponent.vue";
 import ManufacturingFormulaComponent from "@/components/admin/warehouses/manufacturingFormula/ManufacturingFormulaComponent.vue";
 import CreateWarehouseMovementComponent from "@/components/admin/warehouses/warehouseMovements/CreateWarehouseMovementComponent.vue";
 import WarehouseMovementsComponent from "@/components/admin/warehouses/warehouseMovements/WarehouseMovementsComponent.vue";
@@ -46,12 +47,16 @@ export default [
                         name: "admin.warehouses.manufacturing-formula"
                     }, {
                         path: "create",
-                        component: CreateManufacturingComponent,
+                        component: CreateManufacturingFormulaComponent,
                         name: "admin.warehouses.manufacturing-formula.create"
                     }, {
                         path: "manufacturing",
                         component: ManufacturingComponent,
                         name: "admin.warehouses.manufacturing-formula.manufacturing"
+                    }, {
+                        path: "manufacturing/create",
+                        component: CreateManufacturingComponent,
+                        name: "admin.warehouses.manufacturing-formula.manufacturing.create"
                     }
                 ]
             }, {

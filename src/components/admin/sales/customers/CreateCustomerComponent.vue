@@ -1,273 +1,244 @@
 <template>
     <div class="container pe-5 ps-5">
-        <h1><i class="bi bi-image"></i> {{ t('label.company_undefined') }}</h1>
+        <h1><i class="bi bi-person-plus"></i> {{ $t('aside.Add Customer') || 'إضافة عميل جديد' }}</h1>
 
+        <!-- ✅ أزرار الإجراءات -->
         <div class="d-flex align-items-center justify-content-end mb-4">
             <button type="button" class="btn btn-lg btn-outline-secondary me-3" @click="cancelForm">
-                {{ t('buttons.cancel') }}
+                {{ $t('buttons.cancel') || 'إلغاء' }}
             </button>
             <button type="button" class="btn btn-lg btn-success" @click="saveForm">
-                {{ t('buttons.save') }}
+                {{ $t('buttons.save') || 'حفظ' }}
             </button>
         </div>
 
-        <form class="form" @submit.prevent="saveForm">
-            <div class="alert alert-danger" v-if="errorMsg">{{ errorMsg }}</div>
-            <div class="alert alert-success" v-if="successMsg">{{ successMsg }}</div>
-
+        <!-- ✅ نموذج العميل -->
+        <form class="form">
             <div class="row">
-                <!-- Customer Information Section -->
-                <div class="col-12">
-                    <h3>{{ t('label.customer_information') }}</h3>
+                <div class="col-12 mb-4">
+                    <h3>{{ $t('label.customer_information') || 'بيانات العميل' }}</h3>
                 </div>
 
-                <div class="col-12 mb-4">
-                    <label for="client_type" class="form-label">{{ t('label.client_type') }}</label>
-                    <div class="d-flex align-items-center">
+                <!-- نوع العميل -->
+                <div class="col-md-3 mb-3">
+                    <label class="form-label d-block">{{ $t('label.client_type') || 'نوع العميل' }}</label>
+                    <div class="d-flex">
                         <div class="form-check me-3">
-                            <input class="form-check-input" type="radio" name="client_type" id="personal"
-                                value="personal" v-model="form.client_type" />
-                            <label class="form-check-label" for="personal">{{ t('label.personal') }}</label>
+                            <input class="form-check-input" type="radio" id="personal" value="personal"
+                                v-model="form.client_type" />
+                            <label class="form-check-label" for="personal">{{ $t('label.personal') || 'فردي' }}</label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="client_type" id="business"
-                                value="business" v-model="form.client_type" />
-                            <label class="form-check-label" for="business">{{ t('label.business') }}</label>
+                            <input class="form-check-input" type="radio" id="business" value="business"
+                                v-model="form.client_type" />
+                            <label class="form-check-label" for="business">{{ $t('label.business') || 'تجاري' }}</label>
                         </div>
                     </div>
                 </div>
 
-                <!-- جميع الحقول الأخرى -->
-                <div class="col-md-3" v-for="(field, index) in fields" :key="index">
-                    <div class="item mb-4">
-                        <div class="mb-3 position-relative">
-                            <label :for="field.id" class="form-label">{{ t(field.label) }}</label>
-                            <input v-if="field.type !== 'textarea' && field.type !== 'file' && field.type !== 'select'"
-                                :type="field.type" :id="field.id" class="form-control rounded-1"
-                                v-model="form[field.model]" :maxlength="field.maxlength"
-                                :class="{ 'is-invalid': errors[field.model] }" />
-                            <textarea v-if="field.type === 'textarea'" :id="field.id" rows="3" class="form-control"
-                                v-model="form[field.model]" :maxlength="field.maxlength"
-                                :class="{ 'is-invalid': errors[field.model] }"></textarea>
-                            <select v-if="field.type === 'select'" :id="field.id" class="form-control"
-                                v-model="form[field.model]">
-                                <option v-for="option in field.options" :key="option.value" :value="option.value">{{
-                                    option.label }}</option>
-                            </select>
-                            <input v-if="field.type === 'file'" type="file" :ref="field.ref" multiple
-                                style="display:none" @change="handleFileUpload" />
-                            <div v-if="errors[field.model]" class="invalid-feedback">{{ errors[field.model][0] }}</div>
-                        </div>
-                    </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">{{ $t('label.customer_number') || 'رقم العميل' }}</label>
+                    <input type="text" class="form-control rounded-1" v-model="form.customer_number" />
                 </div>
 
-                <!-- Attachments Box -->
-                <div class="col-12">
-                    <div class="item mb-4">
-                        <div class="mb-3 position-relative">
-                            <label for="email" class="form-label">{{ $t('label.email')
-                            }}</label>
-                            <div class=" position-relative group">
-                                <input type="email" id="email" class="form-control rounded-1"
-                                    placeholder="yassin2029@gmail.com" v-model="form.email" maxlength="150"
-                                    :class="{ 'is-invalid': errors.email }" />
-                                <i class="bi bi-envelope"></i>
-                            </div>
-                            <div v-if="errors.email" class="invalid-feedback">{{ errors.email[0] }}</div>
-
-                        </div>
-                    </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">{{ $t('label.company_name') || 'اسم الشركة (الاسم التجاري)' }}</label>
+                    <input type="text" class="form-control rounded-1" v-model="form.company_name" required />
                 </div>
-                <div class="col-md-12">
-                    <div class="item mb-4">
-                        <div class="mb-3 position-relative">
-                            <label for="category" class="form-label">{{ $t('label.category') }}</label>
 
-                            <input type="text" id="category" class="form-control rounded-1" v-model="form.category"
-                                maxlength="100" :class="{ 'is-invalid': errors.category }" />
-                            <div v-if="errors.category" class="invalid-feedback">{{ errors.category[0] }}</div>
-
-                        </div>
-                    </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">{{ $t('label.first_name') || 'الاسم الأول' }}</label>
+                    <input type="text" class="form-control rounded-1" v-model="form.first_name" />
                 </div>
-                <div class="col-md-12">
-                    <div class="item mb-4">
-                        <div class="mb-3 position-relative">
-                            <label for="notes" class="form-label">{{ $t('label.notes') }}</label>
 
-                            <textarea name="notes" id="notes" rows="3" class="form-control" v-model="form.notes"
-                                maxlength="500" :class="{ 'is-invalid': errors.notes }"></textarea>
-                            <div v-if="errors.notes" class="invalid-feedback">{{ errors.notes[0] }}</div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">{{ $t('label.second_name') || 'الاسم الثاني' }}</label>
+                    <input type="text" class="form-control rounded-1" v-model="form.second_name" />
+                </div>
 
-                        </div>
-                    </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">{{ $t('label.mobile') || 'الجوال' }}</label>
+                    <input type="text" class="form-control rounded-1" v-model="form.mobile" />
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">{{ $t('label.phone') || 'الهاتف' }}</label>
+                    <input type="text" class="form-control rounded-1" v-model="form.phone" />
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">{{ $t('label.address_one') || 'عنوان الشارع 1' }}</label>
+                    <input type="text" class="form-control rounded-1" v-model="form.address_one" />
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">{{ $t('label.address_two') || 'عنوان الشارع 2' }}</label>
+                    <input type="text" class="form-control rounded-1" v-model="form.address_two" />
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">{{ $t('label.city') || 'المدينة' }}</label>
+                    <input type="text" class="form-control rounded-1" v-model="form.city" />
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">{{ $t('label.state') || 'المنطقة' }}</label>
+                    <input type="text" class="form-control rounded-1" v-model="form.state" />
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">{{ $t('label.postal_code') || 'الرمز البريدي' }}</label>
+                    <input type="text" class="form-control rounded-1" v-model="form.postal_code" />
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">{{ $t('label.licensed_operator') || 'المشغل المرخص' }}</label>
+                    <input type="text" class="form-control rounded-1" v-model="form.licensed_operator" />
+                </div>
+            </div>
+
+            <!-- بيانات الحساب -->
+            <div class="row mt-5">
+                <div class="col-12 mb-3">
+                    <h3>{{ $t('label.account_information') || 'بيانات الحساب' }}</h3>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">{{ $t('label.code') || 'رقم الكود' }}</label>
+                    <input type="text" class="form-control rounded-1" v-model="form.code" required />
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">{{ $t('label.invoice_type') || 'طريقة الفاتورة' }}</label>
+                    <input type="text" class="form-control rounded-1" v-model="form.invoice_type" />
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">{{ $t('label.email') || 'البريد الإلكتروني' }}</label>
+                    <input type="email" class="form-control rounded-1" v-model="form.email" />
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">{{ $t('label.category') || 'التصنيف' }}</label>
+                    <input type="text" class="form-control rounded-1" v-model="form.category" />
+                </div>
+
+                <div class="col-12 mb-3">
+                    <label class="form-label">{{ $t('label.notes') || 'الملاحظات' }}</label>
+                    <textarea class="form-control rounded-1" rows="3" v-model="form.notes"></textarea>
                 </div>
             </div>
         </form>
     </div>
 </template>
 
-<script setup>
-import { ref, reactive } from 'vue';
-import Swal from 'sweetalert2';
-import { useRouter } from 'vue-router';
-import { useI18n } from 'vue-i18n';
-import axios from 'axios';
+<script>
+import Swal from "sweetalert2";
+import axios from "axios";
 
-const router = useRouter();
-const { t } = useI18n();
-// const baseUrl = process.env.VUE_APP_API_BASE_URL;
-const useApi = true; // true = إرسال البيانات إلى API
+export default {
+    name: "CustomersCreate",
+    data() {
+        return {
+            form: {
+                company_id: 1,
+                branch_id: 1,
+                currency_id: 1,
+                employee_id: 1,
+                country_id: 1,
+                region_id: 1,
+                city_id: 1,
+                customer_number: "",
+                company_name: "",
+                first_name: "",
+                second_name: "",
+                email: "",
+                phone: "",
+                mobile: "",
+                address_one: "",
+                address_two: "",
+                city: "",
+                state: "",
+                postal_code: "",
+                licensed_operator: "",
+                notes: "",
+                code: "",
+                invoice_type: "",
+                category: "",
+                client_type: "personal",
+                status: "active",
+            },
+        };
+    },
+    methods: {
+        async saveForm() {
+            try {
+                const token = localStorage.getItem("authToken");
+                if (!token) {
+                    Swal.fire("تنبيه", "يجب تسجيل الدخول أولًا", "warning");
+                    return;
+                }
 
-const form = reactive({
-    company_id: 1,
-    branch_id: 1,
-    currency_id: 1,
-    employee_id: 1,
-    country_id: 1,
-    region_id: 1,
-    city_id: 1,
-    customer_number: '',
-    company_name: '',
-    first_name: '',
-    second_name: '',
-    contact_name: '',
-    email: '',
-    phone: '',
-    mobile: '',
-    address_one: '',
-    address_two: '',
-    postal_code: '',
-    licensed_operator: '',
-    tax_number: '',
-    notes: '',
-    status: 'active',
-    code: '',
-    invoice_type: '',
-    category: '',
-    attachments: []
-});
+                const headers = {
+                    Authorization: `Bearer ${token}`,
+                    Accept: "application/json",
+                    "Content-Type": "multipart/form-data",
+                };
 
-const errors = reactive({});
-const errorMsg = ref(null);
-const successMsg = ref(null);
+                const formData = new FormData();
+                for (const key in this.form) {
+                    formData.append(key, this.form[key]);
+                }
 
-const handleFileUpload = (event) => {
-    const files = Array.from(event.target.files);
-    form.attachments.push(...files);
-};
+                await axios.post("/customers/create", formData, { headers });
+                Swal.fire("تم الحفظ", "تم إنشاء العميل بنجاح", "success");
+                this.$router.push({ name: "admin.customers" });
+            } catch (err) {
+                console.error("Server error:", err.response?.data);
 
-const saveForm = async () => {
-    errorMsg.value = null;
-    successMsg.value = null;
-    Object.keys(errors).forEach(key => delete errors[key]);
+                // الرسالة القادمة من السيرفر (إذا وجدت)
+                const serverMessage = err.response?.data?.message || "";
 
-    if (!useApi) {
-        // بيانات وهمية
-        Swal.fire({
-            icon: 'success',
-            title: t('messages.saved_title'),
-            text: t('messages.saved_text'),
-            timer: 2000,
-            showConfirmButton: false
-        }).then(() => {
-            successMsg.value = t('messages.customer_created_successfully');
-        });
-        return;
-    }
+                let userMessage = "حدث خطأ غير متوقع أثناء حفظ العميل.";
 
-    try {
-        const token = localStorage.getItem('authToken');
-        const formData = new FormData();
+                // تحليل الأخطاء الخاصة بـ SQL أو Foreign Key
+                if (serverMessage.includes("foreign key constraint")) {
+                    userMessage = "تعذّر حفظ العميل: أحد الحقول (مثل الفرع أو الشركة) غير موجود في النظام.";
+                }
+                else if (serverMessage.includes("duplicate")) {
+                    userMessage = "يوجد عميل بنفس البيانات مُسجّل مسبقًا.";
+                }
+                else if (serverMessage.includes("SQLSTATE")) {
+                    userMessage = "حدث خطأ في قاعدة البيانات. يُرجى التحقق من البيانات المُدخلة.";
+                }
 
-        Object.keys(form).forEach(key => {
-            if (key === 'attachments') {
-                form.attachments.forEach(file => formData.append('attachments[]', file));
-            } else {
-                formData.append(key, form[key]);
+                Swal.fire({
+                    icon: "error",
+                    title: "خطأ في الحفظ",
+                    text: userMessage,
+                    confirmButtonText: "موافق",
+                });
             }
-        });
 
-        await axios.post(`/customers`, formData, {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'multipart/form-data'
-            }
-        });
-
-        successMsg.value = t('messages.customer_created_successfully');
-        Swal.fire({
-            icon: 'success',
-            title: t('messages.saved_title'),
-            text: successMsg.value,
-            timer: 2000,
-            showConfirmButton: false
-        }).then(() => {
-            router.push({ name: 'admin.customers' });
-        });
-
-    } catch (err) {
-        if (err.response && err.response.status === 422) {
-            Object.assign(errors, err.response.data.errors);
-            errorMsg.value = t('messages.validation_error');
-        } else {
-            errorMsg.value = t('messages.server_error') || 'حدث خطأ ما';
-        }
-        Swal.fire('خطأ', errorMsg.value, 'error');
-    }
+        },
+        cancelForm() {
+            Swal.fire({
+                title: "هل تريد إلغاء العملية؟",
+                text: "لن يتم حفظ البيانات الحالية",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "نعم، إلغاء",
+                cancelButtonText: "لا",
+            }).then((r) => {
+                if (r.isConfirmed) this.$router.push({ name: "admin.customers" });
+            });
+        },
+    },
 };
-
-const cancelForm = () => {
-    Swal.fire({
-        title: t('messages.cancel_title'),
-        text: t('messages.cancel_text'),
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: t('buttons.yes_cancel'),
-        cancelButtonText: t('buttons.no')
-    }).then((result) => {
-        if (result.isConfirmed) {
-            router.push({ name: 'admin.customers' });
-        }
-    });
-};
-
-const fields = [
-    { id: 'customer_number', label: 'label.customer_number', model: 'customer_number', type: 'text', maxlength: 50 },
-    { id: 'company_name', label: 'label.company_name', model: 'company_name', type: 'text', maxlength: 255 },
-    { id: 'first_name', label: 'label.first_name', model: 'first_name', type: 'text', maxlength: 100 },
-    { id: 'second_name', label: 'label.second_name', model: 'second_name', type: 'text', maxlength: 100 },
-    { id: 'contact_name', label: 'label.contact_name', model: 'contact_name', type: 'text', maxlength: 100 },
-    { id: 'mobile', label: 'label.mobile', model: 'mobile', type: 'text', maxlength: 50 },
-    { id: 'phone', label: 'label.phone', model: 'phone', type: 'text', maxlength: 50 },
-    { id: 'address_one', label: 'label.address_1', model: 'address_one', type: 'text', maxlength: 255 },
-    { id: 'address_two', label: 'label.address_2', model: 'address_two', type: 'text', maxlength: 255 },
-    { id: 'city', label: 'label.city', model: 'city', type: 'text' },
-    { id: 'state', label: 'label.state', model: 'state', type: 'text' },
-    { id: 'postal_code', label: 'label.zip', model: 'postal_code', type: 'text', maxlength: 20 },
-    { id: 'licensed_operator', label: 'label.licensed_operator', model: 'licensed_operator', type: 'text', maxlength: 255 },
-    { id: 'tax_number', label: 'label.tax_number', model: 'tax_number', type: 'text', maxlength: 50 },
-    { id: 'code', label: 'label.code', model: 'code', type: 'text', maxlength: 50 },
-    { id: 'invoice_type', label: 'label.invoice_type', model: 'invoice_type', type: 'text', maxlength: 100 },
-    { id: 'category', label: 'label.category', model: 'category', type: 'text', maxlength: 100 },
-    { id: 'notes', label: 'label.notes', model: 'notes', type: 'textarea', maxlength: 500 },
-    { id: 'attachments', label: 'label.attachments', model: 'attachments', type: 'file', ref: 'attachmentsInput' }
-];
 </script>
 
-
-
-<style>
-.box-attachments {
-    height: 162px;
-    border: 1px dashed #767171;
-    border-radius: 3px;
-    cursor: pointer;
+<style scoped>
+.form-label {
+    font-weight: 600;
 }
-
-.box-attachments i {
-    font-size: 92px;
-}
-
-/* RTL support (optional) */
 </style>

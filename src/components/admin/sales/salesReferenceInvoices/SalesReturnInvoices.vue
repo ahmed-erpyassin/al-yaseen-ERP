@@ -1,6 +1,6 @@
 <template>
     <div class="container pe-5 ps-5">
-        <h1><i class="bi bi-image"></i> {{ $t('label.company_undefined') }}</h1>
+        <!-- <h1><i class="bi bi-image"></i> {{ $t('label.company_undefined') }}</h1> -->
         <div class="d-flex align-items-center justify-content-end">
             <router-link :to="{ name: 'admin.new-sales-return-invoice' }" class="btn btn-lg btn-main me-3">{{ $t('buttons.create') }}</router-link>
         </div>

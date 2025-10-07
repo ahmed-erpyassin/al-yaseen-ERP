@@ -1,6 +1,7 @@
 <template>
     <div class="container pe-5 ps-5">
-        <h1><i class="bi bi-box-seam"></i> {{ $t('label.new_item') }}</h1>
+        <!-- Page Title -->
+        <h1><i class="bi bi-image"></i> {{ $t('label.company_undefined') }}</h1>
 
         <!-- Action Buttons -->
         <div class="d-flex align-items-center justify-content-end mb-4">
@@ -12,193 +13,516 @@
             </button>
         </div>
 
+        <!-- Main Form -->
         <form class="form">
             <div class="row">
-                <!-- Basic Info -->
-                <div class="col-md-3 mb-3">
-                    <label class="form-label">{{ $t('label.name') }}</label>
-                    <input type="text" class="form-control" v-model="form.name" />
-                </div>
+                <div class="container pe-5 ps-5">
 
-                <div class="col-md-2 mb-3">
-                    <label class="form-label">{{ $t('label.quantity') }}</label>
-                    <input type="number" class="form-control" v-model="form.quantity" />
-                </div>
+                    <!-- Item Information Section -->
+                    <div class="row">
+                        <div class="col-12">
+                            <h3 class="mb-5">{{ $t('label.item_information') }}</h3>
+                        </div>
 
-                <div class="col-md-2 mb-3">
-                    <label class="form-label">{{ $t('label.unit') }}</label>
-                    <input type="text" class="form-control" v-model="form.unit_name" />
-                </div>
+                        <!-- Row: Item Number - Item Name - Manufacturing Duration -->
+                        <div class="col-md-4 mb-4">
+                            <label for="item_number" class="form-label">{{ $t('label.item_no') }}</label>
+                            <input type="text" id="item_number" class="form-control rounded-1" v-model="itemNumber" />
+                        </div>
 
-                <div class="col-md-3 mb-3">
-                    <label class="form-label">{{ $t('label.category') }}</label>
-                    <input type="text" class="form-control" v-model="form.category_name" />
-                </div>
+                        <div class="col-md-4 mb-4">
+                            <label for="item_name" class="form-label">{{ $t('label.item_name') }}</label>
+                            <input type="text" id="item_name" class="form-control rounded-1" v-model="itemName" />
+                        </div>
 
-                <div class="col-md-2 mb-3 d-flex align-items-center">
-                    <div class="form-check mt-4">
-                        <input class="form-check-input" type="checkbox" v-model="form.stock_tracking"
-                            id="stockTracking" />
-                        <label class="form-check-label" for="stockTracking">{{ $t('label.stock_tracking') }}</label>
-                    </div>
-                </div>
-            </div>
+                        <div class="col-md-4 mb-4">
+                            <label for="manufacturing_duration" class="form-label">{{ $t('label.manufacturing_duration')
+                                }}</label>
+                            <input type="text" id="manufacturing_duration" class="form-control rounded-1"
+                                v-model="manufacturingDuration" />
+                        </div>
 
-            <!-- Notebook, Invoice, Date, Hour -->
-            <div class="row mb-4">
-                <div class="col-md-3 mb-3">
-                    <label class="form-label">{{ $t('label.notebook') }}</label>
-                    <input type="text" class="form-control" v-model="form.notebook" />
-                </div>
-                <div class="col-md-3 mb-3">
-                    <label class="form-label">{{ $t('label.invoice_no') }}</label>
-                    <input type="text" class="form-control" v-model="form.invoice_no" />
-                </div>
-                <div class="col-md-3 mb-3">
-                    <label class="form-label">{{ $t('label.date') }}</label>
-                    <input type="date" class="form-control" v-model="form.date" />
-                </div>
-                <div class="col-md-3 mb-3">
-                    <label class="form-label">{{ $t('label.hour') }}</label>
-                    <input type="time" class="form-control" v-model="form.hour" />
-                </div>
-            </div>
+                        <!-- Row: Quantity -->
+                        <div class="col-md-4 mb-4">
+                            <label for="quantity" class="form-label">{{ $t('label.quantity') }}</label>
+                            <input type="number" id="quantity" class="form-control rounded-1" v-model="quantity" />
+                        </div>
 
-            <!-- Customer Info -->
-            <div class="row mb-4">
-                <div class="col-md-3 mb-3">
-                    <label class="form-label">{{ $t('label.customer_no') }}</label>
-                    <input type="text" class="form-control" v-model="form.customer_no" />
-                </div>
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">{{ $t('label.customer_name') }}</label>
-                    <input type="text" class="form-control" v-model="form.customer_name" />
-                </div>
-                <div class="col-md-5 mb-3">
-                    <label class="form-label">{{ $t('label.email') }}</label>
-                    <input type="email" class="form-control" v-model="form.email" />
-                </div>
-            </div>
+                        <!-- Warehouses Section -->
+                        <div class="col-12 mt-4 mb-3">
+                            <h5>{{ $t('label.warehouses') }}</h5>
+                        </div>
 
-            <!-- Operator & Currency -->
-            <div class="row mb-4">
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">{{ $t('label.licensed_operator') }}</label>
-                    <input type="text" class="form-control" v-model="form.licensed_operator" />
-                </div>
-                <div class="col-md-2 mb-3">
-                    <label class="form-label">{{ $t('label.currency') }} 1</label>
-                    <input type="text" class="form-control" v-model="form.currency1" />
-                </div>
-                <div class="col-md-2 mb-3">
-                    <label class="form-label">{{ $t('label.currency') }} 2</label>
-                    <input type="text" class="form-control" v-model="form.currency2" />
-                </div>
-            </div>
+                        <div class="col-md-4 mb-4">
+                            <label for="raw_materials_warehouse" class="form-label">{{
+                                $t('label.raw_materials_warehouse') }}</label>
+                            <select id="raw_materials_warehouse" class="form-control rounded-1"
+                                v-model="rawMaterialsWarehouse">
+                                <option value="">{{ $t('label.select_warehouse') }}</option>
+                                <option v-for="w in rawMaterialsWarehouseOptions" :key="w.id" :value="w.id">{{ w.name }}
+                                </option>
+                            </select>
+                        </div>
 
-            <!-- Notes and Attachments -->
-            <div class="row mb-4">
-                <div class="col-md-12 mb-3">
-                    <label class="form-label">{{ $t('label.notes') }}</label>
-                    <textarea class="form-control" rows="3" v-model="form.notes"></textarea>
-                </div>
-
-                <div class="col-md-12 mb-3">
-                    <label class="form-label">{{ $t('label.attachments') }}</label>
-                    <div class="d-flex align-items-center">
-                        <input type="file" @change="handleAttachments" multiple class="d-none" ref="attachmentsInput" />
-                        <button type="button" class="btn btn-outline-primary" @click="$refs.attachmentsInput.click()">
-                            Upload Files
-                        </button>
-                        <div class="ms-3">
-                            <small>{{ form.attachments.length }} {{ $t('label.files_selected') }}</small>
+                        <div class="col-md-4 mb-4">
+                            <label for="finished_product_warehouse" class="form-label">{{
+                                $t('label.finished_product_warehouse') }}</label>
+                            <select id="finished_product_warehouse" class="form-control rounded-1"
+                                v-model="finishedProductWarehouse">
+                                <option value="">{{ $t('label.select_warehouse') }}</option>
+                                <option v-for="w in finishedProductWarehouseOptions" :key="w.id" :value="w.id">{{ w.name
+                                    }}</option>
+                            </select>
                         </div>
                     </div>
+
+                    <!-- Units Section -->
+                    <div class="row">
+                        <div class="col-12">
+                            <h3 class="mb-5">{{ $t('label.units') }}</h3>
+                        </div>
+
+                        <div class="col-md-3 mb-4">
+                            <label for="balance_unit" class="form-label">{{ $t('label.balance_unit') }}</label>
+                            <select id="balance_unit" class="form-control" v-model="balanceUnit">
+                                <option value="">{{ $t('label.number') }}</option>
+                                <option v-for="unit in balanceUnitOptions" :key="unit.id" :value="unit.id">{{ unit.name
+                                    }}</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-2 mb-4">
+                            <label for="length" class="form-label">{{ $t('label.length') }}</label>
+                            <input type="text" id="length" class="form-control rounded-1" v-model="length" />
+                        </div>
+
+                        <div class="col-md-2 mb-4">
+                            <label for="width" class="form-label">{{ $t('label.width') }}</label>
+                            <input type="text" id="width" class="form-control rounded-1" v-model="width" />
+                        </div>
+
+                        <div class="col-md-2 mb-4">
+                            <label for="height" class="form-label">{{ $t('label.height') }}</label>
+                            <input type="text" id="height" class="form-control rounded-1" v-model="height" />
+                        </div>
+
+                        <div class="col-md-3 mb-4">
+                            <label for="worker_quantity" class="form-label">{{ $t('label.worker_quantity') }}</label>
+                            <input type="text" id="worker_quantity" class="form-control rounded-1"
+                                v-model="workerQuantity" />
+                        </div>
+
+                        <!-- Second unit fields -->
+                        <div class="col-md-3 mb-4">
+                            <label for="second_unit" class="form-label">{{ $t('label.second_unit') }}</label>
+                            <select id="second_unit" class="form-control" v-model="secondUnit">
+                                <option value=""></option>
+                                <option v-for="unit in secondUnitOptions" :key="unit.id" :value="unit.id">{{ unit.name
+                                    }}</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3 mb-4">
+                            <label for="second_unit_contains" class="form-label">{{ $t('label.contains') }}</label>
+                            <select id="second_unit_contains" class="form-control" v-model="secondUnitContains">
+                                <option value=""></option>
+                                <option v-for="unit in secondUnitContainsOptions" :key="unit.id" :value="unit.id">{{
+                                    unit.name }}</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-2 mb-4">
+                            <input type="text" id="second_unit_number" class="form-control rounded-1"
+                                v-model="secondUnitNumber" />
+                        </div>
+
+                        <div class="col-md-4 mb-4">
+                            <label for="second_unit_item_number" class="form-label">{{
+                                $t('label.second_unit_item_number') }}</label>
+                            <input type="text" id="second_unit_item_number" class="form-control rounded-1"
+                                v-model="secondUnitItemNumber" />
+                        </div>
+
+                        <!-- Third unit fields -->
+                        <div class="col-md-3 mb-4">
+                            <label for="third_unit" class="form-label">{{ $t('label.third_unit') }}</label>
+                            <select id="third_unit" class="form-control" v-model="thirdUnit">
+                                <option value=""></option>
+                                <option v-for="unit in thirdUnitOptions" :key="unit.id" :value="unit.id">{{ unit.name }}
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3 mb-4">
+                            <label for="third_unit_contains" class="form-label">{{ $t('label.contains') }}</label>
+                            <select id="third_unit_contains" class="form-control" v-model="thirdUnitContains">
+                                <option value=""></option>
+                                <option v-for="unit in thirdUnitContainsOptions" :key="unit.id" :value="unit.id">{{
+                                    unit.name }}</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-2 mb-4">
+                            <input type="text" id="third_unit_number" class="form-control rounded-1"
+                                v-model="thirdUnitNumber" />
+                        </div>
+
+                        <div class="col-md-4 mb-4">
+                            <label for="third_unit_item_number" class="form-label">{{ $t('label.third_unit_item_number')
+                                }}</label>
+                            <input type="text" id="third_unit_item_number" class="form-control rounded-1"
+                                v-model="thirdUnitItemNumber" />
+                        </div>
+
+                        <!-- Dealing units -->
+                        <div class="col-md-6 mb-4">
+                            <label for="dealing_unit_1" class="form-label">{{ $t('label.dealing_unit') }}</label>
+                            <select id="dealing_unit_1" class="form-control" v-model="dealingUnit1">
+                                <option value="">Main unit</option>
+                                <option v-for="unit in dealingUnitOptions" :key="unit.id" :value="unit.id">{{ unit.name
+                                    }}</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-4">
+                            <label for="dealing_unit_2" class="form-label">{{ $t('label.dealing_unit') }}</label>
+                            <select id="dealing_unit_2" class="form-control" v-model="dealingUnit2">
+                                <option value="">Main unit</option>
+                                <option v-for="unit in dealingUnitOptions" :key="unit.id" :value="unit.id">{{ unit.name
+                                    }}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Selling & Buying Prices Section -->
+                    <div class="row">
+                        <div class="col-12">
+                            <h3 class="mb-5">{{ $t('label.buying_selling_prices') }}</h3>
+                        </div>
+
+                        <!-- Selling prices -->
+                        <div class="col-md-4 mb-4">
+                            <label for="first_selling_price" class="form-label">{{ $t('label.first_selling_price')
+                                }}</label>
+                            <input type="text" id="first_selling_price" class="form-control rounded-1"
+                                v-model="firstSellingPrice" />
+                        </div>
+
+                        <div class="col-md-4 mb-4">
+                            <label for="second_selling_price" class="form-label">{{ $t('label.second_selling_price')
+                                }}</label>
+                            <input type="text" id="second_selling_price" class="form-control rounded-1"
+                                v-model="secondSellingPrice" />
+                        </div>
+
+                        <div class="col-md-4 mb-4">
+                            <label for="third_selling_price" class="form-label">{{ $t('label.third_selling_price')
+                                }}</label>
+                            <input type="text" id="third_selling_price" class="form-control rounded-1"
+                                v-model="thirdSellingPrice" />
+                        </div>
+
+                        <div class="col-md-4 mb-4">
+                            <label for="selling_discount_percentage" class="form-label">{{
+                                $t('label.selling_discount_percentage') }}</label>
+                            <input type="text" id="selling_discount_percentage" class="form-control rounded-1"
+                                v-model="sellingDiscountPercentage" />
+                        </div>
+
+                        <div class="col-md-4 mb-4">
+                            <label for="max_discount_percentage" class="form-label">{{
+                                $t('label.max_discount_percentage') }}</label>
+                            <input type="text" id="max_discount_percentage" class="form-control rounded-1"
+                                v-model="maxDiscountPercentage" />
+                        </div>
+
+                        <div class="col-md-4 mb-4">
+                            <label for="min_price" class="form-label">{{ $t('label.min_price') }}</label>
+                            <input type="text" id="min_price" class="form-control rounded-1" v-model="minPrice" />
+                        </div>
+
+                        <!-- VAT checkbox -->
+                        <div class="col-12 mb-4">
+                            <div class="form-check d-flex align-items-center justify-content-end">
+                                <input type="checkbox" class="form-check-input rounded-circle" id="selling_vat"
+                                    v-model="sellingVAT" />
+                                <label class="form-check-label" for="selling_vat">{{ $t('label.selling_price_vat')
+                                    }}</label>
+                            </div>
+                        </div>
+
+                        <!-- Purchase prices -->
+                        <div class="col-md-4 mb-4">
+                            <label for="first_purchase_price" class="form-label">{{ $t('label.first_purchase_price')
+                                }}</label>
+                            <input type="text" id="first_purchase_price" class="form-control rounded-1"
+                                v-model="firstPurchasePrice" />
+                        </div>
+
+                        <div class="col-md-4 mb-4">
+                            <label for="second_purchase_price" class="form-label">{{ $t('label.second_purchase_price')
+                                }}</label>
+                            <input type="text" id="second_purchase_price" class="form-control rounded-1"
+                                v-model="secondPurchasePrice" />
+                        </div>
+
+                        <div class="col-md-4 mb-4">
+                            <label for="third_purchase_price" class="form-label">{{ $t('label.third_purchase_price')
+                                }}</label>
+                            <input type="text" id="third_purchase_price" class="form-control rounded-1"
+                                v-model="thirdPurchasePrice" />
+                        </div>
+
+                        <div class="col-md-4 mb-4">
+                            <label for="purchase_discount_percentage" class="form-label">{{
+                                $t('label.purchase_discount_percentage') }}</label>
+                            <input type="text" id="purchase_discount_percentage" class="form-control rounded-1"
+                                v-model="purchaseDiscountPercentage" />
+                        </div>
+
+                        <div class="col-md-4 mb-4">
+                            <div class="form-check d-flex align-items-center justify-content-end">
+                                <input type="checkbox" class="form-check-input rounded-circle" id="purchase_vat"
+                                    v-model="purchaseVAT" />
+                                <label class="form-check-label" for="purchase_vat">{{ $t('label.purchase_price_vat')
+                                    }}</label>
+                            </div>
+                        </div>
+
+                        <div class="col-12 mb-4">
+                            <div class="form-check d-flex align-items-center justify-content-end">
+                                <input type="checkbox" class="form-check-input rounded-circle" id="item_vat"
+                                    v-model="itemVAT" />
+                                <label class="form-check-label" for="item_vat">{{ $t('label.item_subject_to_vat')
+                                    }}</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Other Info Section -->
+                    <div class="row">
+                        <div class="col-12">
+                            <h3 class="mb-4">{{ $t('label.other_info') }}</h3>
+                        </div>
+
+                        <div class="col-md-6 mb-4">
+                            <label for="barcode" class="form-label">{{ $t('label.barcode') }}</label>
+                            <input type="text" id="barcode" class="form-control rounded-1" v-model="barcode" />
+                            <i class="bi bi-upc"></i>
+                        </div>
+
+                        <div class="col-md-6 mb-4">
+                            <label for="barcode_type" class="form-label">{{ $t('label.barcode_type') }}</label>
+                            <select id="barcode_type" class="form-control" v-model="barcodeType">
+                                <option value="">{{ $t('label.select_barcode_type') }}</option>
+                                <option value="code128">Code 128</option>
+                                <option value="ean13">EAN-13</option>
+                                <option value="qr">QR Code</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-4">
+                            <label for="expire_date" class="form-label">{{ $t('label.expire_date') }}</label>
+                            <input type="date" id="expire_date" class="form-control rounded-1" v-model="expireDate" />
+                        </div>
+
+                        <div class="col-md-6 mb-4">
+                            <label for="add_image" class="form-label">{{ $t('label.add_image') }}</label>
+                            <input type="file" id="add_image" class="form-control rounded-1"
+                                @change="handleFileChange" />
+                            <i class="bi bi-image"></i>
+                        </div>
+
+                        <div class="col-md-6 mb-5">
+                            <label for="category_type" class="form-label">{{ $t('label.category_type') }}</label>
+                            <select id="category_type" class="form-control" v-model="categoryType">
+                                <option value="">{{ $t('label.category_service') }}</option>
+                                <option value="">{{ $t('label.category_goods') }}</option>
+                                <option value="">{{ $t('label.category_work') }}</option>
+                                <option value="">{{ $t('label.category_asset') }}</option>
+                                <option value="">{{ $t('label.category_transfer') }}</option>
+                                <option value="">{{ $t('label.category_minium') }}</option>
+                            </select>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </form>
     </div>
 </template>
 
-<script>
-import axios from "axios";
-import Swal from "sweetalert2";
+<script setup>
+import { ref, onMounted } from 'vue'
+import Swal from 'sweetalert2'
+import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+import axios from 'axios'
 
-export default {
-    name: "ItemCreate",
-    data() {
-        return {
-            form: {
-                name: "",
-                quantity: 0,
-                unit_name: "",
-                category_name: "",
-                stock_tracking: false,
-                notebook: "",
-                invoice_no: "",
-                date: "",
-                hour: "",
-                customer_no: "",
-                customer_name: "",
-                email: "",
-                licensed_operator: "",
-                currency1: "",
-                currency2: "",
-                notes: "",
-                attachments: [],
-            },
-        };
-    },
-    methods: {
-        handleAttachments(event) {
-            this.form.attachments = Array.from(event.target.files);
-        },
-        cancelForm() {
-            Swal.fire({
-                title: this.$t("messages.cancel_title"),
-                text: this.$t("messages.cancel_text"),
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: this.$t("buttons.yes_cancel"),
-                cancelButtonText: this.$t("buttons.no"),
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    this.$router.push("/admin/warehouses/items");
-                }
-            });
-        },
-        async saveForm() {
-            try {
-                const formData = new FormData();
-                for (let key in this.form) {
-                    if (key === "attachments") {
-                        this.form.attachments.forEach((file) => formData.append("attachments[]", file));
-                    } else {
-                        formData.append(key, this.form[key]);
-                    }
-                }
+// ---------------------------
+// Setup
+// ---------------------------
+const router = useRouter()
+const { t } = useI18n()
 
-                await axios.post("{{baseUrl}}/api/v1/items/register-item", formData, {
-                    headers: { "Content-Type": "multipart/form-data" },
-                });
+// ---------------------------
+// Form fields
+// ---------------------------
+const company_id = ref(4)
+const itemNumber = ref('')
+const itemName = ref('')
+const manufacturingDuration = ref('')
+const quantity = ref('')
+const rawMaterialsWarehouse = ref('')
+const finishedProductWarehouse = ref('')
+const balanceUnit = ref('')
+const length = ref('')
+const width = ref('')
+const height = ref('')
+const workerQuantity = ref('')
+const secondUnit = ref('')
+const secondUnitContains = ref('')
+const secondUnitNumber = ref('')
+const secondUnitItemNumber = ref('')
+const thirdUnit = ref('')
+const thirdUnitContains = ref('')
+const thirdUnitNumber = ref('')
+const thirdUnitItemNumber = ref('')
+const dealingUnit1 = ref('')
+const dealingUnit2 = ref('')
+const firstSellingPrice = ref('')
+const secondSellingPrice = ref('')
+const thirdSellingPrice = ref('')
+const sellingDiscountPercentage = ref('')
+const maxDiscountPercentage = ref('')
+const minPrice = ref('')
+const sellingVAT = ref(true)
+const firstPurchasePrice = ref('')
+const secondPurchasePrice = ref('')
+const thirdPurchasePrice = ref('')
+const purchaseDiscountPercentage = ref('')
+const purchaseVAT = ref(true)
+const itemVAT = ref(true)
+const barcode = ref('')
+const barcodeType = ref('')
+const expireDate = ref('')
+const categoryType = ref('')
+const selectedFile = ref(null)
 
-                Swal.fire("Success", "Item created successfully", "success");
-                this.$router.push({ name: "admin.warehouses.items" });
-            } catch (error) {
-                console.error(error);
-                Swal.fire("Error", "Failed to create item", "error");
-            }
-        },
-    },
-};
+// ---------------------------
+// Select options arrays
+// ---------------------------
+const rawMaterialsWarehouseOptions = ref([])
+const finishedProductWarehouseOptions = ref([])
+const balanceUnitOptions = ref([])
+const secondUnitOptions = ref([])
+const secondUnitContainsOptions = ref([])
+const thirdUnitOptions = ref([])
+const thirdUnitContainsOptions = ref([])
+const dealingUnitOptions = ref([])
+
+// ---------------------------
+// Lifecycle
+// ---------------------------
+onMounted(() => {
+    // مثال: تحميل خيارات من API أو ثابت
+    rawMaterialsWarehouseOptions.value = [
+        { id: 1, name: 'Warehouse A' },
+        { id: 2, name: 'Warehouse B' },
+    ]
+    finishedProductWarehouseOptions.value = [
+        { id: 1, name: 'Finished A' },
+        { id: 2, name: 'Finished B' },
+    ]
+    balanceUnitOptions.value = [{ id: 'piece', name: 'Piece' }]
+    secondUnitOptions.value = [{ id: 'box', name: 'Box' }]
+    secondUnitContainsOptions.value = [{ id: '10', name: '10 Pieces' }]
+    thirdUnitOptions.value = [{ id: 'pack', name: 'Pack' }]
+    thirdUnitContainsOptions.value = [{ id: '5', name: '5 Boxes' }]
+    dealingUnitOptions.value = [{ id: 'main', name: 'Main Unit' }]
+})
+
+// ---------------------------
+// File input handler
+// ---------------------------
+const handleFileChange = (event) => {
+    selectedFile.value = event.target.files[0]
+}
+
+// ---------------------------
+// Save form
+// ---------------------------
+const saveForm = async () => {
+    const payload = {
+        company_id: company_id.value,
+        item_number: itemNumber.value,
+        item_name_ar: itemName.value,
+        item_name_en: itemName.value,
+        manufacturing_duration: manufacturingDuration.value,
+        quantity: quantity.value || 0,
+        raw_materials_warehouse_id: rawMaterialsWarehouse.value || null,
+        finished_product_warehouse_id: finishedProductWarehouse.value || null,
+        unit: balanceUnit.value || 'piece',
+        length: length.value || 0,
+        width: width.value || 0,
+        height: height.value || 0,
+        worker_quantity: workerQuantity.value || 0,
+        second_unit: secondUnit.value || null,
+        second_unit_contains: secondUnitContains.value || null,
+        second_unit_number: secondUnitNumber.value || 0,
+        second_unit_item_number: secondUnitItemNumber.value || null,
+        third_unit: thirdUnit.value || null,
+        third_unit_contains: thirdUnitContains.value || null,
+        third_unit_number: thirdUnitNumber.value || 0,
+        third_unit_item_number: thirdUnitItemNumber.value || null,
+        dealing_unit_1: dealingUnit1.value || null,
+        dealing_unit_2: dealingUnit2.value || null,
+        first_selling_price: firstSellingPrice.value || 0,
+        second_selling_price: secondSellingPrice.value || 0,
+        third_selling_price: thirdSellingPrice.value || 0,
+        selling_discount_percentage: sellingDiscountPercentage.value || 0,
+        max_discount_percentage: maxDiscountPercentage.value || 0,
+        min_price: minPrice.value || 0,
+        selling_vat: sellingVAT.value,
+        first_purchase_price: firstPurchasePrice.value || 0,
+        second_purchase_price: secondPurchasePrice.value || 0,
+        third_purchase_price: thirdPurchasePrice.value || 0,
+        purchase_discount_percentage: purchaseDiscountPercentage.value || 0,
+        purchase_vat: purchaseVAT.value,
+        item_vat: itemVAT.value,
+        barcode: barcode.value,
+        barcode_type: barcodeType.value,
+        expire_date: expireDate.value,
+        category_type: categoryType.value,
+        image: selectedFile.value || null,
+        notes: '',
+        active: true,
+    }
+
+    try {
+        await axios.post('/inventory-items/register-inventory', payload, {
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' }
+        })
+        Swal.fire({ icon: 'success', title: t('messages.saved_title'), text: t('messages.saved_text'), timer: 2000, showConfirmButton: false })
+        router.push('/admin/warehouses/items')
+    } catch (error) {
+        Swal.fire({ icon: 'error', title: t('messages.error_title') || 'Error', text: error.response?.data?.message || 'Something went wrong' })
+    }
+}
+
+// ---------------------------
+// Cancel form
+// ---------------------------
+const cancelForm = () => {
+    Swal.fire({
+        title: t('messages.cancel_title'),
+        text: t('messages.cancel_text'),
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: t('buttons.yes_cancel'),
+        cancelButtonText: t('buttons.no')
+    }).then((result) => {
+        if (result.isConfirmed) router.push('/admin/warehouses/items')
+    })
+}
 </script>
-
-<style scoped>
-.header th {
-    background-color: #F4FFF0 !important;
-}
-
-.btn-action {
-    background-color: #F4FFF0 !important;
-}
-</style>

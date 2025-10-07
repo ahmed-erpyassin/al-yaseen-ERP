@@ -15,14 +15,14 @@ module.exports = defineConfig({
     },
   },
 
-devServer: {
-  proxy: {
-    "/api": {
-      target: "https://dev.alyaseenerp.com",
-      changeOrigin: true,
-      secure: false,
+  devServer: {
+    proxy: {
+      "^/api": {
+        target: "https://dev.alyaseenerp.com",
+        changeOrigin: true,
+        secure: false,
+        pathRewrite: { "^/api": "/api" },
+      },
     },
   },
-},
-
 });

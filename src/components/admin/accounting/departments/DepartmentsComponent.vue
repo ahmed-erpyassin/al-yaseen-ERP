@@ -156,3 +156,58 @@ export default {
     background-color: #1D7342 !important;
 }
 </style>
+
+
+
+
+<!-- <template> -->
+  <!-- <div class="container pe-5 ps-5">
+    <h1 class="mb-4"><i class="bi bi-diagram-3"></i> الهيكل التنظيمي</h1> -->
+
+    <!-- المخطط التنظيمي وهمي -->
+    <!-- <div class="org-chart">
+      <div class="node">الشركة الرئيسية</div>
+      <div class="children">
+        <div class="node">المدير العام (أحمد)</div>
+        <div class="node">نائب المدير (سارة)</div>
+      </div>
+      <div class="children">
+        <div class="node">قسم المبيعات</div>
+        <div class="node">قسم التسويق</div>
+        <div class="node">قسم الموارد البشرية</div>
+      </div>
+    </div>
+  </div> -->
+<!-- </template> -->
+
+<!-- <script> -->
+// export default {
+//   name: "FakeOrgChart"
+// };
+<!-- </script> -->
+
+<!-- <style scoped>
+.org-chart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 2rem;
+}
+
+.org-chart .node {
+  background-color: #1D7342;
+  color: #fff;
+  padding: 10px 20px;
+  margin: 10px;
+  border-radius: 8px;
+  text-align: center;
+  min-width: 150px;
+}
+
+.org-chart .children {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+</style> -->
+

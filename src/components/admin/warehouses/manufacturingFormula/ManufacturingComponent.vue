@@ -1,20 +1,18 @@
 <template>
     <div class="container pe-5 ps-5">
         <!-- Page Title -->
-        <h1><i class="bi bi-image"></i> {{ $t('label.company_undefined') }}</h1>
-
-        <!-- Actions: Add Item & Import/Export -->
-        <div class="d-flex align-items-center justify-content-end mb-3">
-            <!-- Add Button -->
-            <router-link :to="{ name: 'admin.warehouses.manufacturing-formula.create' }"
-                class="btn btn-lg btn-main me-3">
-                {{ $t('buttons.add') }}
+        <h2 class="mb-4"><i class="bi bi-building"></i> {{ $t('label.manufacturing') }}</h2>
+        <!-- Top Actions -->
+        <div class="d-flex align-items-center justify-content-end mb-4 gap-2">
+            <!-- Add New Item (Calculation) -->
+            <router-link :to="{ name: 'admin.warehouses.manufacturing-formula.manufacturing.create' }"
+                class="btn btn-lg btn-success">
+                {{ $t('buttons.Calculation') }}
             </router-link>
 
-            <!-- Import/Export Dropdown -->
+            <!-- Import/Export & Print -->
             <div class="dropdown">
-                <button class="btn btn-lg btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                    aria-expanded="false">
+                <button class="btn btn-lg btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
                     {{ $t('buttons.import_export') }}
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end p-2">
@@ -24,79 +22,65 @@
                             <input type="file" @change="importExcel" accept=".xlsx, .xls" class="d-none" />
                         </label>
                     </li>
-                    <li>
-                        <button class="dropdown-item" @click="exportExcel">{{ $t('buttons.export_excel') }}</button>
-                    </li>
-                    <li>
-                        <button class="dropdown-item" @click="exportPDF">{{ $t('buttons.export_pdf') }}</button>
-                    </li>
-                    <li>
-                        <button class="dropdown-item" @click="printTable">{{ $t('buttons.print') }}</button>
-                    </li>
+                    <li><button class="dropdown-item" @click="exportExcel">{{ $t('buttons.export_excel') }}</button></li>
+                    <li><button class="dropdown-item" @click="exportPDF">{{ $t('buttons.export_pdf') }}</button></li>
+                    <li><button class="dropdown-item" @click="printTable">{{ $t('buttons.print') }}</button></li>
                 </ul>
             </div>
         </div>
 
-        <!-- Items Table Title -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <h3>{{ $t('label.manufacturing_formula') }}</h3>
-            </div>
-        </div>
 
-        <!-- Actions: Search & Column Toggle -->
-        <div class="d-flex align-items-center justify-content-between mb-3">
-            <!-- Search -->
+
+        <!-- Search -->
+        <div class="d-flex justify-content-between mb-3 align-items-center">
             <div class="search-bar d-flex align-items-center">
                 <i class="bi bi-search me-2"></i>
                 <input type="text" class="form-control" placeholder="بحث عن عنصر..." v-model="searchQuery" />
-            </div>
-
-            <!-- Column Toggle -->
-            <div class="dropdown ms-5">
-                <i class="bi bi-gear" type="button" data-bs-toggle="dropdown" aria-expanded="false"></i>
-                <ul class="dropdown-menu align-center rounded-0 p-2" style="width: 250px;">
-                    <li v-for="(th, index) in table.fields" :key="index">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" v-model="th.status" :id="'col' + index" />
-                            <label class="form-check-label" :for="'col' + index">{{ th.name }}</label>
-                        </div>
-                    </li>
-                </ul>
             </div>
         </div>
 
         <!-- Table -->
         <div class="table-responsive">
-            <table class="table table-bordered text-center align-middle">
+            <table class="table table-bordered table-striped text-center align-middle">
                 <thead>
                     <tr class="header">
-                        <th v-for="(th, index) in visibleFields" :key="index">{{ th.name }}</th>
+                        <th>#</th>
+                        <th>{{ $t('label.manufacturing_number') }}</th>
+                        <th>{{ $t('label.item_number') }}</th>
+                        <th>{{ $t('label.item_name') }}</th>
+                        <th>{{ $t('label.unit') }}</th>
+                        <th>{{ $t('label.balance') }}</th>
+                        <th>{{ $t('label.min_limit') }}</th>
+                        <th>{{ $t('label.max_limit') }}</th>
+                        <th>{{ $t('label.reorder_limit') }}</th>
+                        <th>{{ $t('label.purchase_price') }}</th>
+                        <th>{{ $t('label.sale_price') }}</th>
                         <th>{{ $t('label.actions') }}</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-if="paginatedItems.length === 0">
-                        <td :colspan="visibleFields.length + 1">
-                            {{ $t('label.no_data') }}
-                        </td>
+                        <td :colspan="12">{{ $t('label.no_data') }}</td>
                     </tr>
-                    <tr v-for="item in paginatedItems" :key="item.id">
-                        <td v-for="(field, index) in visibleFields" :key="index">
-                            <template v-if="field.key === 'image'">
-                                <img :src="item.image" alt="Item Image" class="table-image" />
-                            </template>
-                            <template v-else>
-                                {{ item[field.key] }}
-                            </template>
-                        </td>
+                    <tr v-for="(item, idx) in paginatedItems" :key="item.id">
+                        <td>{{ (currentPage - 1) * perPage + idx + 1 }}</td>
+                        <td>{{ item.manufacturing_number }}</td>
+                        <td>{{ item.item_number }}</td>
+                        <td>{{ item.item_name }}</td>
+                        <td>{{ item.unit }}</td>
+                        <td>{{ item.balance }}</td>
+                        <td>{{ item.min_limit }}</td>
+                        <td>{{ item.max_limit }}</td>
+                        <td>{{ item.reorder_limit }}</td>
+                        <td>{{ item.purchase_price }}</td>
+                        <td>{{ item.sale_price }}</td>
                         <td class="text-center">
-                            <i class="bi bi-eye action-icon me-2" :title="$t('buttons.check')"
-                                @click="viewItem(item)"></i>
-                            <i class="bi bi-pencil action-icon me-2" :title="$t('buttons.edit')"
-                                @click="editItem(item)"></i>
-                            <i class="bi bi-trash action-icon" :title="$t('buttons.delete')"
-                                @click="deleteItem(item)"></i>
+                            <i class="bi bi-eye action-icon me-2" @click="viewItem(item)"
+                                :title="$t('buttons.check')"></i>
+                            <i class="bi bi-pencil action-icon me-2" @click="editItem(item)"
+                                :title="$t('buttons.edit')"></i>
+                            <i class="bi bi-trash action-icon" @click="deleteItem(item)"
+                                :title="$t('buttons.delete')"></i>
                         </td>
                     </tr>
                 </tbody>
@@ -125,44 +109,22 @@ import autoTable from "jspdf-autotable";
 import axios from "axios";
 
 export default {
-    name: "ItemsComponent",
+    name: "ManufacturingItems",
     data() {
         return {
             searchQuery: "",
             currentPage: 1,
             perPage: 10,
-            items: [], // سيتم ملؤها من API
-            table: {
-                fields: [
-                    { name: this.$t('label.manufacturing_number'), key: "manufacturing_number", status: true },
-                    { name: this.$t('label.item_number'), key: "item_number", status: true },
-                    { name: this.$t('label.item_name'), key: "item_name", status: true },
-                    { name: this.$t('label.unit'), key: "unit", status: true },
-                    { name: this.$t('label.balance'), key: "balance", status: true },
-                    { name: this.$t('label.min_limit'), key: "min_limit", status: true },
-                    { name: this.$t('label.max_limit'), key: "max_limit", status: true },
-                    { name: this.$t('label.reorder_limit'), key: "reorder_limit", status: true },
-                    { name: this.$t('label.sale_price'), key: "sale_price", status: true },
-                    { name: this.$t('label.purchase_price'), key: "purchase_price", status: true },
-                    { name: this.$t('label.color'), key: "color", status: false },
-                    { name: this.$t('label.length'), key: "length", status: false },
-                    { name: this.$t('label.width'), key: "width", status: false },
-                    { name: this.$t('label.height'), key: "height", status: false },
-                    { name: this.$t('label.date'), key: "date", status: false },
-                    { name: this.$t('label.time'), key: "time", status: false }
-                ]
-            }
+            items: [],
         };
     },
     computed: {
-        visibleFields() {
-            return this.table.fields.filter(f => f.status);
-        },
         filteredItems() {
             if (!this.searchQuery) return this.items;
             const query = this.searchQuery.toLowerCase();
             return this.items.filter(
-                i => i.item_number.toString().includes(query) ||
+                i =>
+                    i.item_number.toString().includes(query) ||
                     i.item_name.toLowerCase().includes(query)
             );
         },
@@ -178,64 +140,44 @@ export default {
         this.fetchItems();
     },
     methods: {
-        // -----------------------------------
-        // Fetch items from API
-        // -----------------------------------
         async fetchItems() {
             try {
-                const response = await axios.get("/api/manufacturing-formulas");
-                this.items = response.data;
+                const res = await axios.get("/api/manufacturing-formulas");
+                this.items = res.data;
             } catch (err) {
-                console.error("Error fetching items:", err);
                 Swal.fire({
-                    title: this.$t("messages.error_title"),
-                    text: this.$t("messages.error_fetch"),
+                    title: "خطأ",
+                    text: "تعذر جلب البيانات",
                     icon: "error"
                 });
             }
         },
-
-        viewItem(item) { console.log("Viewing item:", item); },
-        editItem(item) { console.log("Editing item:", item); },
-
-        // -----------------------------------
-        // Delete item via API
-        // -----------------------------------
+        viewItem(item) { console.log("View:", item); },
+        editItem(item) { console.log("Edit:", item); },
         async deleteItem(item) {
             Swal.fire({
-                title: this.$t("messages.confirm_delete"),
+                title: "هل أنت متأكد؟",
+                text: "سيتم حذف هذا العنصر نهائيًا!",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#dc3545",
                 cancelButtonColor: "#6c757d",
-                confirmButtonText: this.$t("buttons.delete"),
-                cancelButtonText: this.$t("buttons.cancel")
+                confirmButtonText: "حذف",
+                cancelButtonText: "إلغاء"
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     try {
                         await axios.delete(`/api/manufacturing-formulas/${item.id}`);
                         this.items = this.items.filter(i => i.id !== item.id);
-                        Swal.fire({
-                            title: this.$t("messages.item_deleted"),
-                            icon: "success",
-                            timer: 2000,
-                            showConfirmButton: false
-                        });
-                    } catch (err) {
-                        console.error(err);
-                        Swal.fire({
-                            title: this.$t("messages.error_title"),
-                            text: this.$t("messages.error_delete"),
-                            icon: "error"
-                        });
+                        Swal.fire({ title: "تم الحذف", icon: "success", timer: 1500, showConfirmButton: false });
+                    } catch {
+                        Swal.fire({ title: "خطأ", text: "تعذر حذف العنصر", icon: "error" });
                     }
                 }
             });
         },
-
         prevPage() { if (this.currentPage > 1) this.currentPage--; },
-        nextPage() { if (this.currentPage < this.totalPages) this.currentPage++; },
-        importExcel(event) {
+        nextPage() { if (this.currentPage < this.totalPages) this.currentPage++; }, importExcel(event) {
             const file = event.target.files[0];
             if (!file) return;
 
@@ -301,26 +243,13 @@ export default {
 
             doc.save("items.pdf");
         },
-        printTable() {
-            const printContent = this.$el.querySelector('.table-responsive').innerHTML;
-            const WinPrint = window.open('', '', 'width=900,height=650');
-            WinPrint.document.write('<html><head><title>Print</title></head><body>');
-            WinPrint.document.write(printContent);
-            WinPrint.document.write('</body></html>');
-            WinPrint.document.close();
-            WinPrint.focus();
-            WinPrint.print();
-            WinPrint.close();
-        }
-
     }
 };
 </script>
 
-
-<style>
+<style scoped>
 .header th {
-    background-color: #f4fff0 !important;
+    background-color: #f4fff0;
     text-align: center;
     vertical-align: middle;
 }
@@ -337,36 +266,14 @@ export default {
     opacity: 0.8;
 }
 
-.form-check-input:checked[type="checkbox"] {
-    border-radius: 50%;
-    background-color: #1d7342 !important;
-}
-
-.search-bar {
-    flex: auto;
-}
-
-.dropdown.ms-5 {
-    margin-left: 3rem;
-}
-
 .table th,
 .table td {
     min-width: 120px;
-    white-space: nowrap;
     text-align: center;
     vertical-align: middle;
 }
 
-.table-image {
-    max-width: 50px;
-    height: 50px;
-    object-fit: cover;
-    border-radius: 4px;
-    transition: transform 0.2s;
-}
-
-.table-image:hover {
-    transform: scale(1.1);
+.search-bar {
+    flex: 1;
 }
 </style>

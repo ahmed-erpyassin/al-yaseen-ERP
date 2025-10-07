@@ -1,18 +1,13 @@
 <template>
     <div class="container pe-5 ps-5">
         <h1><i class="bi bi-image"></i> Undefined Company name</h1>
-        <div class="d-flex align-items-center justify-content-end">
-            <button class="btn btn-lg btn-outline-secondary me-3">Cancel</button>
-            <div class="dropdown">
-                <button class="btn btn-lg btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                    aria-expanded="false">
-                    Save
-                </button>
-                <ul class="dropdown-menu bg-main text-light">
-                    <li><a class="dropdown-item" href="#">Save & Email</a></li>
-                    <li><a class="dropdown-item" href="#">Save & Print</a></li>
-                </ul>
-            </div>
+        <div class="d-flex align-items-center justify-content-end mb-4">
+            <button type="button" class="btn btn-lg btn-outline-secondary me-3">
+                {{ $t('buttons.cancel') }}
+            </button>
+            <button type="button" class="btn btn-lg btn-success">
+                {{ $t('buttons.save') }}
+            </button>
         </div>
         <form class="form">
             <div class="row">

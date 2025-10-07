@@ -131,14 +131,18 @@ export default {
                         icon: 'success',
                         title: 'تم تسجيل الدخول بنجاح',
                         showConfirmButton: false,
-                        timer: 2000
+                        timer: 2000,
+
+                    }).then(() => {
+                        // توجيه المستخدم لصفحة /admin بعد انتهاء الرسالة
+                        this.$router.push('/admin');
                     });
 
-                    if (user.otp_expires_at) {
-                        this.$router.push({ name: "auth.otp", params: { token } });
-                    } else {
-                        this.$router.push("/admin");
-                    }
+                    // if (user.otp_expires_at) {
+                    //     this.$router.push({ name: "auth.otp", params: { token } });
+                    // } else {
+                    //     this.$router.push("/admin");
+                    // }
                 } else {
                     Swal.fire('خطأ', message || "فشل تسجيل الدخول", 'error');
                 }
