@@ -127,7 +127,10 @@ export const customer = {
       context.commit("setLoading", true);
       context.commit("clearError");
 
-      // ✅ البيانات المرسلة مطابقة لمتطلبات الـ Backend
+      // 🔐 جلب التوكن من localStorage مباشرة
+      const token =
+        context.rootState.auth?.authToken || localStorage.getItem("authToken");
+
       const apiPayload = {
         company_id: payload.company_id || 1,
         branch_id: payload.branch_id || 1,
@@ -154,14 +157,15 @@ export const customer = {
         code: payload.code || "",
         invoice_type: payload.invoice_type || "",
         category: payload.category || "",
+        barcode_type: payload.barcode_type || "",
       };
 
-      // ✅ المسار الصحيح لإنشاء العميل
       return new Promise((resolve, reject) => {
         axios
-          .post("customers/create", apiPayload, {
+          .post("https://alyaseenerp.com/api/v1/customers/create", apiPayload, {
             headers: {
-              Authorization: "Bearer " + context.rootState.auth.authToken,
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
               "Content-Type": "application/json",
             },
           })
@@ -170,6 +174,7 @@ export const customer = {
             resolve(res);
           })
           .catch((err) => {
+            console.error("❌ إنشاء العميل فشل:", err.response);
             context.commit(
               "setError",
               err.response?.data?.message || "فشل إنشاء العميل"

@@ -1,213 +1,198 @@
 <template>
-    <div class="container pe-5 ps-5">
-        <h1 class="mb-4"><i class="bi bi-image"></i> {{ $t('label.company_undefined') }}</h1>
+    <div class="container py-4">
+        <!-- الأقسام -->
+        <div class="card mb-5 shadow-sm border-0 rounded-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="fw-bold">الأقسام</h4>
+                    <button class="btn btn-success btn-sm px-4" @click="openAddDepartmentModal">
+                        <i class="bi bi-plus-circle"></i> إضافة قسم
+                    </button>
+                </div>
 
-        <!-- أزرار الإجراء -->
-        <div class="d-flex align-items-center justify-content-end mb-4">
-            <router-link :to="{ name: 'admin.accounting.departments.create' }" class="btn btn-lg btn-main me-3">
-                {{ $t('buttons.create') }}
-            </router-link>
-        </div>
+                <!-- المخطط التنظيمي -->
+                <div class="mb-4 text-center">
+                    <vue3-org-chart :data="orgChartData" :collapsable="true" :zoom="true" node-size="150x60" />
+                </div>
 
-        <!-- عنوان الأقسام -->
-        <div class="row mb-3">
-            <div class="col-12">
-                <h3>{{ $t('label.departments') }}</h3>
+                <!-- جدول الأقسام -->
+                <div class="table-responsive">
+                    <table class="table text-center align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>الاسم</th>
+                                <th>المشرف</th>
+                                <th>إجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-if="departments.length === 0">
+                                <td colspan="3" class="text-muted">لا توجد أقسام بعد</td>
+                            </tr>
+                            <tr v-for="(dep, index) in departments" :key="index">
+                                <td>{{ dep.name }}</td>
+                                <td>{{ dep.supervisor }}</td>
+                                <td>
+                                    <button class="btn btn-outline-primary btn-sm me-2" @click="editDepartment(dep)">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="btn btn-outline-danger btn-sm" @click="deleteDepartment(dep)">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
-        <!-- شريط الإجراءات -->
-        <div class="d-flex flex-wrap align-items-center actions mb-4">
-            <div class="action-item search me-3 mb-2">
-                <i class="bi bi-search me-2"></i>
-                <input type="text" class="form-control d-inline-block w-auto" v-model="searchQuery"
-                    :placeholder="$t('label.search_department')" />
-            </div>
-            <div class="action-item dropdown me-3 mb-2">
-                <i class="bi bi-gear" type="button" data-bs-toggle="dropdown" aria-expanded="false"></i>
-                <ul class="dropdown-menu p-2" style="min-width: 200px;">
-                    <li v-for="(th, index) in table.fields" :key="index">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" v-model="th.status" :id="'col' + index">
-                            <label class="form-check-label" :for="'col' + index">{{ th.name }}</label>
-                        </div>
-                    </li>
-                </ul>
+        <!-- المسميات الوظيفية -->
+        <div class="card shadow-sm border-0 rounded-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="fw-bold">المسميات الوظيفية</h4>
+                    <button class="btn btn-success btn-sm px-4" @click="openAddTitleModal">
+                        <i class="bi bi-plus-circle"></i> إضافة مسمى
+                    </button>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table text-center align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>المسمى</th>
+                                <th>القسم</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-if="jobTitles.length === 0">
+                                <td colspan="2" class="text-muted">لا توجد مسميات وظيفية</td>
+                            </tr>
+                            <tr v-for="(title, index) in jobTitles" :key="index">
+                                <td>{{ title.title }}</td>
+                                <td>{{ title.department }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
-        <!-- جدول الأقسام -->
-        <div class="table-responsive">
-            <table class="table table-bordered text-center align-middle">
-                <thead>
-                    <tr class="header">
-                        <th v-for="(th, index) in visibleFields" :key="index">{{ th.name }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-if="isLoading">
-                        <td :colspan="visibleFields.length" class="text-center">
-                            <div class="spinner-border" role="status"></div>
-                        </td>
-                    </tr>
-                    <tr v-else-if="filteredDepartments.length === 0">
-                        <td :colspan="visibleFields.length" class="text-center">لا توجد سجلات</td>
-                    </tr>
-                    <tr v-else v-for="department in paginatedDepartments" :key="department.id">
-                        <td v-for="th in visibleFields" :key="th.key">{{ department[th.key] }}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- الصفحات -->
-        <div class="d-flex justify-content-between align-items-center mt-3">
-            <button class="btn btn-secondary" @click="prevPage" :disabled="currentPage === 1">{{ $t('buttons.previous')
-                }}</button>
-            <span>{{ $t('label.page') }} {{ currentPage }} {{ $t('label.of') }} {{ totalPages }}</span>
-            <button class="btn btn-secondary" @click="nextPage" :disabled="currentPage === totalPages">{{
-                $t('buttons.next') }}</button>
+        <!-- نافذة إضافة قسم -->
+        <div v-if="showAddDepartment" class="modal-backdrop">
+            <div class="modal-dialog bg-white p-4 rounded-4 shadow-lg">
+                <h5 class="mb-3">إضافة قسم جديد</h5>
+                <div class="mb-3">
+                    <label class="form-label">اسم القسم</label>
+                    <input type="text" class="form-control" v-model="newDepartment.name" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">اسم المشرف</label>
+                    <input type="text" class="form-control" v-model="newDepartment.supervisor" />
+                </div>
+                <div class="text-end">
+                    <button class="btn btn-secondary me-2" @click="showAddDepartment = false">إلغاء</button>
+                    <button class="btn btn-success" @click="addDepartment">حفظ</button>
+                </div>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
-import axios from 'axios';
+import Vue3OrgChart from "vue3-org-chart";
+import "vue3-org-chart/dist/style.css";
 
 export default {
-    name: "DepartmentsComponent",
+    name: "DepartmentsAndJobs",
+    components: { Vue3OrgChart },
     data() {
         return {
-            searchQuery: "",
-            currentPage: 1,
-            perPage: 8,
-            isLoading: false,
-            departments: [],
-            table: {
-                fields: [
-                    { name: this.$t('label.number'), key: "number", status: true },
-                    { name: this.$t('label.statement'), key: "statement", status: true },
-                    { name: this.$t('label.statement_en'), key: "statement_en", status: true },
-                    { name: this.$t('label.estimated_balance'), key: "estimated_balance", status: true },
-                    { name: this.$t('label.manager'), key: "manager", status: true },
-                    { name: this.$t('label.project_start_date'), key: "start_date", status: true },
-                    { name: this.$t('label.project_end_date'), key: "end_date", status: true }
-                ]
-            }
+            showAddDepartment: false,
+            newDepartment: { name: "", supervisor: "" },
+            departments: [
+                { name: "إدارة المعدات", supervisor: "محمد" },
+                { name: "إدارة الإنتاج", supervisor: "محمد" },
+                { name: "إدارة التسويق", supervisor: "محمد" },
+                { name: "إدارة المبيعات", supervisor: "محمد" },
+            ],
+            jobTitles: [
+                { title: "مهندس إنتاج", department: "إدارة الإنتاج" },
+                { title: "مدير منتجات", department: "إدارة التسويق" },
+                { title: "مصمم جرافيك", department: "إدارة المبيعات" },
+                { title: "محاسب", department: "المحاسبة" },
+            ],
         };
     },
     computed: {
-        visibleFields() { return this.table.fields.filter(f => f.status); },
-        filteredDepartments() {
-            if (!this.searchQuery) return this.departments;
-            return this.departments.filter(d => (d.statement || '').toLowerCase().includes(this.searchQuery.toLowerCase()));
+        orgChartData() {
+            return {
+                name: "الشركة",
+                children: this.departments.map((dep) => ({
+                    name: dep.name,
+                    title: dep.supervisor,
+                })),
+            };
         },
-        paginatedDepartments() {
-            const start = (this.currentPage - 1) * this.perPage;
-            return this.filteredDepartments.slice(start, start + this.perPage);
-        },
-        totalPages() { return Math.ceil(this.filteredDepartments.length / this.perPage); }
     },
     methods: {
-        prevPage() { if (this.currentPage > 1) this.currentPage--; },
-        nextPage() { if (this.currentPage < this.totalPages) this.currentPage++; },
-
-        async fetchDepartments() {
-            this.isLoading = true;
-            try {
-                const token = localStorage.getItem('authToken'); // افتراض وجود توكن
-                const res = await axios.get('/departments', {
-                    headers: { Authorization: `Bearer ${token}` },
-                    params: { per_page: this.perPage, page: this.currentPage }
-                });
-                this.departments = res.data.data || res.data;
-            } catch (err) {
-                console.error(err);
-            } finally {
-                this.isLoading = false;
+        openAddDepartmentModal() {
+            this.newDepartment = { name: "", supervisor: "" };
+            this.showAddDepartment = true;
+        },
+        addDepartment() {
+            if (!this.newDepartment.name || !this.newDepartment.supervisor) return alert("يرجى إدخال جميع البيانات");
+            this.departments.push({ ...this.newDepartment });
+            this.showAddDepartment = false;
+        },
+        openAddTitleModal() {
+            alert("سيتم فتح نافذة إضافة مسمى وظيفي قريباً");
+        },
+        editDepartment(dep) {
+            alert(`تعديل القسم: ${dep.name}`);
+        },
+        deleteDepartment(dep) {
+            if (confirm(`هل أنت متأكد من حذف القسم "${dep.name}"؟`)) {
+                this.departments = this.departments.filter((d) => d !== dep);
             }
-        }
+        },
     },
-    watch: {
-        currentPage() { this.fetchDepartments(); },
-        perPage() { this.fetchDepartments(); }
-    },
-    mounted() {
-        this.fetchDepartments();
-    }
 };
 </script>
 
 <style scoped>
-.header th {
-    background-color: #F4FFF0 !important;
+.card {
+    background-color: #ffffff;
 }
 
-.actions i {
-    font-size: 24px;
+.table th {
+    background-color: #f8f9fa;
+    font-weight: bold;
 }
 
-.actions span {
-    font-size: 18px;
+.btn-success {
+    background-color: #1d7342;
+    border-color: #1d7342;
 }
 
-.form-check-input:checked[type=checkbox] {
-    border-radius: 50%;
-    background-color: #1D7342 !important;
+.btn-success:hover {
+    background-color: #166233;
+}
+
+/* نافذة الإضافة */
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050;
+}
+
+.modal-dialog {
+    width: 400px;
+    max-width: 90%;
 }
 </style>
-
-
-
-
-<!-- <template> -->
-  <!-- <div class="container pe-5 ps-5">
-    <h1 class="mb-4"><i class="bi bi-diagram-3"></i> الهيكل التنظيمي</h1> -->
-
-    <!-- المخطط التنظيمي وهمي -->
-    <!-- <div class="org-chart">
-      <div class="node">الشركة الرئيسية</div>
-      <div class="children">
-        <div class="node">المدير العام (أحمد)</div>
-        <div class="node">نائب المدير (سارة)</div>
-      </div>
-      <div class="children">
-        <div class="node">قسم المبيعات</div>
-        <div class="node">قسم التسويق</div>
-        <div class="node">قسم الموارد البشرية</div>
-      </div>
-    </div>
-  </div> -->
-<!-- </template> -->
-
-<!-- <script> -->
-// export default {
-//   name: "FakeOrgChart"
-// };
-<!-- </script> -->
-
-<!-- <style scoped>
-.org-chart {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 2rem;
-}
-
-.org-chart .node {
-  background-color: #1D7342;
-  color: #fff;
-  padding: 10px 20px;
-  margin: 10px;
-  border-radius: 8px;
-  text-align: center;
-  min-width: 150px;
-}
-
-.org-chart .children {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-}
-</style> -->
-

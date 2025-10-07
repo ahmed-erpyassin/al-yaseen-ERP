@@ -1,183 +1,163 @@
+// store/modules/items.js
 import axios from "axios";
 
-export const item = {
-    namespaced: true,
+const state = {
+  items: [],
+  loading: false,
+  error: null,
+  searchQuery: "",
+};
 
-    state: {
-        items: [],
-        currentItem: null,
-        loading: false,
-        error: null,
-        searchQuery: '',
-        selectedItems: [],
-        tableColumns: {
-            item_number: true,
-            item_name: true,
-            unit: true,
-            quantity: true,
-            category: true,
-            barcode: true,
-            price: true
-        }
-    },
+const getters = {
+  items: (state) => state.items,
+  loading: (state) => state.loading,
+  error: (state) => state.error,
+  searchQuery: (state) => state.searchQuery,
+  filteredItems: (state) => {
+    const list = Array.isArray(state.items) ? state.items : [];
+    if (!state.searchQuery) return list;
+    const q = state.searchQuery.toLowerCase();
+    return list.filter((i) =>
+      (i.item_name || i.item_name_ar || "").toLowerCase().includes(q)
+    );
+  },
+};
 
-    getters: {
-        items: state => state.items,
-        currentItem: state => state.currentItem,
-        loading: state => state.loading,
-        error: state => state.error,
-        searchQuery: state => state.searchQuery,
-        selectedItems: state => state.selectedItems,
-        tableColumns: state => state.tableColumns,
-        filteredItems: state => {
-            if (!state.searchQuery) return state.items;
-            return state.items.filter(item =>
-                item.item_name?.toLowerCase().includes(state.searchQuery.toLowerCase()) ||
-                item.item_number?.toString().includes(state.searchQuery) ||
-                item.barcode?.includes(state.searchQuery)
-            );
-        }
-    },
-
-    actions: {
-        fetchItems({ commit, rootState }, payload = {}) {
-            commit('setLoading', true);
-            commit('clearError');
-            return axios.get('inventory-items', {
-                headers: { 'Authorization': 'Bearer ' + rootState.auth.authToken },
-                params: payload
-            })
-            .then(res => {
-                commit('setItems', res.data.data || res.data);
-                return res;
-            })
-            .catch(err => {
-                commit('setError', err.response?.data?.message || 'Failed to fetch items');
-                throw err;
-            })
-            .finally(() => commit('setLoading', false));
-        },
-
-        fetchItem({ commit, rootState }, itemId) {
-            commit('setLoading', true);
-            commit('clearError');
-            return axios.get(`inventory-items/${itemId}`, {
-                headers: { 'Authorization': 'Bearer ' + rootState.auth.authToken }
-            })
-            .then(res => {
-                commit('setCurrentItem', res.data.data || res.data);
-                return res;
-            })
-            .catch(err => {
-                commit('setError', err.response?.data?.message || 'Failed to fetch item');
-                throw err;
-            })
-            .finally(() => commit('setLoading', false));
-        },
-
-        createItem({ commit, rootState }, payload) {
-            commit('setLoading', true);
-            commit('clearError');
-            return axios.post('inventory-items/register-inventory', payload, {
-                headers: {
-                    'Authorization': 'Bearer ' + rootState.auth.authToken,
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(res => {
-                commit('addItem', res.data.data || res.data);
-                return res;
-            })
-            .catch(err => {
-                commit('setError', err.response?.data?.message || 'Failed to create item');
-                throw err;
-            })
-            .finally(() => commit('setLoading', false));
-        },
-
-        updateItem({ commit, rootState }, payload) {
-            commit('setLoading', true);
-            commit('clearError');
-            return axios.put(`inventory-items/${payload.id}`, payload, {
-                headers: {
-                    'Authorization': 'Bearer ' + rootState.auth.authToken,
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(res => {
-                commit('updateItem', res.data.data || res.data);
-                return res;
-            })
-            .catch(err => {
-                commit('setError', err.response?.data?.message || 'Failed to update item');
-                throw err;
-            })
-            .finally(() => commit('setLoading', false));
-        },
-
-        deleteItem({ commit, rootState }, itemId) {
-            commit('setLoading', true);
-            commit('clearError');
-            return axios.delete(`inventory-items/${itemId}`, {
-                headers: { 'Authorization': 'Bearer ' + rootState.auth.authToken }
-            })
-            .then(res => {
-                commit('removeItem', itemId);
-                return res;
-            })
-            .catch(err => {
-                commit('setError', err.response?.data?.message || 'Failed to delete item');
-                throw err;
-            })
-            .finally(() => commit('setLoading', false));
-        },
-
-        searchItems({ commit }, query) {
-            commit('setSearchQuery', query);
-        },
-
-        selectItem({ commit }, itemId) {
-            commit('selectItem', itemId);
-        },
-
-        deselectItem({ commit }, itemId) {
-            commit('deselectItem', itemId);
-        },
-
-        selectAllItems({ commit }) {
-            commit('selectAllItems');
-        },
-
-        clearSelection({ commit }) {
-            commit('clearSelection');
-        },
-
-        toggleColumn({ commit }, columnName) {
-            commit('toggleColumn', columnName);
-        }
-    },
-
-    mutations: {
-        setItems(state, items) { state.items = items; },
-        setCurrentItem(state, item) { state.currentItem = item; },
-        addItem(state, item) { state.items.unshift(item); },
-        updateItem(state, updatedItem) {
-            const index = state.items.findIndex(i => i.id === updatedItem.id);
-            if (index !== -1) state.items.splice(index, 1, updatedItem);
-            if (state.currentItem?.id === updatedItem.id) state.currentItem = updatedItem;
-        },
-        removeItem(state, itemId) {
-            state.items = state.items.filter(i => i.id !== itemId);
-            if (state.currentItem?.id === itemId) state.currentItem = null;
-        },
-        setLoading(state, loading) { state.loading = loading; },
-        setError(state, error) { state.error = error; },
-        clearError(state) { state.error = null; },
-        setSearchQuery(state, query) { state.searchQuery = query; },
-        selectItem(state, itemId) { if (!state.selectedItems.includes(itemId)) state.selectedItems.push(itemId); },
-        deselectItem(state, itemId) { state.selectedItems = state.selectedItems.filter(id => id !== itemId); },
-        selectAllItems(state) { state.selectedItems = state.items.map(i => i.id); },
-        clearSelection(state) { state.selectedItems = []; },
-        toggleColumn(state, columnName) { state.tableColumns[columnName] = !state.tableColumns[columnName]; }
+const actions = {
+  async fetchItems({ commit }) {
+    commit("setLoading", true);
+    try {
+      // ⚠️ تأكد أن baseURL في axios = "/api/v1"
+      // لذلك هنا نستخدم المسار بدون تكرار /api/v1
+      const res = await axios.get("/items/inventory-all", {
+        params: { type: "product", branch_id: 1, company_id: 1, per_page: 100 },
+      });
+      commit("setItems", res.data?.data || []);
+    } catch (err) {
+      commit("setError", err.response?.data?.message || "فشل في جلب الأصناف");
+    } finally {
+      commit("setLoading", false);
     }
-}
+  },
+
+  searchItems({ commit }, query) {
+    commit("setSearchQuery", query);
+  },
+
+  async deleteItem({ dispatch }, id) {
+    await axios.delete(`/items/discard-item/${id}`);
+    dispatch("fetchItems");
+  },
+
+  // ✅ الإنشاء باستخدام FormData وفق ما يتوقعه الـ backend
+  async createItem({ dispatch }, payload) {
+    // حدد الحقول المسموح إرسالها فقط (Whitelist)
+    const allowed = {
+      company_id: 1, // غيّرها حسب شركتك
+      branch_id: 1, // مطلوب غالبًا
+      type: "product", // المنتج
+      item_number: null,
+      item_name_ar: null,
+      item_name_en: null,
+
+      // وحدات وكميات أساسية
+      unit_id: null, // لو عندك unit_id رقمي
+      unit: null, // أو unit نصيًا، واحدة تكفي حسب سيرفرك
+      quantity: 0,
+
+      // أسعار بيع/شراء أساسية
+      first_selling_price: 0,
+      second_selling_price: 0,
+      third_selling_price: 0,
+      selling_discount_percentage: 0,
+      max_discount_percentage: 0,
+      min_price: 0,
+
+      first_purchase_price: 0,
+      second_purchase_price: 0,
+      third_purchase_price: 0,
+      purchase_discount_percentage: 0,
+
+      // VAT/Flags
+      selling_vat: false,
+      purchase_vat: false,
+      item_vat: false,
+      active: true,
+
+      // باركود وتواريخ
+      barcode: null,
+      barcode_type: null,
+      expire_date: null,
+
+      // تصنيفات ومستودعات (اختياري/حسب الحاجة)
+      category_type: null,
+      raw_materials_warehouse_id: null,
+      finished_product_warehouse_id: null,
+
+      // صورة
+      image: null,
+      // أي حقول إضافية عندك… (لكن حاول تبقيها ضمن ما يعرفه السيرفر)
+    };
+
+    // ادمج payload داخل allowed بدون إرسال شيء undefined/null/فاضي
+    const data = { ...allowed, ...payload };
+
+    // مهم: لو كان عندك unit نصّي (مثل 'piece') وما عندك unit_id، ارسل واحد منهم فقط
+    if (!data.unit_id && !data.unit) {
+      data.unit = "piece"; // قيمة افتراضية آمنة (غيّرها لو السيرفر يشترط unit_id)
+    }
+
+    // حوّل ل FormData
+    const form = new FormData();
+    Object.entries(data).forEach(([k, v]) => {
+      if (v === undefined || v === null || v === "") return;
+      // البوليان يفضّل تحويله لـ 0/1 إن كان السيرفر ما يدعم boolean
+      if (typeof v === "boolean") form.append(k, v ? 1 : 0);
+      else form.append(k, v);
+    });
+
+    // لو فيه ملف صورة
+    if (payload?.image instanceof File) {
+      form.set("image", payload.image);
+    }
+
+    try {
+      // ⚠️ لا تضع Content-Type يدوياً؛ FormData يضبطه تلقائيًا
+      await axios.post("/inventory-items/register-inventory", form, {
+        headers: { Accept: "application/json" },
+      });
+      await dispatch("fetchItems");
+    } catch (error) {
+      // مرّر رسالة تحقق 422 لو ظهرت
+      const apiErr = error.response?.data;
+      const firstMsg =
+        apiErr?.message ||
+        Object.values(apiErr?.errors || {})?.[0]?.[0] ||
+        "فشل إنشاء الصنف";
+      throw new Error(firstMsg);
+    }
+  },
+};
+
+const mutations = {
+  setItems(state, items) {
+    state.items = Array.isArray(items) ? items : [];
+  },
+  setLoading(state, val) {
+    state.loading = !!val;
+  },
+  setError(state, err) {
+    state.error = err || null;
+  },
+  setSearchQuery(state, val) {
+    state.searchQuery = val || "";
+  },
+};
+
+export default {
+  namespaced: true,
+  state,
+  getters,
+  actions,
+  mutations,
+};

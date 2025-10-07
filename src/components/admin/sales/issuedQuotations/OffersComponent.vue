@@ -118,7 +118,7 @@ export default {
     data() {
         return {
             baseUrl: process.env.VUE_APP_API_BASE_URL,
-            useApi: false,
+            useApi: true,
             isLoading: false,
             searchQuery: '',
             currentPage: 1,
@@ -159,38 +159,33 @@ export default {
     methods: {
         async fetchItems() {
             this.isLoading = true;
-            if (this.useApi) {
-                try {
-                    const token = localStorage.getItem('authToken');
-                    const res = await axios.get('/sales-management/outgoing-offers/list-all', {
-                        headers: { Authorization: `Bearer ${token}` }
-                    });
-                    this.items = (res.data.data || []).map((o, i) => ({
-                        id: o.id || i + 1,
-                        offer_number: o.journal_number || `OFF-${i + 1}`,
-                        customer_name: o.customer?.company_name || '-',
-                        amount: o.total_amount || 0,
-                        currency: o.currency?.code || 'USD',
-                        date: o.created_at ? new Date(o.created_at).toLocaleDateString() : '-',
-                        mobile: o.customer?.phone || '-'
-                    }));
-                } catch (err) {
-                    console.error(err);
-                    Swal.fire('خطأ', 'فشل في جلب البيانات من السيرفر', 'error');
-                }
-            } else {
-                this.items = Array.from({ length: 20 }, (_, i) => ({
-                    id: i + 1,
-                    offer_number: `OFF-${1000 + i}`,
-                    customer_name: `العميل ${i + 1}`,
-                    amount: (Math.random() * 1000).toFixed(2),
-                    currency: ['USD', 'ILS', 'EUR'][i % 3],
-                    date: new Date(2025, i % 12, (i + 1) * 2).toISOString().split('T')[0],
-                    mobile: `059${1000000 + i}`
+            try {
+                const token = localStorage.getItem('authToken');
+
+                const res = await axios.get('/sales-management/outgoing-offers/list-all', {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        Accept: 'application/json',
+                    },
+                });
+
+                this.items = (res.data.data || []).map((o, i) => ({
+                    id: o.id || i + 1,
+                    offer_number: o.journal_number || `OFF-${i + 1}`,
+                    customer_name: o.customer?.company_name || '-',
+                    amount: o.total_amount || 0,
+                    currency: o.currency?.code || 'USD',
+                    date: o.date ? new Date(o.date).toLocaleDateString() : '-',
+                    mobile: o.customer?.phone || '-',
                 }));
+            } catch (err) {
+                console.error(err);
+                Swal.fire('خطأ', 'فشل في جلب البيانات من السيرفر', 'error');
+            } finally {
+                this.isLoading = false;
             }
-            this.isLoading = false;
         },
+
         getFieldValue(item, key) { return item[key] || '-'; },
         viewItem(item) { this.$router.push({ name: 'admin.outgoing-offers.show', params: { id: item.id } }); },
         editItem(item) { this.$router.push({ name: 'admin.outgoing-offers.edit', params: { id: item.id } }); },

@@ -109,6 +109,17 @@
                 </div>
 
                 <div class="col-md-4 mb-3">
+                    <label class="form-label">{{ $t('label.barcode_type') || 'نوع الباركود' }}</label>
+                    <select class="form-select rounded-1" v-model="form.barcode_type">
+                        <option value="">اختر نوع الباركود</option>
+                        <option value="EAN13">EAN-13</option>
+                        <option value="CODE128">Code 128</option>
+                        <option value="QR">QR Code</option>
+                        <option value="UPC">UPC</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
                     <label class="form-label">{{ $t('label.invoice_type') || 'طريقة الفاتورة' }}</label>
                     <input type="text" class="form-control rounded-1" v-model="form.invoice_type" />
                 </div>
@@ -168,7 +179,8 @@ const form = reactive({
     code: '',
     invoice_type: '',
     category: '',
-    client_type: 'personal'
+    client_type: 'personal',
+    barcode_type: ''
 })
 
 // ✅ حفظ العميل الجديد

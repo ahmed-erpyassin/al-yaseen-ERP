@@ -5,9 +5,10 @@
 
         <!-- Actions: Add Item & Import/Export -->
         <div class="d-flex align-items-center justify-content-end mb-3">
-            <router-link :to="{ name: 'admin.warehouses.create' }" class="btn btn-lg btn-main me-3">
-                {{ $t('buttons.add') }}
+            <router-link :to="{ name: 'admin.warehouses.create' }" class="btn btn-lg btn-success me-3">
+                <i class="bi bi-plus-lg"></i> {{ $t('buttons.add') || 'إضافة مستودع' }}
             </router-link>
+
 
             <div class="dropdown">
                 <button class="btn btn-lg btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
@@ -124,7 +125,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import axios from "axios";
 
-const API_BASE = "https://yourdomain.com/api"; // API base URL, change on deployment
+const API_BASE = "https://alyaseenerp.com"; // API base URL, change on deployment
 
 export default {
     name: "AccountsListComponent",
@@ -138,16 +139,12 @@ export default {
             defaultImage: "https://via.placeholder.com/50?text=No+Image",
             table: {
                 fields: [
-                    { name: this.$t("label.item_number"), key: "item_number", status: true },
-                    { name: this.$t("label.item_name"), key: "item_name", status: true },
-                    { name: this.$t("label.item_description"), key: "description", status: true },
-                    { name: this.$t("label.model"), key: "model", status: false },
-                    { name: this.$t("label.unit"), key: "unit", status: false },
-                    { name: this.$t("label.balance"), key: "balance", status: true },
-                    { name: this.$t("label.first_sale_price"), key: "first_sale_price", status: false },
-                    { name: this.$t("label.first_purchase_price"), key: "first_purchase_price", status: false },
-                    { name: this.$t("label.color"), key: "color", status: false },
-                    { name: this.$t("label.image"), key: "image", status: true }
+                    { name: this.$t("label.warehouse_number") || "رقم المخزن", key: "warehouse_number", status: true },
+                    { name: this.$t("label.warehouse_name") || "اسم المخزن", key: "warehouse_name", status: true },
+                    { name: this.$t("label.warehouse_keeper") || "أمين المخزن", key: "warehouse_keeper", status: true },
+                    { name: this.$t("label.phone_number") || "رقم الهاتف", key: "phone_number", status: true },
+                    { name: this.$t("label.fax_number") || "رقم الفاكس", key: "fax_number", status: true },
+                    { name: this.$t("label.address") || "العنوان", key: "address", status: true }
                 ]
             }
         };
@@ -283,35 +280,52 @@ export default {
 
         // Fetch items from API
         async fetchItems() {
-            this.loading = true; // show loading
+            this.loading = true;
             try {
-                const response = await axios.get(`${API_BASE}/items`);
-                this.items = response.data.map((item, i) => ({
-                    id: i + 1,
-                    item_number: item.item_number || "No Data",
-                    item_name: item.item_name || "No Data",
-                    description: item.description || "No Data",
-                    model: item.model || "No Data",
-                    unit: item.unit || "No Data",
-                    balance: item.balance ?? "No Data",
-                    first_sale_price: item.first_sale_price ?? "No Data",
-                    first_purchase_price: item.first_purchase_price ?? "No Data",
-                    color: item.color || "No Data",
-                    image: item.image || this.defaultImage
+                const response = await axios.get(`${API_BASE}/api/v1/warehouses/scan-all`);
+
+                console.log("🔍 API response:", response.data);
+
+                // المستودعات الفعلية داخل data.data.data
+                const warehouses = Array.isArray(response.data?.data?.data)
+                    ? response.data.data.data
+                    : [];
+
+                this.items = warehouses.map((wh, i) => ({
+                    id: wh.id,
+                    warehouse_number: wh.warehouse_number || `WH-${i + 1}`,
+                    warehouse_name: wh.name || "—",
+                    warehouse_keeper: wh.warehouse_keeper_employee_name || "—",
+                    phone_number: wh.phone_number || "—",
+                    fax_number: wh.fax_number || "—",
+                    address: wh.address || "—",
                 }));
+
+
+                if (this.items.length === 0) {
+                    Swal.fire({
+                        title: "لا توجد مستودعات",
+                        text: "لم يتم العثور على أي بيانات مستودعات حالياً.",
+                        icon: "info",
+                        timer: 3000,
+                        showConfirmButton: false,
+                    });
+                }
             } catch (err) {
                 console.error("API fetch error:", err);
                 Swal.fire({
-                    title: "خطأ في جلب البيانات / Failed to fetch data",
-                    text: err.message,
+                    title: "خطأ في جلب بيانات المستودعات",
+                    text: err.response?.data?.message || err.message,
                     icon: "error",
                     timer: 3000,
-                    showConfirmButton: false
+                    showConfirmButton: false,
                 });
             } finally {
-                this.loading = false; // hide loading
+                this.loading = false;
             }
         }
+
+
     },
 
     // Fetch data on mount
