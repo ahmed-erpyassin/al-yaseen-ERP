@@ -1,14 +1,18 @@
 <template>
     <div class="container pe-5 ps-5">
-        <h1><i class="bi bi-image"></i> {{ $t('label.company_undefined') }}</h1>
+        <h1><i class="bi bi-pencil-square"></i> {{ $t('label.edit_warehouse') }}</h1>
 
         <!-- Action Buttons -->
         <div class="d-flex align-items-center justify-content-end mb-4">
-            <button type="button" class="btn btn-lg btn-outline-secondary me-3" @click="cancelForm">
+            <button type="button" class="btn btn-lg btn-outline-secondary me-3" @click="cancelForm" :disabled="loading">
                 {{ $t('buttons.cancel') }}
             </button>
-            <button type="button" class="btn btn-lg btn-success" @click="saveForm">
-                {{ $t('buttons.save') }}
+
+            <button type="button" class="btn btn-lg btn-success d-flex align-items-center" @click="updateForm"
+                :disabled="loading">
+                <!-- Spinner أثناء التحميل -->
+                <span v-if="loading" class="spinner-border spinner-border-sm me-2" role="status"></span>
+                <span>{{ loading ? $t('messages.loading') || 'جارٍ الحفظ...' : $t('buttons.save') }}</span>
             </button>
         </div>
 
@@ -23,7 +27,7 @@
                 <div class="col-md-2 mb-4">
                     <label for="warehouse_number" class="form-label">{{ $t('label.warehouse_number') }}</label>
                     <input type="text" id="warehouse_number" v-model="form.warehouse_number"
-                        class="form-control rounded-1" />
+                        class="form-control rounded-1" disabled />
                 </div>
 
                 <div class="col-md-2 mb-4">
@@ -40,8 +44,7 @@
 
                 <div class="col-md-4 mb-4">
                     <label for="warehousekeeper_employee_name" class="form-label">{{
-                        $t('label.warehousekeeper_employee_name')
-                        }}</label>
+                        $t('label.warehousekeeper_employee_name') }}</label>
                     <input type="text" id="warehousekeeper_employee_name" v-model="form.warehousekeeper_employee_name"
                         class="form-control rounded-1" />
                 </div>
@@ -120,7 +123,6 @@
                         </label>
                     </div>
                 </div>
-
             </div>
         </form>
     </div>
@@ -129,16 +131,18 @@
 <script setup>
 import Swal from "sweetalert2";
 import { ref, onMounted } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import axios from "axios";
 
 const router = useRouter();
+const route = useRoute();
 const { t } = useI18n();
 
-const API_BASE = "https://alyaseenerp.com/api/v1/warehouses/establish-facility";
+const API_BASE = "https://alyaseenerp.com/api/v1/warehouses";
 
-// 🧾 نموذج البيانات
+// 🟢 متغيرات الحالة
+const loading = ref(true); // <-- تمت الإضافة هنا
 const form = ref({
     warehouse_number: "",
     information: "",
@@ -154,87 +158,121 @@ const form = ref({
     evaluation_method: "no_value",
 });
 
-// عند تحميل الصفحة، توليد رقم مستودع تلقائي فريد
-onMounted(() => {
-    form.value.warehouse_number = `WH${String(Math.floor(Math.random() * 9999)).padStart(3, "0")}`;
+// 🟢 جلب بيانات المستودع الحالي عند تحميل الصفحة
+onMounted(async () => {
+    try {
+        loading.value = true; // ⬅️ بداية التحميل
+
+        const id = route.params.id;
+        const token = localStorage.getItem("authToken");
+
+        const response = await axios.get(`${API_BASE}/inspect-facility/${id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const data = response.data.data || response.data;
+
+        form.value = {
+            warehouse_number: data.warehouse_number,
+            information: data.name,
+            warehousekeeper: data.warehouse_keeper_employee_number,
+            warehousekeeper_employee_name: data.warehouse_keeper_employee_name,
+            mobile_number: data.mobile,
+            fax_number: data.fax_number,
+            address: data.address,
+            category_number: data.department_warehouse_id,
+            category_name: data.department_warehouse_name || "",
+            sale_account: data.sales_account_id,
+            buy_account: data.purchase_account_id,
+            evaluation_method: data.inventory_valuation_method || "no_value",
+        };
+    } catch (err) {
+        console.error("❌ Error fetching warehouse:", err);
+        Swal.fire("خطأ", "فشل في تحميل بيانات المستودع.", "error");
+    } finally {
+        loading.value = false; // ⬅️ انتهاء التحميل في كل الأحوال
+    }
 });
 
-// ✅ حفظ النموذج (إرسال إلى السيرفر)
-const saveForm = async () => {
+
+// 🟡 تحديث بيانات المستودع
+const updateForm = async () => {
     try {
+        const id = route.params.id;
         const token = localStorage.getItem("authToken");
-        if (!token) {
-            Swal.fire("خطأ", "لم يتم العثور على رمز المصادقة (token)", "error");
+
+        // 🔎 تأكد من القيم الأساسية قبل الإرسال
+        if (!form.value.information || !form.value.address) {
+            Swal.fire("تنبيه", "يرجى إدخال اسم المستودع والعنوان على الأقل.", "warning");
             return;
         }
 
-        const user = JSON.parse(localStorage.getItem("user")) || {};
-
         const payload = {
-            warehouse_number: form.value.warehouse_number,
-            name: form.value.information || "Default Warehouse",
-            description: form.value.address || "",
-            address: form.value.address || "",
-            warehouse_keeper_employee_number: form.value.warehousekeeper || "",
-            warehouse_keeper_employee_name: form.value.warehousekeeper_employee_name || "",
-            warehouse_keeper_id: 1,
+            name: form.value.information.trim(),
+            code: form.value.warehouse_number?.toString() || "N/A",
+            location: form.value.address.trim(),
+            warehouse_keeper_employee_number: form.value.warehousekeeper || "غير محدد",
+            warehouse_keeper_name: form.value.warehousekeeper_employee_name || "غير محدد",
             mobile: form.value.mobile_number || "000000000",
             fax_number: form.value.fax_number || "",
-            phone_number: form.value.mobile_number || "",
-            sales_account_id: 1,
-            purchase_account_id: 1,
-            branch_id: 1,
-            department_warehouse_id: 1,
-            inventory_valuation_method: form.value.evaluation_method,
+            phone_number: form.value.mobile_number || "000000000",
+            purchase_account: form.value.buy_account?.toString() || "1",
+            sale_account: form.value.sale_account?.toString() || "1",
+            inventory_valuation_method: form.value.evaluation_method || "no_value",
             status: "active",
-            company_id: user.company_id || 1,
-            user_id: user.id || 1,
-            created_by: user.id || 1,
         };
 
-        const response = await axios.post(API_BASE, payload, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                Accept: "application/json",
-                "Content-Type": "application/json",
-            },
-        });
+        // console.log("Payload to send:", payload);
 
-        console.log("✅ Warehouse Created:", response.data);
+        await axios.put(
+            `${API_BASE}/modify-facility/${id}`,
+            payload,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                },
+            }
+        );
 
         Swal.fire({
             icon: "success",
-            title: t("messages.saved_title"),
-            text: t("messages.saved_text"),
+            title: t("messages.updated"),
+            text: t("messages.updated_text"),
             timer: 2000,
             showConfirmButton: false,
         });
 
         setTimeout(() => router.push("/admin/warehouses"), 1000);
     } catch (err) {
-        console.error("❌ Error creating warehouse:", err);
-        Swal.fire({
-            icon: "error",
-            title: "فشل في إنشاء المستودع",
-            text:
-                err.response?.data?.message_ar ||
-                err.response?.data?.message ||
-                "حدث خطأ غير متوقع، يرجى المحاولة لاحقاً.",
-        });
+        console.error("❌ Error updating warehouse:", err);
+        const msg =
+            err.response?.data?.errors
+                ? JSON.stringify(err.response.data.errors, null, 2)
+                : err.response?.data?.message ||
+                "فشل في تعديل المستودع، تحقق من البيانات.";
+        Swal.fire("خطأ", msg, "error");
     }
 };
 
-// ❌ إلغاء النموذج
-const cancelForm = () => {
-    Swal.fire({
-        title: t("messages.cancel_title"),
-        text: t("messages.cancel_text"),
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: t("buttons.yes_cancel"),
-        cancelButtonText: t("buttons.no"),
-    }).then((result) => {
-        if (result.isConfirmed) router.push("/admin/warehouses");
-    });
-};
+
+// ❌ إلغاء التعديل
+const cancelForm = () => router.push("/admin/warehouses");
 </script>
+
+<style scoped>
+.spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+</style>

@@ -77,7 +77,7 @@
                 </div>
                 <div class="mb-3 mt-4 position-relative">
                     <label for="password_confirmtion" class="form-label">{{ $t('label.password_confirmtion')
-                    }}</label>
+                        }}</label>
                     <div class=" position-relative group">
 
                         <input type="password" id="password_confirmtion" class="form-control rounded-0"
@@ -178,21 +178,21 @@ export default {
                     Swal.fire({
                         icon: "success",
                         title: "تم إنشاء الحساب بنجاح 🎉",
+                        text: "سيتم الآن تحويلك للتحقق من رقم الهاتف",
                         showConfirmButton: false,
-                        timer: 1500
+                        timer: 2000
                     });
 
-                    // حفظ توكن مؤقت
-                    localStorage.setItem("authToken", "temp_dev_token");
+                    // احفظ البريد أو رقم الهاتف لتستخدمه في التحقق
+                    localStorage.setItem("pendingVerificationEmail", this.form.email);
+                    localStorage.setItem("pendingVerificationPhone", this.form.phone);
 
-                    // التحويل لصفحة إنشاء الشركة
+                    // التحويل إلى صفحة التحقق OTP
                     setTimeout(() => {
-                        this.$router.push({ name: "auth.create-company", query: { registered: true } });
-                    }, 1500);
-
-                } else {
-                    Swal.fire("تنبيه", res.data.message || "حدث خطأ أثناء التسجيل", "warning");
+                        this.$router.push({ name: "auth.otp", query: { from: 'register' } });
+                    }, 2000);
                 }
+
 
 
             } catch (err) {

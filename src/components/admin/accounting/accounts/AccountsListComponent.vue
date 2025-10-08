@@ -2,22 +2,24 @@
     <LoadingComponent :isLoading="isLoading" />
 
     <div class="container pe-5 ps-5" v-if="isAuthenticated">
-        <h1><i class="bi bi-image"></i> {{ $t('label.company_undefined') }}</h1>
+        <!-- العنوان -->
+        <h1><i class="bi bi-journal-richtext me-2 text-main"></i> {{ $t('label.accounts_list') }}</h1>
 
-        <!-- أزرار إنشاء واستيراد/تصدير -->
-        <div class="d-flex align-items-center justify-content-end mb-3">
+        <!-- أزرار التحكم -->
+        <div class="d-flex align-items-center justify-content-end mb-4">
             <router-link :to="{ name: 'admin.accounting.accounts.create' }" class="btn btn-lg btn-main me-3">
-                {{ $t('buttons.create') }}
+                <i class="bi bi-plus-lg me-2"></i>{{ $t('buttons.create') }}
             </router-link>
-            <div class="dropdown">
-                <button class="btn btn-lg btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+
+            <div class="dropdown me-3">
+                <button class="btn btn-lg btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
                     {{ $t('buttons.import_export') }}
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end p-2">
-                    <li><button class="dropdown-item" @click="exportExcel">{{ $t('buttons.export_excel') }}</button>
-                    </li>
-                    <li><button class="dropdown-item" @click="exportPDF">{{ $t('buttons.export_pdf') }}</button></li>
-                    <li><button class="dropdown-item" @click="printTable">{{ $t('buttons.print') }}</button></li>
+                    <li><button class="dropdown-item" @click="exportExcel"><i class="bi bi-file-earmark-excel me-2"></i>{{ $t('buttons.export_excel') }}</button></li>
+                    <li><button class="dropdown-item" @click="exportPDF"><i class="bi bi-file-earmark-pdf me-2"></i>{{ $t('buttons.export_pdf') }}</button></li>
+                    <li><button class="dropdown-item" @click="printTable"><i class="bi bi-printer me-2"></i>{{ $t('buttons.print') }}</button></li>
                 </ul>
             </div>
         </div>
@@ -26,12 +28,11 @@
         <div class="d-flex align-items-center justify-content-between mb-3">
             <div class="search-bar d-flex align-items-center flex-grow-1 me-3">
                 <i class="bi bi-search me-2"></i>
-                <input type="text" class="form-control" :placeholder="$t('label.search_account')"
-                    v-model="searchQuery" />
+                <input type="text" class="form-control" :placeholder="$t('label.search_account')" v-model="searchQuery" />
             </div>
         </div>
 
-        <!-- جدول الحسابات -->
+        <!-- الجدول -->
         <div class="table-responsive">
             <table class="table table-bordered text-center align-middle">
                 <thead>
@@ -40,7 +41,7 @@
                         <th>{{ $t('label.actions') }}</th>
                     </tr>
                 </thead>
-                <tbody class="table-body form">
+                <tbody>
                     <tr v-if="isLoading">
                         <td :colspan="visibleFields.length + 1" class="text-center">
                             <div class="spinner-border" role="status"></div>
@@ -52,24 +53,20 @@
                     <tr v-else v-for="account in paginatedAccounts" :key="account.id">
                         <td v-for="field in visibleFields" :key="field.key">{{ account[field.key] }}</td>
                         <td class="text-center">
-                            <i class="bi bi-eye action-icon me-2" title="عرض" @click="viewAccount(account)"></i>
-                            <i class="bi bi-pencil action-icon me-2" title="تعديل" @click="editAccount(account)"></i>
-                            <i class="bi bi-trash action-icon" title="حذف" @click="deleteAccount(account)"></i>
+                            <i class="bi bi-eye action-icon me-2 text-primary" title="عرض" @click="viewAccount(account)"></i>
+                            <i class="bi bi-pencil action-icon me-2 text-warning" title="تعديل" @click="editAccount(account)"></i>
+                            <i class="bi bi-trash action-icon text-danger" title="حذف" @click="deleteAccount(account)"></i>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
-        <!-- أزرار الصفحات -->
+        <!-- Pagination -->
         <div class="d-flex justify-content-between align-items-center mt-3">
-            <button class="btn btn-secondary" @click="prevPage" :disabled="currentPage === 1">
-                {{ $t('buttons.previous') }}
-            </button>
+            <button class="btn btn-secondary" @click="prevPage" :disabled="currentPage === 1">{{ $t('buttons.previous') }}</button>
             <span>{{ $t('label.page') }} {{ currentPage }} {{ $t('label.of') }} {{ totalPages }}</span>
-            <button class="btn btn-secondary" @click="nextPage" :disabled="currentPage === totalPages">
-                {{ $t('buttons.next') }}
-            </button>
+            <button class="btn btn-secondary" @click="nextPage" :disabled="currentPage === totalPages">{{ $t('buttons.next') }}</button>
         </div>
     </div>
 
@@ -99,14 +96,14 @@ export default {
             accounts: [],
             table: {
                 fields: [
-                    { name: 'Account Number', key: 'number', status: true },
-                    { name: 'Account Name', key: 'name', status: true },
-                    { name: 'Balance', key: 'balance', status: true },
-                    { name: 'Currency', key: 'currency', status: true },
-                    { name: 'Level', key: 'level', status: true },
-                    { name: 'Type', key: 'type', status: true },
-                    { name: 'Classification', key: 'classification', status: true },
-                    { name: 'Report Type', key: 'report_type', status: true }
+                    { name: 'رقم الحساب', key: 'number', status: true },
+                    { name: 'اسم الحساب', key: 'name', status: true },
+                    { name: 'الرصيد', key: 'balance', status: true },
+                    { name: 'العملة', key: 'currency', status: true },
+                    { name: 'المستوى', key: 'level', status: true },
+                    { name: 'النوع', key: 'type', status: true },
+                    { name: 'التصنيف', key: 'classification', status: true },
+                    { name: 'نوع التقرير', key: 'report_type', status: true }
                 ]
             }
         };
@@ -116,20 +113,22 @@ export default {
         filteredAccounts() {
             if (!this.searchQuery) return this.accounts;
             const q = this.searchQuery.toLowerCase();
-            return this.accounts.filter(a => (a.name || '').toLowerCase().includes(q));
+            return this.accounts.filter(a =>
+                Object.values(a).some(val => val?.toString().toLowerCase().includes(q))
+            );
         },
         paginatedAccounts() {
             const start = (this.currentPage - 1) * this.perPage;
             return this.filteredAccounts.slice(start, start + this.perPage);
         },
-        totalPages() { return Math.ceil(this.filteredAccounts.length / this.perPage); },
+        totalPages() { return Math.ceil(this.filteredAccounts.length / this.perPage) || 1; },
         isAuthenticated() { return !!localStorage.getItem('authToken'); }
     },
     methods: {
-        loadDummyAccounts(count = 20) {
+        loadDummyAccounts(count = 15) {
             this.accounts = Array.from({ length: count }, (_, i) => ({
                 id: i + 1,
-                number: `100${i + 1}`,
+                number: `10${i + 1}`,
                 name: `Account ${i + 1}`,
                 balance: (Math.random() * 10000).toFixed(2),
                 currency: ['USD', 'EUR', 'ILS'][i % 3],
@@ -141,7 +140,6 @@ export default {
             this.isLoading = false;
         },
         viewAccount(acc) {
-            if (!acc || !acc.id) return;
             this.$router.push({ name: 'admin.accounting.accounts.show', params: { id: acc.id } });
         },
         editAccount(acc) {
@@ -150,17 +148,20 @@ export default {
         deleteAccount(acc) {
             Swal.fire({
                 title: 'تأكيد الحذف',
-                text: 'هل أنت متأكد من حذف هذا الحساب؟',
+                text: `هل أنت متأكد من حذف الحساب "${acc.name}"؟`,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'نعم',
-                cancelButtonText: 'لا'
+                cancelButtonText: 'إلغاء'
             }).then(result => {
                 if (result.isConfirmed) {
                     this.accounts = this.accounts.filter(a => a.id !== acc.id);
                     Swal.fire('تم الحذف', 'تم حذف الحساب بنجاح', 'success');
                 }
             });
+        },
+        bulkDelete() {
+            Swal.fire('تنبيه', 'سيتم تفعيل حذف جماعي لاحقًا', 'info');
         },
         prevPage() { if (this.currentPage > 1) this.currentPage--; },
         nextPage() { if (this.currentPage < this.totalPages) this.currentPage++; },
@@ -205,12 +206,38 @@ export default {
 </script>
 
 <style scoped>
-.action-icon {
-    cursor: pointer;
-    font-size: 1.2rem;
+.text-main {
+    color: #1D7342;
 }
-
 .header th {
-    background-color: #eee !important;
+    background-color: #F4FFF0 !important;
+}
+.btn-main {
+    background-color: #28a745;
+    border-color: #28a745;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+.btn-main:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+    transform: translateY(-1px);
+}
+.action-icon {
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: transform 0.2s, opacity 0.2s;
+}
+.action-icon:hover {
+    transform: scale(1.2);
+    opacity: 0.8;
+}
+.search-bar input {
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+}
+.table {
+    font-size: 1rem;
 }
 </style>

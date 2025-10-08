@@ -91,36 +91,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <div class="item mb-4">
-                        <div class="mb-3 position-relative">
-                            <label for="address_1" class="form-label">{{ $t('label.currency') }}</label>
-
-                            <input type="text" id="address_1" class="form-control rounded-1" />
-
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="item mb-4">
-                        <div class="mb-3 position-relative">
-                            <label for="address_1" class="form-label">{{ $t('label.currency_price') }}</label>
-
-                            <input type="text" id="address_1" class="form-control rounded-1" />
-
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="item mb-4">
-                        <div class="mb-3 position-relative">
-                            <label for="address_1" class="form-label">{{ $t('label.book') }}</label>
-
-                            <input type="text" id="address_1" class="form-control rounded-1" />
-
-                        </div>
-                    </div>
-                </div>
 
 
             </div>
@@ -130,17 +100,15 @@
                     <thead class="header">
                         <tr>
                             <th>#</th>
-                            <th>{{ $t('label.entity') }}</th>
-                            <th>{{ $t('label.entity_number') }}</th>
-                            <th>{{ $t('label.entity_name') }}</th>
                             <th>{{ $t('label.account_number') }}</th>
                             <th>{{ $t('label.account_name') }}</th>
+                            <th>{{ $t('label.balance_statement') }}</th>
                             <th>{{ $t('label.debit') }}</th>
                             <th>{{ $t('label.credit') }}</th>
-                            <th>{{ $t('label.account_description') }}</th>
-                            <th>{{ $t('label.account_currency') }}</th>
-                            <th>{{ $t('label.currency_rate') }}</th>
+                            <th>{{ $t('label.currency_price') }}</th>
+                            <th>{{ $t('label.account_rate') }}</th>
                             <th>{{ $t('label.account_amount') }}</th>
+                            <th>{{ $t('label.account_statement') }}</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody form">
@@ -155,8 +123,6 @@
                             <td><input type="number" class="form-control border-0 rounded-0" readonly></td>
                             <td><input type="number" class="form-control border-0 rounded-0" readonly></td>
                             <td><input type="number" class="form-control border-0 rounded-0" readonly></td>
-                            <td><input type="number" class="form-control border-0 rounded-0" readonly></td>
-                            <td><input type="number" class="form-control border-0 rounded-0" readonly></td>
                         </tr>
                     </tbody>
                 </table>
@@ -166,15 +132,8 @@
                 <button class="btn  btn-action">{{ $t('actions.remove_row') }}</button>
             </div>
             <div class="row mt-3">
-                <div class="col-md-4">
-                    <div class="item mb-4">
-                        <div class="mb-3 position-relative">
-                            <label for="address_1" class="form-label">{{ $t('label.notes') }}</label>
-
-                            <input type="text" id="address_1" class="form-control rounded-1" />
-
-                        </div>
-                    </div>
+                <div class="col-md-2">
+                    <p class="mb-0 text-main">{{ $t('label.in_account_currency') }}</p>
                 </div>
                 <div class="col-md-3">
                     <div class="item mb-4">
@@ -197,7 +156,31 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <p class="mb-0 text-main">{{ $t('label.in_entry_currency') }}</p>
+                </div>
+                <div class="col-md-3">
+                    <div class="item mb-4">
+                        <div class="mb-3 position-relative">
+                            <label for="address_1" class="form-label">{{ $t('label.total_credit') }}</label>
 
+                            <input type="text" id="address_1" class="form-control rounded-1" />
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="item mb-4">
+                        <div class="mb-3 position-relative">
+                            <label for="address_1" class="form-label">{{ $t('label.total_debit') }}</label>
+
+                            <input type="text" id="address_1" class="form-control rounded-1" />
+
+                        </div>
+                    </div>
+                </div>
+            </div>
         </form>
     </div>
 </template>

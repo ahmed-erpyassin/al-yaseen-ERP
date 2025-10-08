@@ -1,20 +1,27 @@
 <template>
     <div class="container pe-5 ps-5">
-        <h1><i class="bi bi-currency-dollar"></i> المالية</h1>
+        <!-- العنوان -->
+        <h1><i class="bi bi-currency-dollar me-2"></i> المالية</h1>
 
-        <!-- Action Buttons -->
+        <!-- أزرار التحكم -->
         <div class="d-flex align-items-center justify-content-end mb-4">
-            <button class="btn btn-success me-2" @click="openAddTransactionModal">
-                <i class="bi bi-plus me-2"></i>إضافة عملية
-            </button>
-            <!-- زر التصدير -->
-            <button class="btn btn-primary" @click="exportOptions">
-                <i class="bi bi-file-earmark-arrow-down me-2"></i>تصدير
+            <button class="btn btn-lg btn-main me-3" @click="openAddTransactionModal">
+                <i class="bi bi-plus-lg me-2"></i>إضافة عملية
             </button>
 
+            <div class="dropdown">
+                <button class="btn btn-lg btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    تصدير
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end p-2">
+                    <li><button class="dropdown-item" @click="exportExcelWithChart">تصدير Excel + PDF</button></li>
+                    <li><button class="dropdown-item" @click="exportPDFWithChart()">تصدير PDF فقط</button></li>
+                </ul>
+            </div>
         </div>
 
-        <!-- Financials Table -->
+        <!-- جدول العمليات -->
         <div class="table-responsive mb-4">
             <table class="table table-bordered text-center align-middle">
                 <thead>
@@ -33,8 +40,9 @@
                         <td>{{ index + 1 }}</td>
                         <td>{{ item.date }}</td>
                         <td>
-                            <span :class="item.type === 'إيراد' ? 'badge bg-success' : 'badge bg-danger'">{{ item.type
-                            }}</span>
+                            <span :class="item.type === 'إيراد' ? 'badge bg-success' : 'badge bg-danger'">
+                                {{ item.type }}
+                            </span>
                         </td>
                         <td>{{ item.amount }}</td>
                         <td>{{ item.currency }}</td>
@@ -53,13 +61,13 @@
             </table>
         </div>
 
-        <!-- Budget vs Actual Chart -->
-        <div class="mb-5">
-            <h3>Budget vs Actual Cost</h3>
+        <!-- المخطط البياني -->
+        <div class="chart-card mb-5 p-3">
+            <h4 class="mb-3 text-success text-center">الموازنة مقابل التكلفة الفعلية</h4>
             <canvas id="budgetChart"></canvas>
         </div>
 
-        <!-- Add/Edit Transaction Modal -->
+        <!-- نافذة إضافة / تعديل عملية -->
         <div class="modal fade" id="transactionModal" tabindex="-1" aria-hidden="true" ref="transactionModal">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
@@ -108,7 +116,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 </template>
 
@@ -116,20 +123,19 @@
 import Swal from "sweetalert2";
 import axios from "axios";
 import bootstrap from "bootstrap/dist/js/bootstrap.bundle";
-import { Chart, BarController, BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend } from 'chart.js';
+import { Chart, LineController, LineElement, PointElement, CategoryScale, LinearScale, Title, Tooltip, Legend, Filler } from 'chart.js';
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
-// تسجيل عناصر Chart.js اللازمة للـ bar chart
-Chart.register(BarController, BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
+Chart.register(LineController, LineElement, PointElement, CategoryScale, LinearScale, Title, Tooltip, Legend, Filler);
 
 export default {
     name: "FinancialsTab",
     data() {
         return {
-            useApi: false, // true = استخدام API, false = بيانات وهمية
+            useApi: false,
             transactions: [],
             modalTransaction: {},
             modalType: "",
@@ -139,23 +145,20 @@ export default {
         };
     },
     mounted() {
-        // تهيئة Bootstrap modal reference
         this.bsModal = new bootstrap.Modal(this.$refs.transactionModal, {});
         this.fetchTransactions();
     },
     methods: {
-        // جلب البيانات (من API أو بيانات وهمية حسب useApi)
         async fetchTransactions() {
             if (this.useApi) {
                 try {
-                    const response = await axios.get("/api/financials"); // ضع رابط API الصحيح هنا
+                    const response = await axios.get("/api/financials");
                     this.transactions = response.data;
                 } catch (error) {
                     console.error(error);
                     Swal.fire({ icon: "error", title: "خطأ", text: "فشل في جلب البيانات من السيرفر" });
                 }
             } else {
-                // بيانات وهمية افتراضية
                 this.transactions = [
                     { id: 1, date: "2025-09-01", type: "إيراد", amount: 5000, currency: "USD", description: "دفعة أولى", budget: 6000 },
                     { id: 2, date: "2025-09-03", type: "مصروف", amount: 1200, currency: "USD", description: "شراء أدوات", budget: 1500 },
@@ -163,11 +166,9 @@ export default {
                     { id: 4, date: "2025-09-07", type: "مصروف", amount: 800, currency: "USD", description: "مصاريف نقل", budget: 1000 }
                 ];
             }
-            // بعد تحميل البيانات، رسم الرسم البياني
             this.$nextTick(() => this.renderChart());
         },
 
-        // فتح مودال إضافة عملية
         openAddTransactionModal() {
             this.modalTransaction = { date: "", type: "إيراد", amount: 0, currency: "USD", description: "" };
             this.modalType = "add";
@@ -175,7 +176,6 @@ export default {
             this.bsModal.show();
         },
 
-        // فتح مودال تعديل
         editTransaction(transaction) {
             this.modalTransaction = { ...transaction };
             this.modalType = "edit";
@@ -183,38 +183,19 @@ export default {
             this.bsModal.show();
         },
 
-        // حفظ (إضافة/تعديل)
-        async saveTransaction() {
-            if (this.useApi) {
-                try {
-                    if (this.modalType === "add") {
-                        const response = await axios.post("/api/financials", this.modalTransaction);
-                        this.transactions.push(response.data);
-                    } else {
-                        const response = await axios.put(`/api/financials/${this.modalTransaction.id}`, this.modalTransaction);
-                        const index = this.transactions.findIndex(t => t.id === this.modalTransaction.id);
-                        if (index !== -1) this.transactions.splice(index, 1, response.data);
-                    }
-                    Swal.fire("نجاح", "تم حفظ العملية بنجاح", "success");
-                } catch (error) {
-                    console.error(error);
-                    Swal.fire("خطأ", "فشل في حفظ البيانات على السيرفر", "error");
-                }
+        saveTransaction() {
+            if (this.modalType === "add") {
+                this.modalTransaction.id = Date.now();
+                this.transactions.push({ ...this.modalTransaction });
             } else {
-                if (this.modalType === "add") {
-                    this.modalTransaction.id = Date.now();
-                    this.transactions.push({ ...this.modalTransaction });
-                } else {
-                    const index = this.transactions.findIndex(t => t.id === this.modalTransaction.id);
-                    if (index !== -1) this.transactions.splice(index, 1, { ...this.modalTransaction });
-                }
+                const index = this.transactions.findIndex(t => t.id === this.modalTransaction.id);
+                if (index !== -1) this.transactions.splice(index, 1, { ...this.modalTransaction });
             }
-
+            Swal.fire("تم الحفظ", "تم حفظ العملية بنجاح", "success");
             this.bsModal.hide();
             this.$nextTick(() => this.renderChart());
         },
 
-        // حذف عملية
         async deleteTransaction(transaction) {
             const result = await Swal.fire({
                 title: "هل أنت متأكد من الحذف؟",
@@ -223,27 +204,13 @@ export default {
                 confirmButtonText: "حذف",
                 cancelButtonText: "إلغاء"
             });
-
             if (!result.isConfirmed) return;
-
-            if (this.useApi) {
-                try {
-                    await axios.delete(`/api/financials/${transaction.id}`);
-                } catch (error) {
-                    console.error(error);
-                    Swal.fire("خطأ", "فشل في حذف البيانات من السيرفر", "error");
-                    return;
-                }
-            }
-
             this.transactions = this.transactions.filter(t => t.id !== transaction.id);
             Swal.fire("تم الحذف", "تم حذف العملية المالية بنجاح", "success");
             this.$nextTick(() => this.renderChart());
         },
 
-        // رسم الرسم البياني (Budget vs Actual)
         renderChart() {
-            // تأكد أن هناك عنصر كانفاس في الصفحة
             const canvas = document.getElementById("budgetChart");
             if (!canvas) return;
 
@@ -251,196 +218,163 @@ export default {
             const budgetData = this.transactions.map(t => t.budget || 0);
             const actualData = this.transactions.map(t => t.amount || 0);
 
-            if (this.budgetChart) {
-                try { this.budgetChart.destroy(); } catch (e) { /* ignore */ }
-            }
+            if (this.budgetChart) this.budgetChart.destroy();
 
             const ctx = canvas.getContext("2d");
             this.budgetChart = new Chart(ctx, {
-                type: "bar",
+                type: "line",
                 data: {
                     labels,
                     datasets: [
-                        { label: "Budget", data: budgetData, backgroundColor: "#28a745" },
-                        { label: "Actual Cost", data: actualData, backgroundColor: "#ffc107" }
+                        {
+                            label: "Budget",
+                            data: budgetData,
+                            borderColor: "#28a745",
+                            backgroundColor: "rgba(40,167,69,0.15)",
+                            fill: true,
+                            tension: 0.4,
+                            borderWidth: 3,
+                            pointBackgroundColor: "#28a745",
+                            pointRadius: 5
+                        },
+                        {
+                            label: "Actual Cost",
+                            data: actualData,
+                            borderColor: "#ffc107",
+                            backgroundColor: "rgba(255,193,7,0.1)",
+                            fill: true,
+                            tension: 0.4,
+                            borderWidth: 3,
+                            pointBackgroundColor: "#ffc107",
+                            pointRadius: 5
+                        }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: { position: "top" },
-                        title: { display: false }
+                        legend: {
+                            position: "top",
+                            labels: { color: "#333", font: { size: 14 } }
+                        },
+                        title: {
+                            display: true,
+                            text: "الموازنة مقابل التكلفة الفعلية",
+                            color: "#198754",
+                            font: { size: 16, weight: "bold" },
+                            padding: { bottom: 20 }
+                        }
                     },
                     scales: {
-                        x: { title: { display: false } },
-                        y: { beginAtZero: true }
+                        x: {
+                            ticks: { color: "#555" },
+                            grid: { color: "rgba(0,0,0,0.05)" }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: { color: "#555" },
+                            grid: { color: "rgba(0,0,0,0.05)" },
+                            title: { display: true, text: "القيمة (USD)", color: "#198754" }
+                        }
                     }
                 }
             });
         },
 
-        // زر التصدير - يعرض خيار بين Excel أو PDF
-        exportOptions() {
-            Swal.fire({
-                title: 'اختر نوع التصدير',
-                showDenyButton: true,
-                showCancelButton: true,
-                confirmButtonText: `Excel`,
-                denyButtonText: `PDF`,
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // عند اختيار Excel: نصدر ملف Excel (الجدول) **ومرفق معه PDF يحتوي الرسم والجدول**
-                    this.exportExcelWithChart();
-                } else if (result.isDenied) {
-                    // عند اختيار PDF فقط
-                    this.exportPDFWithChart();
-                }
-            });
-        },
-
-        // تصدير Excel مع إنشاء أيضاً PDF مرفق يحتوي الرسم والجدول (لأن تضمين صورة مباشرة داخل Excel من المتصفح محدود)
         exportExcelWithChart() {
-            try {
-                // 1) Excel: ورقة بالبيانات
-                const dataForExcel = this.transactions.map(t => ({
-                    التاريخ: t.date,
-                    "نوع العملية": t.type,
-                    المبلغ: t.amount,
-                    العملة: t.currency,
-                    الوصف: t.description,
-                    Budget: t.budget || ""
-                }));
-                const ws = XLSX.utils.json_to_sheet(dataForExcel);
-                const wb = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(wb, ws, "Financials");
-
-                // كتابة وحفظ ملف Excel
-                const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-                saveAs(new Blob([wbout], { type: "application/octet-stream" }), "Financials.xlsx");
-
-                // 2) أيضاً نولد PDF يحتوي الرسم البياني + نفس الجدول كملف مساعد — لأن تضمين الرسم في Excel من المتصفح ليس مدعوماً بسهولة.
-                // إنشاء ملف PDF وحفظه تلقائياً
-                // نستخدم timeout بسيط للتأكد من أن الرسم مُحدّث في الـ canvas
-                setTimeout(() => {
-                    this.exportPDFWithChart({ autoSave: true, filename: "Financials_with_Chart.pdf" });
-                }, 300);
-            } catch (e) {
-                console.error(e);
-                Swal.fire("خطأ", "فشل أثناء تصدير Excel", "error");
-            }
+            const dataForExcel = this.transactions.map(t => ({
+                التاريخ: t.date,
+                "نوع العملية": t.type,
+                المبلغ: t.amount,
+                العملة: t.currency,
+                الوصف: t.description,
+                Budget: t.budget || ""
+            }));
+            const ws = XLSX.utils.json_to_sheet(dataForExcel);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Financials");
+            const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+            saveAs(new Blob([wbout], { type: "application/octet-stream" }), "Financials.xlsx");
+            setTimeout(() => {
+                this.exportPDFWithChart({ filename: "Financials_with_Chart.pdf" });
+            }, 300);
         },
 
-        // تصدير PDF يحتوي الرسم البياني + الجدول (يمكن استدعائه مع خيار الحفظ التلقائي)
-        exportPDFWithChart(options = { autoSave: false, filename: "Financials_with_Chart.pdf" }) {
-            try {
-                const canvas = document.getElementById("budgetChart");
-                const pdf = new jsPDF({ unit: "pt", format: "a4" });
-                const pageWidth = pdf.internal.pageSize.getWidth();
-                const pageHeight = pdf.internal.pageSize.getHeight();
-                const margin = 20;
+        exportPDFWithChart(options = { filename: "Financials_with_Chart.pdf" }) {
+            const canvas = document.getElementById("budgetChart");
+            const pdf = new jsPDF({ unit: "pt", format: "a4" });
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const margin = 20;
+            let y = margin;
 
-                let y = margin;
+            pdf.setFontSize(14);
+            pdf.text("Financials - Budget vs Actual", pageWidth / 2, y, { align: "center" });
+            y += 20;
 
-                // إضافة عنوان
-                pdf.setFontSize(14);
-                pdf.text("Financials - Budget vs Actual", pageWidth / 2, y, { align: "center" });
-                y += 20;
-
-                if (canvas) {
-                    // تضمين الرسم البياني كصورة
-                    const imgData = canvas.toDataURL("image/png");
-                    const imgProps = pdf.getImageProperties(imgData);
-                    const imgWidth = pageWidth - margin * 2;
-
-                    // اجعل ارتفاع الرسم لا يتجاوز نصف الصفحة تقريبًا
-                    const maxHeight = pageHeight / 2;
-                    let imgHeight = imgWidth * (imgProps.height / imgProps.width);
-                    if (imgHeight > maxHeight) {
-                        imgHeight = maxHeight;
-                    }
-
-                    pdf.addImage(imgData, "PNG", margin, y, imgWidth, imgHeight);
-                    y += imgHeight + 10;
-                }
-
-                // تحضير صفوف الجدول
-                const columns = ["التاريخ", "نوع العملية", "المبلغ", "العملة", "الوصف"];
-                const rows = this.transactions.map(t => [t.date, t.type, t.amount, t.currency, t.description]);
-
-                // إضافة الجدول تحت الرسم البياني
-                autoTable(pdf, {
-                    startY: y,
-                    head: [columns],
-                    body: rows,
-                    styles: { fontSize: 10 },
-                    headStyles: { fillColor: [40, 167, 69] },
-                    margin: { left: margin, right: margin }
-                });
-
-                const filename = options.filename || "Financials_with_Chart.pdf";
-                pdf.save(filename);
-
-            } catch (e) {
-                console.error(e);
-                Swal.fire("خطأ", "فشل أثناء تصدير PDF", "error");
+            if (canvas) {
+                const imgData = canvas.toDataURL("image/png");
+                const imgWidth = pageWidth - margin * 2;
+                const imgHeight = 250;
+                pdf.addImage(imgData, "PNG", margin, y, imgWidth, imgHeight);
+                y += imgHeight + 10;
             }
-        }
 
+            const columns = ["التاريخ", "نوع العملية", "المبلغ", "العملة", "الوصف"];
+            const rows = this.transactions.map(t => [t.date, t.type, t.amount, t.currency, t.description]);
+            autoTable(pdf, {
+                startY: y,
+                head: [columns],
+                body: rows,
+                styles: { fontSize: 10 },
+                headStyles: { fillColor: [40, 167, 69] },
+                margin: { left: margin, right: margin }
+            });
+            pdf.save(options.filename);
+        }
     }
 };
 </script>
-
-
 
 <style scoped>
 .header th {
     background-color: #F4FFF0 !important;
 }
 
+.btn-main {
+    background-color: #28a745;
+    border-color: #28a745;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn-main:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+    transform: translateY(-1px);
+}
+
 .action-icon {
     font-size: 1.3rem;
     cursor: pointer;
-    transition: transform 0.2s;
+    transition: transform 0.2s, opacity 0.2s;
 }
 
 .action-icon:hover {
     transform: scale(1.2);
+    opacity: 0.8;
 }
 
-.badge {
-    font-size: 0.9rem;
-}
-
-.btn-success {
-    background-color: #28a745;
-    border-color: #28a745;
-}
-
-.btn-success:hover {
-    background-color: #218838;
-    border-color: #1e7e34;
-}
-
-.btn-warning {
-    background-color: #ffc107;
-    border-color: #ffc107;
-    color: #212529;
+.chart-card {
+    background: linear-gradient(180deg, #ffffff 0%, #f9fff8 100%);
+    border-radius: 10px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+    padding: 1rem;
 }
 
 #budgetChart {
     height: 400px;
-    /* أو أي ارتفاع مناسب */
-    max-height: 500px;
-}
-
-.btn-warning:hover {
-    background-color: #e0a800;
-    border-color: #d39e00;
-}
-
-.table-responsive {
-    max-height: 500px;
-    overflow-y: auto;
+    max-height: 450px;
 }
 </style>

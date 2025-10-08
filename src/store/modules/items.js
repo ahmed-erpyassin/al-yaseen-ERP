@@ -51,84 +51,40 @@ const actions = {
 
   // ✅ الإنشاء باستخدام FormData وفق ما يتوقعه الـ backend
   async createItem({ dispatch }, payload) {
-    // حدد الحقول المسموح إرسالها فقط (Whitelist)
-    const allowed = {
-      company_id: 1, // غيّرها حسب شركتك
-      branch_id: 1, // مطلوب غالبًا
-      type: "product", // المنتج
-      item_number: null,
-      item_name_ar: null,
-      item_name_en: null,
-
-      // وحدات وكميات أساسية
-      unit_id: null, // لو عندك unit_id رقمي
-      unit: null, // أو unit نصيًا، واحدة تكفي حسب سيرفرك
-      quantity: 0,
-
-      // أسعار بيع/شراء أساسية
-      first_selling_price: 0,
-      second_selling_price: 0,
-      third_selling_price: 0,
-      selling_discount_percentage: 0,
-      max_discount_percentage: 0,
-      min_price: 0,
-
-      first_purchase_price: 0,
-      second_purchase_price: 0,
-      third_purchase_price: 0,
-      purchase_discount_percentage: 0,
-
-      // VAT/Flags
-      selling_vat: false,
-      purchase_vat: false,
-      item_vat: false,
-      active: true,
-
-      // باركود وتواريخ
-      barcode: null,
-      barcode_type: null,
-      expire_date: null,
-
-      // تصنيفات ومستودعات (اختياري/حسب الحاجة)
-      category_type: null,
-      raw_materials_warehouse_id: null,
-      finished_product_warehouse_id: null,
-
-      // صورة
-      image: null,
-      // أي حقول إضافية عندك… (لكن حاول تبقيها ضمن ما يعرفه السيرفر)
-    };
-
-    // ادمج payload داخل allowed بدون إرسال شيء undefined/null/فاضي
-    const data = { ...allowed, ...payload };
-
-    // مهم: لو كان عندك unit نصّي (مثل 'piece') وما عندك unit_id، ارسل واحد منهم فقط
-    if (!data.unit_id && !data.unit) {
-      data.unit = "piece"; // قيمة افتراضية آمنة (غيّرها لو السيرفر يشترط unit_id)
-    }
-
-    // حوّل ل FormData
     const form = new FormData();
-    Object.entries(data).forEach(([k, v]) => {
-      if (v === undefined || v === null || v === "") return;
-      // البوليان يفضّل تحويله لـ 0/1 إن كان السيرفر ما يدعم boolean
-      if (typeof v === "boolean") form.append(k, v ? 1 : 0);
-      else form.append(k, v);
-    });
 
-    // لو فيه ملف صورة
+    // الحقول المطلوبة من السيرفر
+    form.append("company_id", 1);
+    form.append("branch_id", 1);
+
+    // ✅ هذه أهم الحقول الإلزامية:
+    form.append("unit_id", payload.unit_id || 1); // استخدم 1 كافتراضي
+    form.append("code", payload.code || "IT-" + Date.now()); // كود فريد
+    form.append("name", payload.name || "منتج جديد");
+    form.append("type", payload.type || "product"); // product / service
+    form.append("item_type", payload.item_type || "stock"); // نوع المخزون
+    form.append("barcode_type", payload.barcode_type || "C128"); // نوع الباركود الصحيح
+
+    // ✅ باقي الحقول الاختيارية
+    form.append("quantity", payload.quantity || 0);
+    form.append("first_selling_price", payload.first_selling_price || 0);
+    form.append("first_purchase_price", payload.first_purchase_price || 0);
+    form.append("selling_vat", payload.selling_vat ? 1 : 0);
+    form.append("purchase_vat", payload.purchase_vat ? 1 : 0);
+    form.append("item_vat", payload.item_vat ? 1 : 0);
+    form.append("active", 1);
+
+    // ✅ صورة في حال وُجدت
     if (payload?.image instanceof File) {
-      form.set("image", payload.image);
+      form.append("image", payload.image);
     }
 
     try {
-      // ⚠️ لا تضع Content-Type يدوياً؛ FormData يضبطه تلقائيًا
-      await axios.post("/inventory-items/register-inventory", form, {
+      await axios.post("/items/register-item", form, {
         headers: { Accept: "application/json" },
       });
       await dispatch("fetchItems");
     } catch (error) {
-      // مرّر رسالة تحقق 422 لو ظهرت
       const apiErr = error.response?.data;
       const firstMsg =
         apiErr?.message ||

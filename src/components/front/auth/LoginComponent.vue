@@ -131,12 +131,18 @@ export default {
                         icon: 'success',
                         title: 'تم تسجيل الدخول بنجاح',
                         showConfirmButton: false,
-                        timer: 2000,
-
+                        timer: 1500,
                     }).then(() => {
-                        // توجيه المستخدم لصفحة /admin بعد انتهاء الرسالة
-                        this.$router.push('/admin');
+                        if (!user.company || Object.keys(user.company).length === 0) {
+                            // المستخدم لا يملك شركة → أول تسجيل دخول
+                            this.$router.push({ name: "auth.create-company", query: { firstLogin: true } });
+                        } else {
+                            // لديه شركة بالفعل
+                            this.$router.push("/admin");
+                        }
+
                     });
+
 
                     // if (user.otp_expires_at) {
                     //     this.$router.push({ name: "auth.otp", params: { token } });

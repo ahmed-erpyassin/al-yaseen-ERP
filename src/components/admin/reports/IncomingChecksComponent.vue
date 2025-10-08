@@ -1,6 +1,6 @@
 <template>
     <div class="container pe-5 ps-5">
-        <h1><i class="bi bi-image"></i> {{ $t('label.company_undefined') }}</h1>
+        <!-- <h1><i class="bi bi-image"></i> {{ $t('label.company_undefined') }}</h1> -->
 
         <div class="d-flex align-items-center justify-content-end">
             <button class="btn btn-lg btn-outline-secondary me-3">{{ $t('buttons.cancel') }}</button>

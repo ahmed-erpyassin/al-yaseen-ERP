@@ -1605,7 +1605,8 @@
     "quotation_deleted_successfully": "تم حذف العرض بنجاح!",
     "quotation_delete_failed": "فشل في حذف العرض. يرجى المحاولة مرة أخرى.",
     "confirm_delete_quotation": "هل أنت متأكد من حذف هذا العرض؟",
-    "offer_load_failed": "فشل في تحميل بيانات العرض."
+    "offer_load_failed": "فشل في تحميل بيانات العرض.",
+    "loading": "جاري التحميل"
   },
   "landing": {
     "hero_heading": "نظام الياسين ERP - السهولة والذكاء في إدارة المحاسبة محاسبة دقيقة. تقارير فورية. سهولة لا مثيل لها.",
@@ -1797,7 +1798,8 @@
     "export_excel": "تصدير Excel",
     "export_pdf": "تصدير PDF",
     "print": "طباعة",
-    "next": "التالي"
+    "next": "التالي",
+    "back": "رجوع"
   },
   "placeholder": {
     "task_name": "أدخل اسم المهمة",

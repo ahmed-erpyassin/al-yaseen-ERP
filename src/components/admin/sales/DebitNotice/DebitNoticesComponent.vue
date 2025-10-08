@@ -1,143 +1,225 @@
 <template>
     <div class="container pe-5 ps-5">
-        <h1><i class="bi bi-image"></i> {{ $t('label.company_undefined') }}</h1>
-        <div class="d-flex align-items-center justify-content-end">
-            <router-link :to="{ name: 'admin.new-debit-notice' }" class="btn btn-lg btn-main me-3">{{ $t('buttons.create') }}</router-link>
-            <button class="btn btn-lg btn-outline-danger" type="button">
-                {{ $t('buttons.delete') }}
-            </button>
+        <LoadingComponent :isLoading="isLoading" />
 
-        </div>
-        <div class="row">
-            <div class="col-12">
-                <h3 class="mb-5">{{ $t('label.debit_notices') }}</h3>
-            </div>
-        </div>
-        <div class="d-flex align-items-center actions mb-3">
-            <div class='search me-2 mb-3'>
-                <i class="bi bi-search me-2"></i>
-                <span class="text-main">{{ $t('label.search_account') }}</span>
-            </div>
-            <div class='edit me-4 mb-3'>
-                <i class="bi bi-pencil me-2"></i>
-                <span class="text-main">{{ $t('label.edit') }}</span>
-            </div>
-            <div class="dropdown mb-3">
-                <i class="bi bi-gear" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                </i>
-                <ul class="dropdown-menu align-center rounded-0 p-2" style="width: 250px;">
+        <h1>
+            <i class="bi bi-cash-stack"></i> {{ $t('label.debit_notices') }}
+        </h1>
+
+        <!-- أزرار أعلى الصفحة -->
+        <div class="d-flex align-items-center justify-content-end mb-3">
+            <router-link :to="{ name: 'admin.new-debit-notice' }" class="btn btn-lg btn-main me-3">
+                {{ $t('buttons.create') }}
+            </router-link>
+
+            <div class="dropdown">
+                <button class="btn btn-lg btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    {{ $t('buttons.options') }}
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end p-2">
                     <li>
-                        <div class="form-check"><input class="form-check-input" type="checkbox" checked id="col0"><label
-                                class="form-check-label" for="col0">{{ $t('label.notification_number') }}</label></div>
+                        <button class="dropdown-item text-danger" @click="confirmDelete">
+                            <i class="bi bi-trash me-2"></i>{{ $t('buttons.delete') }}
+                        </button>
                     </li>
                     <li>
-                        <div class="form-check"><input class="form-check-input" type="checkbox" checked id="col1"><label
-                                class="form-check-label" for="col1">{{ $t('label.customer_name') }}</label></div>
-                    </li>
-                    <li>
-                        <div class="form-check"><input class="form-check-input" type="checkbox" checked id="col2"><label
-                                class="form-check-label" for="col2">{{ $t('label.licensed_operator') }}</label></div>
-                    </li>
-                    <li>
-                        <div class="form-check"><input class="form-check-input" type="checkbox" checked id="col3"><label
-                                class="form-check-label" for="col3">{{ $t('label.amount') }}</label></div>
-                    </li>
-                    <li>
-                        <div class="form-check"><input class="form-check-input" type="checkbox" checked id="col4"><label
-                                class="form-check-label" for="col4">{{ $t('label.currency') }}</label></div>
-                    </li>
-                    <li>
-                        <div class="form-check"><input class="form-check-input" type="checkbox" checked id="col5"><label
-                                class="form-check-label" for="col5">{{ $t('label.date') }}</label></div>
-                    </li>
-                    <li>
-                        <div class="form-check"><input class="form-check-input" type="checkbox" checked id="col6"><label
-                                class="form-check-label" for="col6">{{ $t('label.registration_number') }}</label></div>
+                        <button class="dropdown-item" @click="exportExcel">
+                            <i class="bi bi-file-earmark-excel me-2"></i>{{ $t('buttons.export_excel') }}
+                        </button>
                     </li>
                 </ul>
             </div>
         </div>
+
+        <!-- البحث -->
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="search-bar d-flex align-items-center flex-grow-1 me-3">
+                <i class="bi bi-search me-2"></i>
+                <input type="text" class="form-control" :placeholder="$t('label.search_account')"
+                    v-model="searchQuery" />
+            </div>
+
+            <!-- إعدادات الأعمدة -->
+            <div class="dropdown">
+                <i class="bi bi-gear" type="button" data-bs-toggle="dropdown" aria-expanded="false"
+                    style="font-size:1.5rem;cursor:pointer;"></i>
+                <ul class="dropdown-menu rounded-0 p-2" style="width: 250px;">
+                    <li v-for="(field, index) in table.fields" :key="index">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" v-model="field.status"
+                                :id="'col-' + index" />
+                            <label class="form-check-label" :for="'col-' + index">{{
+                                field.name
+                                }}</label>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- الجدول -->
         <div class="table-responsive">
             <table class="table table-bordered text-center align-middle">
                 <thead>
                     <tr class="header">
-                        <th>{{ $t('label.notification_number') }}</th>
-                        <th>{{ $t('label.date') }}</th>
-                        <th>{{ $t('label.hour') }}</th>
-                        <th>{{ $t('label.account_no') }}</th>
-                        <th>{{ $t('label.customer_name') }}</th>
-                        <th>{{ $t('label.licensed_operator') }}</th>
-                        <th>{{ $t('label.amount') }}</th>
-                        <th>{{ $t('label.registration_number') }}</th>
+                        <th v-for="field in visibleFields" :key="field.key">
+                            {{ field.name }}
+                        </th>
+                        <th>{{ $t('label.actions') }}</th>
                     </tr>
                 </thead>
-                <tbody class="table-body form">
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                <tbody>
+                    <tr v-if="isLoading">
+                        <td :colspan="visibleFields.length + 1" class="text-center">
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </td>
                     </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                    <tr v-else-if="filteredItems.length === 0">
+                        <td :colspan="visibleFields.length + 1" class="text-center">
+                            {{ $t('label.no_data') }}
+                        </td>
                     </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                    <tr v-else v-for="item in filteredItems" :key="item.id">
+                        <td v-for="field in visibleFields" :key="field.key">
+                            {{ item[field.key] || '-' }}
+                        </td>
+                        <td>
+                            <i class="bi bi-eye action-icon me-2 text-primary" @click="viewItem(item)"></i>
+                            <i class="bi bi-pencil action-icon me-2 text-warning" @click="editItem(item)"></i>
+                            <i class="bi bi-trash action-icon text-danger" @click="deleteItem(item)"></i>
+                        </td>
                     </tr>
                 </tbody>
             </table>
-
         </div>
-
     </div>
 </template>
 
-<style>
+<script>
+import LoadingComponent from '@/components/components/LoadingComponent.vue';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+import Swal from 'sweetalert2';
+import axios from 'axios';
+
+export default {
+    name: 'DebitNoticesComponent',
+    components: { LoadingComponent },
+    data() {
+        return {
+            isLoading: false,
+            searchQuery: '',
+            items: [],
+            table: {
+                fields: [
+                    { name: this.$t('label.notification_number'), key: 'notification_no', status: true },
+                    { name: this.$t('label.date'), key: 'date', status: true },
+                    { name: this.$t('label.hour'), key: 'hour', status: true },
+                    { name: this.$t('label.account_no'), key: 'account_no', status: true },
+                    { name: this.$t('label.customer_name'), key: 'customer_name', status: true },
+                    { name: this.$t('label.amount'), key: 'amount', status: true },
+                    { name: this.$t('label.registration_number'), key: 'registration_number', status: true },
+                ],
+            },
+        };
+    },
+    computed: {
+        visibleFields() {
+            return this.table.fields.filter((f) => f.status);
+        },
+        filteredItems() {
+            if (!this.searchQuery) return this.items;
+            const q = this.searchQuery.toLowerCase();
+            return this.items.filter((i) =>
+                Object.values(i).some((v) => v?.toString().toLowerCase().includes(q))
+            );
+        },
+    },
+    methods: {
+        async fetchData() {
+            this.isLoading = true;
+            try {
+                const res = await axios.get('/finance/debit-notices/list-all');
+                this.items = res.data.data || [];
+            } catch (err) {
+                console.error(err);
+                Swal.fire('خطأ', 'فشل في تحميل البيانات', 'error');
+            } finally {
+                this.isLoading = false;
+            }
+        },
+        exportExcel() {
+            const ws = XLSX.utils.json_to_sheet(this.items);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'DebitNotices');
+            const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+            saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'DebitNotices.xlsx');
+        },
+        confirmDelete() {
+            Swal.fire('تنبيه', 'حدد العناصر التي تريد حذفها من الجدول', 'info');
+        },
+        deleteItem(item) {
+            Swal.fire({
+                title: 'هل أنت متأكد من الحذف؟',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'نعم، حذف',
+                cancelButtonText: 'إلغاء',
+            }).then(async (r) => {
+                if (r.isConfirmed) {
+                    try {
+                        await axios.delete(`/finance/debit-notices/delete/${item.id}`);
+                        this.items = this.items.filter((i) => i.id !== item.id);
+                        Swal.fire('تم', 'تم الحذف بنجاح', 'success');
+                    } catch (err) {
+                        Swal.fire('خطأ', 'تعذر الحذف', 'error');
+                    }
+                }
+            });
+        },
+        viewItem(item) {
+            this.$router.push({ name: 'admin.view-debit-notice', params: { id: item.id } });
+        },
+        editItem(item) {
+            this.$router.push({ name: 'admin.edit-debit-notice', params: { id: item.id } });
+        },
+    },
+    mounted() {
+        this.fetchData();
+    },
+};
+</script>
+
+<style scoped>
 .header th {
-
-    background-color: #F4FFF0 !important;
-
-}
-
-.btn-action {
     background-color: #F4FFF0 !important;
 }
 
-.actions i {
-    font-size: 30px;
+.btn-main {
+    background-color: #28a745;
+    border-color: #28a745;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: all 0.2s ease;
 }
 
-.actions span {
-    font-size: 24px;
+.btn-main:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+    transform: translateY(-1px);
 }
 
-.dropdown .show {
-    color: #1D7342
+.action-icon {
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: 0.3s;
 }
 
-.form-check-input:checked[type=checkbox] {
-    border-radius: 50%;
-    background-color: #1D7342 !important;
-}
-.pages p {
-    font-size: 25px;
+.action-icon:hover {
+    transform: scale(1.2);
+    opacity: 0.8;
 }
 </style>

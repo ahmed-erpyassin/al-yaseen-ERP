@@ -19,6 +19,7 @@ const mutations = {
 };
 
 const actions = {
+  // 🟢 جلب جميع المستودعات
   async fetchWarehouses({ commit }) {
     commit("SET_LOADING", true);
     try {
@@ -32,7 +33,7 @@ const actions = {
           },
         }
       );
-      commit("SET_WAREHOUSES", response.data.data);
+      commit("SET_WAREHOUSES", response.data.data || []);
     } catch (error) {
       console.error("❌ فشل جلب المستودعات:", error);
     } finally {
@@ -40,6 +41,31 @@ const actions = {
     }
   },
 
+  // 🟡 جلب مستودع واحد بالتفصيل (لصفحة الـ Edit)
+  async fetchWarehouse({ commit }, id) {
+    commit("SET_LOADING", true);
+    try {
+      const token = localStorage.getItem("authToken");
+      const response = await axios.get(
+        `https://alyaseenerp.com/api/v1/warehouses/inspect-facility/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        }
+      );
+      commit("SET_WAREHOUSE", response.data.data || response.data);
+      return response.data.data || response.data;
+    } catch (error) {
+      console.error("❌ فشل جلب بيانات المستودع:", error);
+      return null;
+    } finally {
+      commit("SET_LOADING", false);
+    }
+  },
+
+  // 🟢 إنشاء مستودع جديد
   async createWarehouse({ dispatch }, payload) {
     try {
       const token = localStorage.getItem("authToken");
@@ -61,6 +87,30 @@ const actions = {
     }
   },
 
+  // 🟠 تعديل مستودع موجود (Edit)
+  async updateWarehouse({ dispatch }, { id, payload }) {
+    try {
+      const token = localStorage.getItem("authToken");
+      await axios.put(
+        `https://alyaseenerp.com/api/v1/warehouses/modify-facility/${id}`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      await dispatch("fetchWarehouses");
+      return true;
+    } catch (error) {
+      console.error("❌ فشل تعديل المستودع:", error.response?.data || error);
+      return false;
+    }
+  },
+
+  // 🔴 حذف مستودع
   async deleteWarehouse({ dispatch }, id) {
     try {
       const token = localStorage.getItem("authToken");

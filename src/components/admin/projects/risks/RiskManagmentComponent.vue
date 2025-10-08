@@ -1,18 +1,27 @@
 <template>
     <div class="container pe-5 ps-5">
-        <h1><i class="bi bi-exclamation-triangle"></i> إدارة المخاطر</h1>
+        <h1><i class="bi bi-exclamation-triangle me-2"></i> إدارة المخاطر</h1>
 
-        <!-- Action Buttons -->
-        <div class="d-flex align-items-center justify-content-end mb-4">
-            <button class="btn btn-success me-2" @click="openAddRiskModal">
-                <i class="bi bi-plus me-2"></i>إضافة خطر
-            </button>
-            <input type="text" class="form-control w-25" placeholder="بحث..." v-model="searchQuery" />
+        <!-- أدوات التحكم -->
+        <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap">
+            <!-- البحث -->
+            <div class="d-flex align-items-center">
+                <input type="text" class="form-control search-input" placeholder="بحث عن خطر..."
+                    v-model="searchQuery" />
+            </div>
+
+            <!-- زر الإضافة -->
+            <div>
+                <button class="btn btn-main" @click="openAddRiskModal">
+                    <i class="bi bi-plus-lg me-2"></i>إضافة خطر
+                </button>
+            </div>
         </div>
 
-        <!-- Risks Table -->
+
+        <!-- جدول المخاطر -->
         <div class="table-responsive mb-4">
-            <table class="table table-bordered text-center align-middle">
+            <table class="table table-bordered text-center align-middle shadow-sm">
                 <thead>
                     <tr class="header">
                         <th>#</th>
@@ -27,13 +36,9 @@
                 <tbody>
                     <tr v-for="(risk, index) in filteredRisks" :key="risk.id">
                         <td>{{ index + 1 }}</td>
-                        <td>{{ risk.title }}</td>
-                        <td>
-                            <span :class="impactClass(risk.impact)">{{ risk.impact }}</span>
-                        </td>
-                        <td>
-                            <span :class="impactClass(risk.probability)">{{ risk.probability }}</span>
-                        </td>
+                        <td class="text-start">{{ risk.title }}</td>
+                        <td><span :class="impactClass(risk.impact)">{{ risk.impact }}</span></td>
+                        <td><span :class="impactClass(risk.probability)">{{ risk.probability }}</span></td>
                         <td>{{ risk.status }}</td>
                         <td>{{ risk.assignedTo }}</td>
                         <td>
@@ -42,20 +47,43 @@
                             <i class="bi bi-trash action-icon text-danger" @click="deleteRisk(risk)" title="حذف"></i>
                         </td>
                     </tr>
-                    <tr v-if="risks.length === 0">
-                        <td colspan="7" class="text-center">لا توجد مخاطر مسجلة</td>
+                    <tr v-if="filteredRisks.length === 0">
+                        <td colspan="7" class="text-center text-muted">لا توجد مخاطر مطابقة</td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
-        <!-- Heatmap Chart -->
-        <div class="mb-5">
-            <h3>Heatmap توزيع المخاطر</h3>
-            <canvas id="riskHeatmapChart"></canvas>
+        <!-- مصفوفة المخاطر -->
+        <div class="risk-matrix-card mb-5 p-4">
+            <h4 class="mb-3 text-center text-success">مصفوفة توزيع المخاطر</h4>
+
+            <div class="risk-matrix">
+                <div class="matrix-header">
+                    <div></div>
+                    <div v-for="impact in levels" :key="impact" class="text-center fw-bold">{{ impact }}</div>
+                </div>
+                <div v-for="prob in levels" :key="prob" class="matrix-row">
+                    <div class="fw-bold">{{ prob }}</div>
+                    <div v-for="impact in levels" :key="impact" class="matrix-cell"
+                        :style="{ backgroundColor: cellColor(prob, impact) }">
+                        <span class="matrix-count">
+                            {{
+                                risks.filter(r =>
+                                    r.probability === prob && r.impact === impact
+                                ).length
+                            }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-3 text-muted small">
+                <span>المحور الأفقي: التأثير (Impact)</span> | <span>العمودي: الاحتمالية (Probability)</span>
+            </div>
         </div>
 
-        <!-- Add/Edit Risk Modal -->
+        <!-- نافذة إضافة/تعديل خطر -->
         <div class="modal fade" id="riskModal" tabindex="-1" aria-hidden="true" ref="riskModal">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
@@ -73,14 +101,11 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label>الحالة</label>
-                                    <div>
-                                        <div class="form-check form-check-inline"
-                                            v-for="s in ['Open', 'Mitigated', 'Closed']" :key="s">
-                                            <input class="form-check-input" type="radio" :value="s"
-                                                v-model="modalRisk.status" />
-                                            <label class="form-check-label">{{ s }}</label>
-                                        </div>
-                                    </div>
+                                    <select class="form-control" v-model="modalRisk.status">
+                                        <option>Open</option>
+                                        <option>Mitigated</option>
+                                        <option>Closed</option>
+                                    </select>
                                 </div>
                                 <div class="col-12 mb-3">
                                     <label>الوصف</label>
@@ -123,16 +148,12 @@
                 </div>
             </div>
         </div>
-
     </div>
 </template>
 
 <script>
 import Swal from "sweetalert2";
 import bootstrap from "bootstrap/dist/js/bootstrap.bundle";
-import { Chart, BarController, BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend } from 'chart.js';
-
-Chart.register(BarController, BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
 
 export default {
     name: "RiskManagementTab",
@@ -144,7 +165,7 @@ export default {
             modalType: "",
             modalTitle: "",
             bsModal: null,
-            heatmapChart: null
+            levels: ["Low", "Medium", "High"]
         };
     },
     computed: {
@@ -163,12 +184,10 @@ export default {
     methods: {
         loadSampleRisks() {
             this.risks = [
-                { id: 1, title: "Supplier delay", impact: "High", probability: "Medium", status: "Open", assignedTo: "Ahmed Yassin", description: "", mitigationPlan: "" },
-                { id: 2, title: "Cost overrun", impact: "Medium", probability: "High", status: "Mitigated", assignedTo: "Sarah", description: "", mitigationPlan: "" },
-                { id: 3, title: "Resource shortage", impact: "Low", probability: "Medium", status: "Closed", assignedTo: "Mohammed", description: "", mitigationPlan: "" },
-                { id: 4, title: "Seham", impact: "Medium", probability: "Medium", status: "Mitigated", assignedTo: "Seham", description: "", mitigationPlan: "" }
+                { id: 1, title: "تأخير المورد", impact: "High", probability: "Medium", status: "Open", assignedTo: "أحمد", description: "", mitigationPlan: "" },
+                { id: 2, title: "زيادة التكاليف", impact: "Medium", probability: "High", status: "Mitigated", assignedTo: "سارة", description: "", mitigationPlan: "" },
+                { id: 3, title: "نقص الموارد", impact: "Low", probability: "Medium", status: "Closed", assignedTo: "محمد", description: "", mitigationPlan: "" }
             ];
-            this.$nextTick(() => this.renderHeatmap());
         },
         openAddRiskModal() {
             this.modalRisk = { title: "", description: "", impact: "Low", probability: "Low", mitigationPlan: "", status: "Open", assignedTo: "" };
@@ -191,7 +210,6 @@ export default {
                 if (index !== -1) this.risks.splice(index, 1, { ...this.modalRisk });
             }
             this.bsModal.hide();
-            this.$nextTick(() => this.renderHeatmap());
         },
         deleteRisk(risk) {
             Swal.fire({
@@ -203,7 +221,6 @@ export default {
             }).then(result => {
                 if (result.isConfirmed) {
                     this.risks = this.risks.filter(r => r.id !== risk.id);
-                    this.$nextTick(() => this.renderHeatmap());
                     Swal.fire("تم الحذف", "تم حذف الخطر بنجاح", "success");
                 }
             });
@@ -213,34 +230,13 @@ export default {
             if (value === "Medium") return "badge bg-warning text-dark";
             return "badge bg-success";
         },
-        renderHeatmap() {
-            const canvas = document.getElementById("riskHeatmapChart");
-            if (!canvas) return;
-
-            const labels = ["Low", "Medium", "High"];
-            const data = {
-                labels,
-                datasets: labels.map((impact, i) => ({
-                    label: impact,
-                    data: labels.map(prob => {
-                        const count = this.risks.filter(r => r.impact === impact && r.probability === prob).length;
-                        return count;
-                    }),
-                    backgroundColor: ["#28a745", "#ffc107", "#dc3545"][i]
-                }))
+        cellColor(prob, impact) {
+            const map = {
+                Low: { Low: "#d4edda", Medium: "#ffeeba", High: "#f8d7da" },
+                Medium: { Low: "#c3e6cb", Medium: "#fff3cd", High: "#f5c6cb" },
+                High: { Low: "#b1dfbb", Medium: "#ffe8a1", High: "#f1b0b7" }
             };
-
-            if (this.heatmapChart) this.heatmapChart.destroy();
-            const ctx = canvas.getContext("2d");
-            this.heatmapChart = new Chart(ctx, {
-                type: "bar",
-                data,
-                options: {
-                    responsive: true,
-                    plugins: { legend: { position: "top" }, title: { display: false } },
-                    scales: { x: { stacked: true }, y: { beginAtZero: true, stacked: true } }
-                }
-            });
+            return map[prob][impact];
         }
     }
 };
@@ -249,6 +245,20 @@ export default {
 <style scoped>
 .header th {
     background-color: #F4FFF0 !important;
+}
+
+.btn-main {
+    background-color: #28a745;
+    border-color: #28a745;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn-main:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+    transform: translateY(-1px);
 }
 
 .action-icon {
@@ -261,38 +271,59 @@ export default {
     transform: scale(1.2);
 }
 
-.badge {
-    font-size: 0.9rem;
+.search-input {
+    max-width: 250px;
+    border-radius: 6px;
 }
 
-.btn-success {
-    background-color: #28a745;
-    border-color: #28a745;
+.risk-matrix-card {
+    background: linear-gradient(180deg, #ffffff 0%, #f9fff8 100%);
+    border-radius: 10px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
 }
 
-.btn-success:hover {
-    background-color: #218838;
-    border-color: #1e7e34;
+.risk-matrix {
+    display: grid;
+    grid-template-columns: auto repeat(3, 1fr);
+    gap: 5px;
+    text-align: center;
 }
 
-.btn-warning {
-    background-color: #ffc107;
-    border-color: #ffc107;
-    color: #212529;
+.matrix-header {
+    display: contents;
 }
 
-.btn-warning:hover {
-    background-color: #e0a800;
-    border-color: #d39e00;
+.matrix-row {
+    display: contents;
 }
 
-.table-responsive {
-    max-height: 500px;
-    overflow-y: auto;
+.matrix-cell {
+    border-radius: 6px;
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    color: #333;
 }
 
-#riskHeatmapChart {
-    height: 400px;
-    max-height: 500px;
+.matrix-count {
+    font-size: 1.2rem;
+}
+
+@media (max-width: 768px) {
+    .search-input {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .d-flex.flex-wrap>div {
+        width: 100%;
+        text-align: center;
+    }
+
+    .btn-main {
+        width: 100%;
+    }
 }
 </style>
